@@ -36,6 +36,7 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: light;
 }
 
 body {
@@ -321,12 +322,28 @@ tr:last-child td {
 
 .diagram {
   margin: 1.25rem 0 1.75rem;
-  padding: 1rem;
-  background: var(--surface);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+}
+
+.diagram pre,
+pre.ascii {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  white-space: pre;
+  background: #eef3f7;
+  color: var(--ink);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  overflow-x: auto;
   box-shadow: var(--shadow);
+  overflow-x: auto;
 }
 
 .diagram figcaption {
@@ -335,20 +352,7 @@ tr:last-child td {
   color: var(--ink-soft);
 }
 
-.diagram pre,
-.ascii {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  line-height: 1.35;
-  white-space: pre;
-  color: var(--ink);
-}
-
-pre,
-.code {
-  background: var(--code-bg);
-  color: var(--code-ink);
+pre {
   border-radius: var(--radius);
   padding: 1rem 1.1rem;
   overflow-x: auto;
@@ -356,6 +360,11 @@ pre,
   font-size: 0.82rem;
   line-height: 1.5;
   margin: 1rem 0 1.5rem;
+}
+
+pre:not(.ascii):not(.example-output) {
+  background: var(--code-bg);
+  color: var(--code-ink);
 }
 
 code {
@@ -382,6 +391,12 @@ pre code {
   font-size: 0.88rem;
 }
 
+.run-cmd > span {
+  color: var(--ink-soft);
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
 .run-cmd code {
   background: var(--code-bg);
   color: var(--code-ink);
@@ -396,10 +411,15 @@ pre code {
 }
 
 .example-output {
-  background: #0a1218;
+  background: #0f1a24;
   border: 1px solid #2a3a48;
-  color: #b8d4c4;
+  color: #c8e6d4;
   margin-top: 0.5rem;
+}
+
+.example-output code {
+  background: transparent;
+  color: inherit;
 }
 
 .example-output.fail {
