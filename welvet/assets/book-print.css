@@ -1,0 +1,85 @@
+/* Print / PDF layout — combined with book.css */
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm;
+}
+
+body.print-doc {
+  background: white;
+  font-size: 10.5pt;
+}
+
+.print-doc .print-cover {
+  min-height: 90vh;
+  display: grid;
+  place-items: center;
+  page-break-after: always;
+}
+
+.print-doc .print-toc {
+  page-break-after: always;
+}
+
+.print-doc .print-chapter {
+  page-break-before: always;
+}
+
+.print-doc .print-chapter:first-of-type {
+  page-break-before: auto;
+}
+
+.print-doc .print-toc-list {
+  columns: 2;
+  column-gap: 2rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.print-doc .print-toc-list li {
+  break-inside: avoid;
+  margin: 0.2rem 0;
+  font-size: 0.88rem;
+}
+
+.print-doc .print-toc-list .part {
+  column-span: all;
+  margin: 1rem 0 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.print-doc pre {
+  font-size: 0.72rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.print-doc .pager,
+.print-doc .run-cmd,
+.print-doc .go-file-link {
+  /* keep run hints in PDF */
+}
+
+.print-doc h1 {
+  font-size: 1.65rem;
+}
+
+.print-doc h2 {
+  font-size: 1.15rem;
+}
+
+.print-doc .examples {
+  border-top-width: 1px;
+}
+
+@media print {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}

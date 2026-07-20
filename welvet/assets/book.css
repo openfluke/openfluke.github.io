@@ -490,6 +490,13 @@ pre code {
   text-align: left;
 }
 
+.title-logo {
+  display: block;
+  width: min(11rem, 55%);
+  height: auto;
+  margin: 0 0 1.25rem;
+}
+
 .title-card .eyebrow {
   font-size: 0.8rem;
   letter-spacing: 0.12em;

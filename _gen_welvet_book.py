@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
+import shutil
 import subprocess
 import sys
 from dataclasses import dataclass, field
@@ -14,11 +16,17 @@ ROOT = Path(__file__).resolve().parent
 BOOK = ROOT / "welvet"
 CHDIR = BOOK / "chapters"
 EXAMPLES = BOOK / "examples"
+DOWNLOADS = BOOK / "downloads"
 WELVET_ROOT = ROOT.parent  # …/welvet engine
 CHAOSGLUE_ROOT = ROOT.parent.parent
 WEBGPU_ROOT = CHAOSGLUE_ROOT / "webgpu"
 SENTENCEPIECE_ROOT = WELVET_ROOT / "third_party" / "go-sentencepiece"
 MANIFEST = EXAMPLES / "_manifest.json"
+DIST = ROOT / "dist"
+# Chrome profile — outside the repo (SingletonLock etc. are runtime junk)
+CHROME_PROFILE = Path.home() / ".cache" / "welvet-book-chrome"
+RELEASES_URL = "https://github.com/openfluke/openfluke.github.io/releases"
+LOGO_NAME = "openflukelogo_notxt.png"
 
 
 @dataclass
@@ -55,6 +63,50 @@ def ascii_fig(text: str, caption: str = "") -> str:
     return f'<figure class="diagram"><pre class="ascii">{esc(text.strip())}</pre>{cap}</figure>'
 
 
+def read_welvet_version() -> tuple[str, float]:
+    """Read scorecard version from welvet/README.md (single source of truth)."""
+    text = (WELVET_ROOT / "README.md").read_text(encoding="utf-8")
+    earned: float | None = None
+    m = re.search(r"\*\*(\d+(?:\.\d+)?)\s*/\s*100\*\*\s*pts", text)
+    if m:
+        earned = float(m.group(1))
+    if earned is None:
+        m = re.search(r"\|\s*\*\*Version\*\*\s*\|\s*\*\*(v[\d.]+)\*\*", text)
+        if m:
+            v = m.group(1)
+            if v == "v1.0":
+                earned = 100.0
+            elif v.startswith("v0."):
+                earned = float(v[3:])
+    if earned is None:
+        earned = 76.0
+    ver = "v1.0" if earned >= 100 else f"v0.{int(round(earned)):02d}"
+    return ver, earned
+
+
+def pdf_filename(version: str) -> str:
+    return f"welvet-feature-book-{version}.pdf"
+
+
+def ensure_logo() -> None:
+    """Copy repo-root logo into welvet/assets/ if present."""
+    dst = BOOK / "assets" / LOGO_NAME
+    for src in (ROOT / LOGO_NAME, BOOK / LOGO_NAME):
+        if src.is_file():
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dst)
+            return
+
+
+def title_logo_html() -> str:
+    if (BOOK / "assets" / LOGO_NAME).is_file():
+        return (
+            f'<img class="title-logo" src="assets/{LOGO_NAME}" '
+            f'alt="OpenFluke logo" width="160" height="123"/>'
+        )
+    return ""
+
+
 # ---------------------------------------------------------------------------
 # Chapter catalog — every Welvet feature package
 # ---------------------------------------------------------------------------
@@ -81,7 +133,19 @@ Rules
   4. No QAT                               → DType + Format = truth
   5. One feature → one folder
   6. v1.0 = scorecard 100/100
-""", "Non-negotiable engine rules."),
+""", "Non-negotiable engine rules.") + """
+<h2>Origin</h2>
+<p class="origin-byline"><strong>Samuel Watson</strong></p>
+<p>Samuel Watson created OpenFluke after intensive T-ALL treatment (post-2018), from a simple frustration: AI tooling was heavy, opaque, and not portable enough to move models cleanly across operating systems or personal devices. Setting up GPU paths often meant large, brittle installs before experimentation could even begin.</p>
+<p>That gap drove a long detour through cybersecurity, MBA, and psychology before returning through applied AI study - and finding that most paths still taught framework usage more than system construction. The result was a build journey across <a href="https://github.com/planetbridging">planetbridging</a> into OpenFluke projects, from paragon and loom to Welvet.</p>
+<p>The early breakthroughs were practical and hard-won: first dense nets in Go, then WebGPU proof points (for example <a href="https://github.com/openfluke/iso-demo/releases/tag/v0.1.0">iso-demo v0.1.0</a>), then repeated cycles of speed, layers, 3D, tiling, SIMD, and bit-oriented model paths for personal intelligence.</p>
+<p><strong>Why "OpenFluke"</strong>: open source values plus a life-saving fluke blood test that caught cancer early.<br/>
+<strong>Why "Welvet"</strong>: a name shaped in gaming sessions with family.</p>
+<blockquote>
+<p>I wish this tool existed in 2018 to keep trying things in AI and asking "what if I try this?" - and maybe help deterministic medical deployment of AI models.</p>
+</blockquote>
+<p class="example-meta">"Our duty, as soldiers, is to protect humanity. Whatever the cost." - Master Chief</p>
+""",
         example="""
 package main
 
@@ -1646,10 +1710,10 @@ PARTS_NAV = [
 ]
 
 
-def nav_html(by_slug: dict[str, Chapter], prefix: str) -> str:
+def nav_html(by_slug: dict[str, Chapter], prefix: str, version: str) -> str:
     parts = [
         f'<aside class="sidebar"><a class="brand" href="{prefix}index.html">Welvet</a>'
-        f'<div class="brand-sub">Feature book · v0.76</div>'
+        f'<div class="brand-sub">Feature book · {esc(version)}</div>'
         f'<div class="nav-group"><h2>Front</h2>'
         f'<a href="{prefix}index.html">Title</a>'
         f'<a href="{prefix}toc.html">Contents</a></div>'
@@ -1670,22 +1734,17 @@ def nav_html(by_slug: dict[str, Chapter], prefix: str) -> str:
     return "\n".join(parts)
 
 
-def render_chapter(
-    c: Chapter,
-    prev: Chapter | None,
-    next_: Chapter | None,
-    by_slug: dict[str, Chapter],
-    run_info: dict | None,
-) -> str:
-    nav = nav_html(by_slug, "../")
-    prev_a = f'<a href="../toc.html">← Contents</a>' if prev is None else f'<a href="{prev.slug}.html">← {esc(prev.num)}. {esc(prev.title[:40])}</a>'
-    next_a = f'<a href="../toc.html">Contents →</a>' if next_ is None else f'<a href="{next_.slug}.html">{esc(next_.num)}. {esc(next_.title[:40])} →</a>'
-    pkg = f'<p class="pill-row"><span class="pill">{esc(c.pkg)}</span>{status_badge(c.status, c.status_label)}</p>' if c.pkg else f'<p>{status_badge(c.status, c.status_label)}</p>'
+def chapter_body_html(c: Chapter, run_info: dict | None, *, for_print: bool = False) -> str:
+    pkg = (
+        f'<p class="pill-row"><span class="pill">{esc(c.pkg)}</span>'
+        f"{status_badge(c.status, c.status_label)}</p>"
+        if c.pkg
+        else f"<p>{status_badge(c.status, c.status_label)}</p>"
+    )
     validate = f"<h3>Validate (harness)</h3>{code(c.run)}" if c.run else ""
 
     example_section = ""
     if c.example.strip() and c.runnable:
-        rel_go = f"../examples/{c.slug}/main.go"
         run_cmd = f"cd welvet/examples/{c.slug} && source ../env.sh && go run ."
         output_block = ""
         if run_info:
@@ -1697,10 +1756,16 @@ def render_chapter(
                 f'last run via <code>go run .</code></p>'
                 f'<pre class="{out_cls}"><code>{esc(combined)}</code></pre>'
             )
+        file_line = ""
+        if not for_print:
+            rel_go = f"../examples/{c.slug}/main.go"
+            file_line = f'<p><a class="go-file-link" href="{rel_go}">examples/{c.slug}/main.go</a></p>'
+        else:
+            file_line = f"<p class=\"go-file-link\">examples/{esc(c.slug)}/main.go</p>"
         example_section = f"""
 <section class="examples" id="examples">
 <h2>Go example</h2>
-<p><a class="go-file-link" href="{rel_go}">examples/{c.slug}/main.go</a></p>
+{file_line}
 <div class="run-cmd"><span>Run:</span><code>{esc(run_cmd)}</code></div>
 {code(c.example)}
 <h3>Output</h3>
@@ -1716,6 +1781,33 @@ def render_chapter(
 {validate}
 </section>
 """
+
+    return f"""
+<p class="chapter-kicker">Chapter {esc(c.num)}</p>
+<h1>{esc(c.title)}</h1>
+{pkg}
+<hr class="rule"/>
+<h2>Why it exists</h2>
+<p>{c.why}</p>
+<h2>What it is</h2>
+<p>{c.what}</p>
+{c.body_extra}
+{example_section}
+"""
+
+
+def render_chapter(
+    c: Chapter,
+    prev: Chapter | None,
+    next_: Chapter | None,
+    by_slug: dict[str, Chapter],
+    run_info: dict | None,
+    version: str,
+) -> str:
+    nav = nav_html(by_slug, "../", version)
+    prev_a = f'<a href="../toc.html">← Contents</a>' if prev is None else f'<a href="{prev.slug}.html">← {esc(prev.num)}. {esc(prev.title[:40])}</a>'
+    next_a = f'<a href="../toc.html">Contents →</a>' if next_ is None else f'<a href="{next_.slug}.html">{esc(next_.num)}. {esc(next_.title[:40])} →</a>'
+    body = chapter_body_html(c, run_info)
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1735,16 +1827,7 @@ def render_chapter(
 <nav class="pager">{prev_a}{next_a}</nav>
 </div>
 <article class="content" id="main">
-<p class="chapter-kicker">Chapter {esc(c.num)}</p>
-<h1>{esc(c.title)}</h1>
-{pkg}
-<hr class="rule"/>
-<h2>Why it exists</h2>
-<p>{c.why}</p>
-<h2>What it is</h2>
-<p>{c.what}</p>
-{c.body_extra}
-{example_section}
+{body}
 <nav class="pager" style="margin-top:2rem">{prev_a}{next_a}</nav>
 </article>
 </div></div>
@@ -1898,8 +1981,13 @@ def load_manifest() -> dict[str, dict]:
     return {}
 
 
-def title_page() -> str:
-    return """<!DOCTYPE html>
+def title_page(version: str, pdf_name: str) -> str:
+    pdf_url = f"{RELEASES_URL}/latest/download/{pdf_name}"
+    pdf_btn = (
+        f'<a class="btn btn-ghost" href="{esc(pdf_url)}">Download PDF</a>'
+        f'<a class="btn btn-ghost" href="{RELEASES_URL}">All releases</a>'
+    )
+    return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -1909,11 +1997,12 @@ def title_page() -> str:
 <body>
 <main class="title-page">
 <div class="title-card">
+{title_logo_html()}
 <p class="eyebrow">OpenFluke · github.com/openfluke/welvet</p>
 <h1>Welvet</h1>
 <p class="subtitle">Feature book — why and what for every engine package, with runnable Go examples. Built from the Welvet tree, not a loom paste.</p>
 <div class="title-meta">
-<div><strong>Version</strong> v0.76 · scorecard toward v1.0</div>
+<div><strong>Version</strong> {esc(version)} · scorecard toward v1.0</div>
 <div><strong>Module</strong> github.com/openfluke/welvet</div>
 <div><strong>Harness</strong> github.com/openfluke/w2a</div>
 </div>
@@ -1921,6 +2010,7 @@ def title_page() -> str:
 <a class="btn btn-primary" href="toc.html">Contents</a>
 <a class="btn btn-ghost" href="chapters/01-welvet.html">Start</a>
 <a class="btn btn-ghost" href="https://github.com/openfluke/welvet">Source</a>
+{pdf_btn}
 </div>
 </div>
 </main>
@@ -1928,15 +2018,15 @@ def title_page() -> str:
 """
 
 
-def toc_page(chs: list[Chapter]) -> str:
+def toc_page(chs: list[Chapter], version: str) -> str:
     by = {c.slug: c for c in chs}
-    nav = nav_html(by, "")
+    nav = nav_html(by, "", version)
     # fix chapter hrefs for root toc
     nav = nav.replace('href="chapters/', 'href="chapters/').replace('href="01-', 'href="chapters/01-')
     # rebuild nav properly for root
     parts = [
         '<aside class="sidebar"><a class="brand" href="index.html">Welvet</a>'
-        '<div class="brand-sub">Feature book · v0.76</div>'
+        f'<div class="brand-sub">Feature book · {esc(version)}</div>'
         '<div class="nav-group"><h2>Front</h2>'
         '<a href="index.html">Title</a><a href="toc.html">Contents</a></div>'
     ]
@@ -1992,14 +2082,210 @@ def toc_page(chs: list[Chapter]) -> str:
 """
 
 
+PRINT_CSS = """/* Print / PDF layout — combined with book.css */
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm;
+}
+
+body.print-doc {
+  background: white;
+  font-size: 10.5pt;
+}
+
+.print-doc .print-cover {
+  min-height: 90vh;
+  display: grid;
+  place-items: center;
+  page-break-after: always;
+}
+
+.print-doc .print-toc {
+  page-break-after: always;
+}
+
+.print-doc .print-chapter {
+  page-break-before: always;
+}
+
+.print-doc .print-chapter:first-of-type {
+  page-break-before: auto;
+}
+
+.print-doc .print-toc-list {
+  columns: 2;
+  column-gap: 2rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.print-doc .print-toc-list li {
+  break-inside: avoid;
+  margin: 0.2rem 0;
+  font-size: 0.88rem;
+}
+
+.print-doc .print-toc-list .part {
+  column-span: all;
+  margin: 1rem 0 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.print-doc pre {
+  font-size: 0.72rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.print-doc .pager,
+.print-doc .run-cmd,
+.print-doc .go-file-link {
+  /* keep run hints in PDF */
+}
+
+.print-doc h1 {
+  font-size: 1.65rem;
+}
+
+.print-doc h2 {
+  font-size: 1.15rem;
+}
+
+.print-doc .examples {
+  border-top-width: 1px;
+}
+
+@media print {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+"""
+
+
+def write_print_css() -> None:
+    (BOOK / "assets" / "book-print.css").write_text(PRINT_CSS, encoding="utf-8")
+
+
+def render_print_document(
+    chs: list[Chapter],
+    run_results: dict[str, dict],
+    version: str,
+) -> str:
+    toc_items: list[str] = []
+    for part, slugs in PARTS_NAV:
+        toc_items.append(f'<li class="part">{esc(part)}</li>')
+        for s in slugs:
+            c = next(x for x in chs if x.slug == s)
+            toc_items.append(f'<li>{esc(c.num)}. {esc(c.title)}</li>')
+
+    chapters_html: list[str] = []
+    for c in chs:
+        info = run_results.get(c.slug)
+        chapters_html.append(
+            f'<section class="print-chapter content" id="{c.slug}">'
+            f"{chapter_body_html(c, info, for_print=True)}"
+            "</section>"
+        )
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Welvet Feature Book {esc(version)}</title>
+<link rel="stylesheet" href="assets/book.css"/>
+<link rel="stylesheet" href="assets/book-print.css"/>
+</head>
+<body class="print-doc">
+<main class="print-cover title-page">
+<div class="title-card">
+{title_logo_html()}
+<p class="eyebrow">OpenFluke · github.com/openfluke/welvet</p>
+<h1>Welvet</h1>
+<p class="subtitle">Feature book — why and what for every engine package, with runnable Go examples.</p>
+<div class="title-meta">
+<div><strong>Version</strong> {esc(version)}</div>
+<div><strong>Generated</strong> from welvet/README.md scorecard</div>
+<div><strong>Chapters</strong> {len(chs)}</div>
+</div>
+</div>
+</main>
+<section class="print-toc content">
+<h1>Contents</h1>
+<ul class="print-toc-list">
+{"".join(toc_items)}
+</ul>
+</section>
+{"".join(chapters_html)}
+</body></html>
+"""
+
+
+def find_chrome() -> str:
+    for name in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
+        path = subprocess.run(["which", name], capture_output=True, text=True)
+        if path.returncode == 0 and path.stdout.strip():
+            return path.stdout.strip()
+    raise SystemExit(
+        "PDF needs headless Chrome/Chromium. Install google-chrome or pass --pdf-html-only."
+    )
+
+
+def generate_pdf(print_html: Path, pdf_path: Path) -> None:
+    chrome = find_chrome()
+    CHROME_PROFILE.mkdir(parents=True, exist_ok=True)
+    pdf_path.parent.mkdir(parents=True, exist_ok=True)
+    # Clear TMPDIR/GOTMPDIR — env.sh from Go examples can break Chrome if inherited
+    env = {k: v for k, v in os.environ.items() if k not in ("TMPDIR", "GOTMPDIR")}
+    cmd = [
+        chrome,
+        "--headless",
+        "--disable-gpu",
+        "--no-pdf-header-footer",
+        f"--user-data-dir={CHROME_PROFILE}",
+        f"--print-to-pdf={pdf_path.resolve()}",
+        print_html.as_uri(),
+    ]
+    print(f"  PDF → {pdf_path} …", flush=True)
+    proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
+    if proc.returncode != 0 or not pdf_path.is_file() or pdf_path.stat().st_size == 0:
+        err = (proc.stderr or proc.stdout or "unknown error").strip()
+        raise SystemExit(f"PDF generation failed: {err[-800:]}")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Generate Welvet HTML book + Go examples")
     ap.add_argument("--run", action="store_true", help="go run every example and embed output in HTML")
     ap.add_argument("--html-only", action="store_true", help="skip go run even if manifest missing")
+    ap.add_argument("--pdf", action="store_true", help="build print HTML + PDF (needs Chrome)")
+    ap.add_argument(
+        "--pdf-html-only",
+        action="store_true",
+        help="build welvet/print.html only, skip Chrome PDF step",
+    )
+    ap.add_argument(
+        "--pdf-out",
+        type=Path,
+        default=None,
+        help="PDF output path (default: dist/welvet-feature-book-VERSION.pdf, not committed)",
+    )
     args = ap.parse_args()
+
+    version, earned = read_welvet_version()
+    pdf_name = pdf_filename(version)
+    pdf_path = args.pdf_out if args.pdf_out else DIST / pdf_name
 
     CHDIR.mkdir(parents=True, exist_ok=True)
     (BOOK / "assets").mkdir(parents=True, exist_ok=True)
+    ensure_logo()
+    write_print_css()
     for p in CHDIR.glob("*.html"):
         p.unlink()
 
@@ -2044,11 +2330,23 @@ def main() -> None:
         nxt = chs[i + 1] if i + 1 < len(chs) else None
         info = run_results.get(c.slug)
         (CHDIR / f"{c.slug}.html").write_text(
-            render_chapter(c, prev, nxt, by, info), encoding="utf-8"
+            render_chapter(c, prev, nxt, by, info, version), encoding="utf-8"
         )
 
-    (BOOK / "index.html").write_text(title_page(), encoding="utf-8")
-    (BOOK / "toc.html").write_text(toc_page(chs), encoding="utf-8")
+    print_html = BOOK / "print.html"
+    if args.pdf or args.pdf_html_only:
+        print_html.write_text(
+            render_print_document(chs, run_results, version), encoding="utf-8"
+        )
+        print(f"Print HTML → {print_html} (gitignored build artifact)")
+    if args.pdf and not args.pdf_html_only:
+        generate_pdf(print_html, pdf_path)
+        mb = pdf_path.stat().st_size / (1024 * 1024)
+        print(f"PDF: {pdf_path} ({mb:.1f} MB) · welvet {version} ({earned}/100)")
+        print(f"Upload: gh release upload {version} {pdf_path}")
+
+    (BOOK / "index.html").write_text(title_page(version, pdf_name), encoding="utf-8")
+    (BOOK / "toc.html").write_text(toc_page(chs, version), encoding="utf-8")
     (ROOT / "index.html").write_text(
         "<!DOCTYPE html><meta charset=utf-8><meta http-equiv=refresh content='0;url=welvet/'>"
         "<title>OpenFluke</title><a href='welvet/'>Welvet feature book</a>\n",
@@ -2059,9 +2357,13 @@ def main() -> None:
         "# openfluke.github.io\n\n"
         "**[Welvet feature book](welvet/)** — why/what for every engine package with runnable Go examples.\n\n"
         "```bash\n"
-        "python3 _gen_welvet_book.py --run   # HTML + main.go + go run outputs\n"
+        "python3 _gen_welvet_book.py --run          # HTML + examples + captured outputs\n"
+        "python3 _gen_welvet_book.py --run --pdf    # + PDF in dist/ (upload to GitHub Release)\n"
+        "./release-book.sh                          # release helper\n"
         "cd welvet/examples/01-welvet && source ../env.sh && go run .\n"
-        "```\n",
+        "```\n\n"
+        f"PDF is **not** committed — version **{version}** from `welvet/README.md`, "
+        f"upload `dist/{pdf_name}` to [GitHub Releases]({RELEASES_URL}).\n",
         encoding="utf-8",
     )
     print(f"OK: {len(chs)} chapters → {BOOK}")

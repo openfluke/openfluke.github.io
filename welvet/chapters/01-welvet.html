@@ -97,6 +97,7 @@
 <nav class="pager"><a href="../toc.html">← Contents</a><a href="02-tree.html">2. Repository map →</a></nav>
 </div>
 <article class="content" id="main">
+
 <p class="chapter-kicker">Chapter 1</p>
 <h1>What Welvet is</h1>
 <p class="pill-row"><span class="pill">github.com/openfluke/welvet</span><span class="status ok">✅ engine</span></p>
@@ -112,6 +113,18 @@
   4. No QAT                               → DType + Format = truth
   5. One feature → one folder
   6. v1.0 = scorecard 100/100</pre><figcaption>Non-negotiable engine rules.</figcaption></figure>
+<h2>Origin</h2>
+<p class="origin-byline"><strong>Samuel Watson</strong></p>
+<p>Samuel Watson created OpenFluke after intensive T-ALL treatment (post-2018), from a simple frustration: AI tooling was heavy, opaque, and not portable enough to move models cleanly across operating systems or personal devices. Setting up GPU paths often meant large, brittle installs before experimentation could even begin.</p>
+<p>That gap drove a long detour through cybersecurity, MBA, and psychology before returning through applied AI study - and finding that most paths still taught framework usage more than system construction. The result was a build journey across <a href="https://github.com/planetbridging">planetbridging</a> into OpenFluke projects, from paragon and loom to Welvet.</p>
+<p>The early breakthroughs were practical and hard-won: first dense nets in Go, then WebGPU proof points (for example <a href="https://github.com/openfluke/iso-demo/releases/tag/v0.1.0">iso-demo v0.1.0</a>), then repeated cycles of speed, layers, 3D, tiling, SIMD, and bit-oriented model paths for personal intelligence.</p>
+<p><strong>Why "OpenFluke"</strong>: open source values plus a life-saving fluke blood test that caught cancer early.<br/>
+<strong>Why "Welvet"</strong>: a name shaped in gaming sessions with family.</p>
+<blockquote>
+<p>I wish this tool existed in 2018 to keep trying things in AI and asking "what if I try this?" - and maybe help deterministic medical deployment of AI models.</p>
+</blockquote>
+<p class="example-meta">"Our duty, as soldiers, is to protect humanity. Whatever the cost." - Master Chief</p>
+
 
 <section class="examples" id="examples">
 <h2>Go example</h2>
@@ -148,6 +161,7 @@ func main() {
 <h3>Validate (harness)</h3><pre><code>cd welvet &amp;&amp; go build ./...
 cd w2a &amp;&amp; go test ./tests/dense -v</code></pre>
 </section>
+
 
 <nav class="pager" style="margin-top:2rem"><a href="../toc.html">← Contents</a><a href="02-tree.html">2. Repository map →</a></nav>
 </article>

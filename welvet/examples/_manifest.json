@@ -301,9 +301,9 @@
   },
   "51-stub-clustering": {
     "exit_code": 0,
-    "stdout": "2 [0 1]\n",
+    "stdout": "2 [1 0]\n",
     "stderr": "",
-    "combined": "2 [0 1]"
+    "combined": "2 [1 0]"
   },
   "52-stub-ensemble": {
     "exit_code": 0,

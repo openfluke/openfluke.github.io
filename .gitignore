@@ -1,0 +1,10 @@
+# Build artifacts — never commit
+dist/
+welvet/print.html
+welvet/downloads/*.pdf
+welvet/.cache/
+.pdf-cache/
+
+# Go example build cache
+welvet/examples/.cache/
+welvet/examples/bin/
