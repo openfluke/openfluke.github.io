@@ -1295,7 +1295,7 @@ func main() {
         "43-apps", "43", "apps — octo · flux2 · mosstts", "VII · Apps",
         "github.com/openfluke/welvet/apps/…", "partial", "🚧",
         why="Products must not pollute engine packages. Octo is the model shell; flux2/mosstts are domain apps.",
-        what="octo (own module): download/convert/chat. flux2: MMDiT image. mosstts: Speak/SpeakToFile pipeline.",
+        what="octo (own module): download/convert/chat, see §44. flux2: MMDiT image. mosstts: Speak/SpeakToFile pipeline.",
         example="""
 package main
 
@@ -1309,6 +1309,50 @@ func main() {
 }
 """,
         run="cd apps/octo && go run .   # when module wired",
+    ))
+
+    out.append(C(
+        "44-octo", "44", "Octo — model shell", "VII · Apps",
+        "github.com/openfluke/welvet/apps/octo", "ok", "✅ runs",
+        why="A model is only useful with a shell around it: pull weights from Hugging Face, convert them to a Welvet <code>.entity</code>, then chat, serve, or benchmark. Octo is that shell, kept in its own module so the engine never depends on an app.",
+        what="Subcommands cover the whole loop: <code>hub</code> download/ensure repos, <code>convert</code> pack to a single <code>.entity</code>, interactive <code>run</code>/<code>serve</code>/chat, plus image and speech menus. Its <code>bench</code> harness sweeps every quant format across a CPU Plan 9 SIMD fused profile and a WebGPU fused profile.",
+        body_extra="""
+<h3>Bench: SmolLM2-135M-Instruct across quant formats</h3>
+<p class="example-meta">template smol2-135m-fuse · linux/amd64 · NVIDIA GTX 1650 SUPER · 3m17s · 80 runs (76 ok, 4 skipped: "none" has no fused kernel). Throughput is total tokens/s on the first prompt; entity is on-disk size.</p>
+<table>
+<thead><tr><th>Quant</th><th>GPU-fused tok/s</th><th>SIMD-fused tok/s</th><th>Entity MB</th></tr></thead>
+<tbody>
+<tr><td>Q8_0</td><td>108.2</td><td>33.2</td><td>252.5</td></tr>
+<tr><td>Q6_K</td><td>73.5</td><td>4.9</td><td>216.4</td></tr>
+<tr><td>Q5_K</td><td>71.7</td><td>6.3</td><td>208.4</td></tr>
+<tr><td>Q4_K</td><td>73.4</td><td>7.8</td><td>192.3</td></tr>
+<tr><td>Q4_0</td><td>112.1</td><td>36.8</td><td>188.3</td></tr>
+<tr><td>IQ4_XS</td><td>105.5</td><td>7.6</td><td>204.4</td></tr>
+<tr><td>IQ4_NL</td><td>84.1</td><td>8.8</td><td>188.3</td></tr>
+<tr><td>TernaryPacked</td><td>106.9</td><td>18.9</td><td>172.3</td></tr>
+<tr><td>BinaryPacked</td><td>88.3</td><td>21.0</td><td>140.2</td></tr>
+</tbody></table>
+<p class="example-meta">21 quant formats run end to end; the table shows a representative slice. Full report: <code>apps/octo/dist/octo-run-v0.76.txt</code>.</p>
+<div class="callout warn"><strong>Honest low-bit note</strong>High-bit formats (Q8, Q6, Q5, Q4, IQ4) stay coherent. Sub-2-bit formats (IQ1/IQ2, Ternary, Binary) are fast and tiny but degrade into gibberish. The bench keeps them in to show the speed, size, and quality trade honestly rather than hiding it.</div>
+<h3>Sample replies</h3>
+<pre class="ascii">Q8_0  / gpu   I'm a helpful assistant. I'm here to help you with your inquiries.
+Q4_0  / gpu   I'm ready to help. What can I help you with?
+Q6_K  / gpu   2 + 2 is 4.
+Q6_K  / simd  I'm a helpful assistant.
+IQ2_XXS/gpu   ,))hidAPAAPAAPAAPAAPA...   (sub-2-bit degrades)</pre>
+""",
+        example="""
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Octo is its own module — the engine never imports it.")
+	fmt.Println("  cd apps/octo && go run .")
+	fmt.Println("  download -> convert -> .entity -> chat / serve / bench")
+}
+""",
+        run="cd apps/octo && go run .",
     ))
 
     # Stubs — each one
@@ -1626,14 +1670,17 @@ func main() {
 }
 """),
     ]
-    for slug, num, title, pkg, why, what, ex in stubs:
+    for i, (slug, _num, title, pkg, why, what, ex) in enumerate(stubs):
+        n = 45 + i  # stubs shift down by one now that §44 is Octo
+        slug = f"{n:02d}-{slug.split('-', 1)[1]}"
+        num = str(n)
         st, lab = ("missing", "⬜") if "accel" in slug else ("partial", "🚧")
         out.append(C(slug, num, title, "VIII · Stubs", pkg, st, lab, why, what, "", ex))
 
     out.append(C(
-        "61-w2a", "61", "w2a — validation harness", "IX · Validate",
+        "62-w2a", "62", "w2a — validation harness", "IX · Validate",
         "github.com/openfluke/w2a", "partial", "🚧 harness",
-        why="Engine packages must stay free of tests. w2a owns timed 34×20×3 matrices, gap census, and honesty stamps.",
+        why="Engine packages must stay free of tests. w2a owns timed 34×20×3 matrices, gap census, and honesty stamps. See §63 for a live full-suite run.",
         what="Interactive go run ., suites under suites/*, go test ./tests/<layer>. StampBackendNote / AffinePackable prevent fake ✅.",
         example="""
 package main
@@ -1653,7 +1700,50 @@ func main() {
     ))
 
     out.append(C(
-        "62-scorecard", "62", "Scorecard → v1.0", "IX · Validate",
+        "63-validation", "63", "Validation report — full suite", "IX · Validate",
+        "github.com/openfluke/w2a", "ok", "✅ 137k cells",
+        why="Claims are cheap; a green matrix is not. This is the actual output of one full w2a run so the book's ✅ marks are backed by numbers you can reproduce, not asserted.",
+        what="Every timed layer sweeps its dtype × format × backend matrix; every suite runs its case checks. The run below is zero-gap and zero-fail across the whole board.",
+        body_extra="""
+<div class="callout"><strong>Full suite: PASS</strong>137,039 matrix cells — OK 137,039 · GAP 0 · FAIL 0. 326 suite cases — PASS 326 · FAIL 0. Elapsed 24m09s on amd64 with an NVIDIA GTX 1650 SUPER.</div>
+<h3>Coverage by layer (timed matrices)</h3>
+<table>
+<thead><tr><th>Layer</th><th>Cells</th><th>OK</th><th>Cases</th></tr></thead>
+<tbody>
+<tr><td>dense</td><td>2,802</td><td>2,802</td><td>18</td></tr>
+<tr><td>mha</td><td>2,847</td><td>2,847</td><td>18</td></tr>
+<tr><td>softmax</td><td>2,847</td><td>2,847</td><td>19</td></tr>
+<tr><td>cnn1 · cnn2 · cnn3</td><td>2,847 ea</td><td>2,847 ea</td><td>14 ea</td></tr>
+<tr><td>embedding · layernorm · lstm</td><td>2,847 ea</td><td>2,847 ea</td><td>14 ea</td></tr>
+<tr><td>residual · rmsnorm · rnn</td><td>2,847 ea</td><td>2,847 ea</td><td>14 ea</td></tr>
+<tr><td>sequential · swiglu</td><td>2,847 ea</td><td>2,847 ea</td><td>14 ea</td></tr>
+<tr><td>dna</td><td>16,159</td><td>16,159</td><td>6</td></tr>
+<tr><td>evolution</td><td>16,152</td><td>16,152</td><td>6</td></tr>
+<tr><td>step</td><td>32,458</td><td>32,458</td><td>11</td></tr>
+<tr><td>tween</td><td>32,457</td><td>32,457</td><td>10</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>137,039</strong></td><td><strong>137,039</strong></td><td><strong>326</strong></td></tr>
+</tbody>
+</table>
+<p class="example-meta">Case-only suites (checks, no timed matrix): convt1/2/3, gdn, kmeans, mamba, parallel, metacognition, seed, serialization, memory, donate, fountain, hardware, helpers — all cases PASS.</p>
+<h3>Dense timed matrix — highlights</h3>
+<p>All 34 dtypes run forward and backward on CPU-tiled, Plan 9 SIMD, and WebGPU with zero gaps. Fastest forward paths on SIMD: <code>int8</code> 45µs, <code>float32</code> 57µs, <code>int4</code> 87µs; WebGPU stays in the ~165–490µs band across every dtype.</p>
+""",
+        example="""
+package main
+
+import "fmt"
+
+func main() {
+	cells, cases := 137039, 326
+	fmt.Printf("w2a suite: %d/%d matrix cells OK, %d/%d cases PASS\\n", cells, cells, cases, cases)
+	fmt.Println("gaps: 0   fails: 0   result: PASS")
+}
+""",
+        run="cd w2a && go run .   # full timed suite (~24m); writes logs/suite.txt",
+    ))
+
+    out.append(C(
+        "64-scorecard", "64", "Scorecard → v1.0", "IX · Validate",
         "", "partial", "v0.76",
         why="Version is earned from a weighted board, not marketing. Peak-fused kernels and stubs still leave points on the table.",
         what="version = 0.{round(earned)} until 100 → v1.0. Biggest remaining: §12 peak fused (14), extended layers, apps/stubs/accel.",
@@ -1698,15 +1788,15 @@ PARTS_NAV = [
     ("IV · Runtime", ["29-forward", "30-backward", "31-training", "32-step"]),
     ("V · Systems", ["33-dna", "34-evolution", "35-tween", "36-tanhi", "37-telemetry"]),
     ("VI · Model IO", ["38-entity", "39-hf", "40-tokenizer", "41-sampling", "42-transformer"]),
-    ("VII · Apps", ["43-apps"]),
+    ("VII · Apps", ["43-apps", "44-octo"]),
     ("VIII · Stubs", [
-        "44-stub-seed", "45-stub-serialization", "46-stub-memory", "47-stub-donate",
-        "48-stub-fountain", "49-stub-hardware", "50-stub-accel",
-        "51-stub-clustering", "52-stub-ensemble", "53-stub-evaluation", "54-stub-grafting",
-        "55-stub-grouping", "56-stub-introspection", "57-stub-observer", "58-stub-pipeline",
-        "59-stub-templates", "60-stub-universal",
+        "45-stub-seed", "46-stub-serialization", "47-stub-memory", "48-stub-donate",
+        "49-stub-fountain", "50-stub-hardware", "51-stub-accel",
+        "52-stub-clustering", "53-stub-ensemble", "54-stub-evaluation", "55-stub-grafting",
+        "56-stub-grouping", "57-stub-introspection", "58-stub-observer", "59-stub-pipeline",
+        "60-stub-templates", "61-stub-universal",
     ]),
-    ("IX · Validate", ["61-w2a", "62-scorecard"]),
+    ("IX · Validate", ["62-w2a", "63-validation", "64-scorecard"]),
 ]
 
 
@@ -1875,6 +1965,15 @@ replace github.com/eliben/go-sentencepiece => {rel(SENTENCEPIECE_ROOT)}
 
 def write_example_files(chs: list[Chapter]) -> None:
     write_examples_go_mod()
+    slugs = {c.slug for c in chs}
+    # Prune stale chapter example dirs (e.g. after a renumber) so we never
+    # accumulate orphaned NN-*/ folders. Keep non-chapter dirs like .cache/bin.
+    keep = {".cache", "bin"}
+    for d in EXAMPLES.iterdir():
+        if not d.is_dir() or d.name in keep:
+            continue
+        if re.match(r"^\d+-", d.name) and d.name not in slugs:
+            shutil.rmtree(d, ignore_errors=True)
     for c in chs:
         if not c.runnable or not c.example.strip():
             continue
@@ -2075,7 +2174,7 @@ def toc_page(chs: list[Chapter], version: str) -> str:
     nav = "\n".join(parts)
 
     body = ['<p class="lede">One chapter per Welvet feature. Each page: <strong>why</strong>, <strong>what</strong>, status, and a <strong>Go example</strong>.</p>',
-            '<div class="pill-row"><span class="pill">62 chapters</span><span class="pill">engine · layers · runtime · systems · model · stubs · w2a</span></div>']
+            f'<div class="pill-row"><span class="pill">{len(chs)} chapters</span><span class="pill">engine · layers · runtime · systems · model · apps · stubs · w2a</span></div>']
     for part, slugs in PARTS_NAV:
         body.append(f'<p class="part">{esc(part)}</p><ul class="toc-list">')
         for s in slugs:
@@ -2332,7 +2431,7 @@ def main() -> None:
 
     (EXAMPLES / "README.md").write_text(
         "# Welvet book examples\n\n"
-        "One `main.go` per chapter (62 total).\n\n"
+        f"One `main.go` per chapter ({len(chs)} total).\n\n"
         "```bash\n"
         "cd welvet/examples/01-welvet\n"
         "source ../env.sh   # shared GOCACHE — required for webgpu/CGO examples\n"

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>51. stub/accel — NPU/Metal/QNN — Welvet</title>
+<link rel="stylesheet" href="../assets/book.css"/>
+</head>
+<body>
+<a class="skip" href="#main">Skip</a>
+<div class="shell">
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.76</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<div class="nav-group"><h2>I · Orientation</h2>
+<a href="01-welvet.html">1. What Welvet is</a>
+<a href="02-tree.html">2. Repository map</a>
+</div>
+<div class="nav-group"><h2>II · Foundation</h2>
+<a href="03-core.html">3. core</a>
+<a href="04-weights.html">4. weights</a>
+<a href="05-quant.html">5. quant</a>
+<a href="06-simd.html">6. simd</a>
+<a href="07-webgpu.html">7. webgpu</a>
+<a href="08-tiling.html">8. tiling</a>
+<a href="09-architecture.html">9. architecture</a>
+<a href="10-fusedgpu.html">10. fusedgpu</a>
+</div>
+<div class="nav-group"><h2>III · Layers</h2>
+<a href="11-dense.html">11. layers/dense</a>
+<a href="12-mha.html">12. layers/mha</a>
+<a href="13-swiglu.html">13. layers/swiglu</a>
+<a href="14-rmsnorm.html">14. layers/rmsnorm</a>
+<a href="15-layernorm.html">15. layers/layernorm</a>
+<a href="16-embedding.html">16. layers/embedding</a>
+<a href="17-softmax.html">17. layers/softmax</a>
+<a href="18-sequential.html">18. layers/sequential</a>
+<a href="19-residual.html">19. layers/residual</a>
+<a href="20-cnn.html">20. layers/cnn1</a>
+<a href="21-rnn-lstm.html">21. layers/rnn</a>
+<a href="22-seqmix.html">22. layers/seqmix</a>
+<a href="23-gdn.html">23. layers/gdn</a>
+<a href="24-mamba.html">24. layers/mamba</a>
+<a href="25-convt.html">25. layers/convt1</a>
+<a href="26-kmeans.html">26. layers/kmeans</a>
+<a href="27-parallel.html">27. layers/parallel</a>
+<a href="28-metacognition.html">28. layers/metacognition</a>
+</div>
+<div class="nav-group"><h2>IV · Runtime</h2>
+<a href="29-forward.html">29. runtime/forward</a>
+<a href="30-backward.html">30. runtime/backward</a>
+<a href="31-training.html">31. runtime/training</a>
+<a href="32-step.html">32. runtime/step</a>
+</div>
+<div class="nav-group"><h2>V · Systems</h2>
+<a href="33-dna.html">33. systems/dna</a>
+<a href="34-evolution.html">34. systems/evolution</a>
+<a href="35-tween.html">35. systems/tween</a>
+<a href="36-tanhi.html">36. systems/tanhi</a>
+<a href="37-telemetry.html">37. systems/telemetry</a>
+</div>
+<div class="nav-group"><h2>VI · Model IO</h2>
+<a href="38-entity.html">38. model/entity</a>
+<a href="39-hf.html">39. model/hf</a>
+<a href="40-tokenizer.html">40. model/tokenizer</a>
+<a href="41-sampling.html">41. model/sampling</a>
+<a href="42-transformer.html">42. model/transformer</a>
+</div>
+<div class="nav-group"><h2>VII · Apps</h2>
+<a href="43-apps.html">43. apps</a>
+<a href="44-octo.html">44. Octo</a>
+</div>
+<div class="nav-group"><h2>VIII · Stubs</h2>
+<a href="45-stub-seed.html">45. stub/seed</a>
+<a href="46-stub-serialization.html">46. stub/serialization</a>
+<a href="47-stub-memory.html">47. stub/memory</a>
+<a href="48-stub-donate.html">48. stub/donate</a>
+<a href="49-stub-fountain.html">49. stub/fountain</a>
+<a href="50-stub-hardware.html">50. stub/hardware</a>
+<a href="51-stub-accel.html">51. stub/accel</a>
+<a href="52-stub-clustering.html">52. stub/clustering</a>
+<a href="53-stub-ensemble.html">53. stub/ensemble</a>
+<a href="54-stub-evaluation.html">54. stub/evaluation</a>
+<a href="55-stub-grafting.html">55. stub/grafting</a>
+<a href="56-stub-grouping.html">56. stub/grouping</a>
+<a href="57-stub-introspection.html">57. stub/introspection</a>
+<a href="58-stub-observer.html">58. stub/observer</a>
+<a href="59-stub-pipeline.html">59. stub/pipeline</a>
+<a href="60-stub-templates.html">60. stub/templates</a>
+<a href="61-stub-universal.html">61. stub/universal</a>
+</div>
+<div class="nav-group"><h2>IX · Validate</h2>
+<a href="62-w2a.html">62. w2a</a>
+<a href="63-validation.html">63. Validation report</a>
+<a href="64-scorecard.html">64. Scorecard → v1.0</a>
+</div>
+</aside>
+<div class="main">
+<div class="topbar">
+<button class="menu-btn" id="menu-btn" type="button">Menu</button>
+<div class="meta">VIII · Stubs</div>
+<nav class="pager"><a href="50-stub-hardware.html">← 50. stub/hardware</a><a href="52-stub-clustering.html">52. stub/clustering →</a></nav>
+</div>
+<article class="content" id="main">
+
+<p class="chapter-kicker">Chapter 51</p>
+<h1>stub/accel — NPU/Metal/QNN</h1>
+<p class="pill-row"><span class="pill">github.com/openfluke/welvet/stub/accel</span><span class="status missing">⬜</span></p>
+<hr class="rule"/>
+<h2>Why it exists</h2>
+<p>Vendor accelerators (Intel NPU, Qualcomm QNN, Apple Metal) will plug beside WebGPU — not replace it.</p>
+<h2>What it is</h2>
+<p>Package is doc.go only today (⬜). No symbols yet; reserved for plugin loader design.</p>
+
+
+<section class="examples" id="examples">
+<h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/51-stub-accel/main.go">examples/51-stub-accel/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/51-stub-accel &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
+<pre><code>package main
+
+// import "github.com/openfluke/welvet/stub/accel"
+// No exported API yet — see package doc.go for intent.
+
+func main() {}</code></pre>
+<h3>Output</h3>
+<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
+
+</section>
+
+
+<nav class="pager" style="margin-top:2rem"><a href="50-stub-hardware.html">← 50. stub/hardware</a><a href="52-stub-clustering.html">52. stub/clustering →</a></nav>
+</article>
+</div></div>
+<script src="../assets/book.js"></script>
+</body></html>
