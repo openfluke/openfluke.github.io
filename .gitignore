@@ -8,3 +8,7 @@ welvet/.cache/
 # Go example build cache
 welvet/examples/.cache/
 welvet/examples/bin/
+
+# Local screenshot / headless-chrome scratch
+.chrome-shot/
+.shot-*.png

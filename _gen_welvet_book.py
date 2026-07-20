@@ -1981,36 +1981,68 @@ def load_manifest() -> dict[str, dict]:
     return {}
 
 
-def title_page(version: str, pdf_name: str) -> str:
+def title_page(version: str, pdf_name: str, chs: list[Chapter]) -> str:
     pdf_url = f"{RELEASES_URL}/latest/download/{pdf_name}"
     pdf_btn = (
         f'<a class="btn btn-ghost" href="{esc(pdf_url)}">Download PDF</a>'
         f'<a class="btn btn-ghost" href="{RELEASES_URL}">All releases</a>'
     )
+    part_pills = []
+    for part, slugs in PARTS_NAV:
+        label = part.split("·")[-1].strip()
+        first = slugs[0] if slugs else ""
+        href = f"chapters/{first}.html" if first else "toc.html"
+        part_pills.append(f'<a class="pill" href="{href}">{esc(label)}</a>')
+    parts_html = "".join(part_pills)
+    stats = [
+        (str(len(chs)), "Chapters"),
+        ("34", "Dtypes"),
+        ("20", "Quant formats"),
+        ("3", "Backends"),
+    ]
+    stats_html = "".join(
+        f'<div class="stat"><div class="stat-num">{esc(n)}</div>'
+        f'<div class="stat-label">{esc(lbl)}</div></div>'
+        for n, lbl in stats
+    )
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Welvet — Feature Book</title>
+<title>Welvet · Feature Book</title>
+<meta name="description" content="Welvet feature book: why and what for every engine package, with runnable Go examples."/>
 <link rel="stylesheet" href="assets/book.css"/>
 </head>
 <body>
 <main class="title-page">
-<div class="title-card">
+<div class="title-card landing">
+<div class="tc-main">
 {title_logo_html()}
-<p class="eyebrow">OpenFluke · github.com/openfluke/welvet</p>
-<h1>Welvet</h1>
-<p class="subtitle">Feature book — why and what for every engine package, with runnable Go examples. Built from the Welvet tree, not a loom paste.</p>
+<span class="title-badge"><span class="dot"></span>OpenFluke feature book</span>
+<h1><span class="grad">Welvet</span></h1>
+<p class="subtitle">Why and what for every engine package, with runnable Go examples. Built from the Welvet tree, not a loom paste.</p>
+<div class="cta-row">
+<a class="btn btn-primary" href="toc.html">Read the contents</a>
+<a class="btn btn-ghost" href="chapters/01-welvet.html">Start reading</a>
+<a class="btn btn-ghost" href="https://github.com/openfluke/welvet">Source</a>
+{pdf_btn}
+</div>
+</div>
+<div class="tc-side">
+<div class="title-stats">
+{stats_html}
+</div>
 <div class="title-meta">
 <div><strong>Version</strong> {esc(version)} · scorecard toward v1.0</div>
 <div><strong>Module</strong> github.com/openfluke/welvet</div>
 <div><strong>Harness</strong> github.com/openfluke/w2a</div>
 </div>
-<div class="cta-row">
-<a class="btn btn-primary" href="toc.html">Contents</a>
-<a class="btn btn-ghost" href="chapters/01-welvet.html">Start</a>
-<a class="btn btn-ghost" href="https://github.com/openfluke/welvet">Source</a>
-{pdf_btn}
+<div class="title-parts">
+<p class="label">What's inside</p>
+<div class="pill-row">
+{parts_html}
+</div>
+</div>
 </div>
 </div>
 </main>
@@ -2345,7 +2377,7 @@ def main() -> None:
         print(f"PDF: {pdf_path} ({mb:.1f} MB) · welvet {version} ({earned}/100)")
         print(f"Upload: gh release upload {version} {pdf_path}")
 
-    (BOOK / "index.html").write_text(title_page(version, pdf_name), encoding="utf-8")
+    (BOOK / "index.html").write_text(title_page(version, pdf_name, chs), encoding="utf-8")
     (BOOK / "toc.html").write_text(toc_page(chs, version), encoding="utf-8")
     (ROOT / "index.html").write_text(
         "<!DOCTYPE html><meta charset=utf-8><meta http-equiv=refresh content='0;url=welvet/'>"
