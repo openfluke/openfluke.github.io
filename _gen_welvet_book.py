@@ -2,12 +2,23 @@
 """Generate Welvet feature book (HTML) from engine inventory — not loom paste."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+import argparse
+import json
+import os
+import subprocess
+import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 BOOK = ROOT / "welvet"
 CHDIR = BOOK / "chapters"
+EXAMPLES = BOOK / "examples"
+WELVET_ROOT = ROOT.parent  # …/welvet engine
+CHAOSGLUE_ROOT = ROOT.parent.parent
+WEBGPU_ROOT = CHAOSGLUE_ROOT / "webgpu"
+SENTENCEPIECE_ROOT = WELVET_ROOT / "third_party" / "go-sentencepiece"
+MANIFEST = EXAMPLES / "_manifest.json"
 
 
 @dataclass
@@ -24,6 +35,7 @@ class Chapter:
     body_extra: str = ""
     example: str = ""
     run: str = ""
+    runnable: bool = True  # False → no main.go / go run
 
 
 def esc(s: str) -> str:
@@ -1223,15 +1235,13 @@ func main() {
         example="""
 package main
 
-// Apps import the engine — the engine never imports apps.
-import (
-	_ "github.com/openfluke/welvet/model/transformer"
-)
+import "fmt"
 
 func main() {
-	// Prefer:
-	//   cd apps/octo && go run .
-	//   // or flux2 / mosstts entrypoints once configured
+	fmt.Println("Apps import the engine — the engine never imports apps.")
+	fmt.Println("  cd apps/octo && go run .")
+	fmt.Println("  cd apps/flux2 && go run .")
+	fmt.Println("  cd apps/mosstts && go run .")
 }
 """,
         run="cd apps/octo && go run .   # when module wired",
@@ -1562,28 +1572,17 @@ func main() {
         why="Engine packages must stay free of tests. w2a owns timed 34×20×3 matrices, gap census, and honesty stamps.",
         what="Interactive go run ., suites under suites/*, go test ./tests/<layer>. StampBackendNote / AffinePackable prevent fake ✅.",
         example="""
-package dense_test
+package main
 
-import (
-	"testing"
+import "fmt"
 
-	"github.com/openfluke/w2a/suites"
-	denssuite "github.com/openfluke/w2a/suites/dense"
-)
-
-func TestDenseSuite(t *testing.T) {
-	restore, err := suites.BeginLog()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer func() { suites.PrintReport(); restore() }()
-	for _, c := range denssuite.Cases() {
-		t.Run(c.Name, func(t *testing.T) {
-			if err := c.Run(); err != nil {
-				t.Fatal(err)
-			}
-		})
-	}
+func main() {
+	fmt.Println("w2a is a separate module — engine packages never contain tests.")
+	fmt.Println("")
+	fmt.Println("  cd w2a")
+	fmt.Println("  go run .                    # interactive menu")
+	fmt.Println("  go test ./tests/dense -v    # timed FormatNone matrix")
+	fmt.Println("  go test ./tests/mha -v      # MHA coverage")
 }
 """,
         run="cd w2a && go run .\ncd w2a && go test ./tests/dense -v && go test ./tests/mha -v",
@@ -1671,12 +1670,53 @@ def nav_html(by_slug: dict[str, Chapter], prefix: str) -> str:
     return "\n".join(parts)
 
 
-def render_chapter(c: Chapter, prev: Chapter | None, next_: Chapter | None, by_slug: dict[str, Chapter]) -> str:
+def render_chapter(
+    c: Chapter,
+    prev: Chapter | None,
+    next_: Chapter | None,
+    by_slug: dict[str, Chapter],
+    run_info: dict | None,
+) -> str:
     nav = nav_html(by_slug, "../")
     prev_a = f'<a href="../toc.html">← Contents</a>' if prev is None else f'<a href="{prev.slug}.html">← {esc(prev.num)}. {esc(prev.title[:40])}</a>'
     next_a = f'<a href="../toc.html">Contents →</a>' if next_ is None else f'<a href="{next_.slug}.html">{esc(next_.num)}. {esc(next_.title[:40])} →</a>'
     pkg = f'<p class="pill-row"><span class="pill">{esc(c.pkg)}</span>{status_badge(c.status, c.status_label)}</p>' if c.pkg else f'<p>{status_badge(c.status, c.status_label)}</p>'
-    run = f"<h3>Validate</h3>{code(c.run)}" if c.run else ""
+    validate = f"<h3>Validate (harness)</h3>{code(c.run)}" if c.run else ""
+
+    example_section = ""
+    if c.example.strip() and c.runnable:
+        rel_go = f"../examples/{c.slug}/main.go"
+        run_cmd = f"cd welvet/examples/{c.slug} && source ../env.sh && go run ."
+        output_block = ""
+        if run_info:
+            exit_code = run_info.get("exit_code", 1)
+            out_cls = "example-output" if exit_code == 0 else "example-output fail"
+            combined = run_info.get("combined", "").strip() or "(no output)"
+            output_block = (
+                f'<p class="example-meta">exit {exit_code} · '
+                f'last run via <code>go run .</code></p>'
+                f'<pre class="{out_cls}"><code>{esc(combined)}</code></pre>'
+            )
+        example_section = f"""
+<section class="examples" id="examples">
+<h2>Go example</h2>
+<p><a class="go-file-link" href="{rel_go}">examples/{c.slug}/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>{esc(run_cmd)}</code></div>
+{code(c.example)}
+<h3>Output</h3>
+{output_block if output_block else '<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>'}
+{validate}
+</section>
+"""
+    elif c.example.strip():
+        example_section = f"""
+<section class="examples" id="examples">
+<h2>Go example</h2>
+{code(c.example)}
+{validate}
+</section>
+"""
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1704,17 +1744,158 @@ def render_chapter(c: Chapter, prev: Chapter | None, next_: Chapter | None, by_s
 <h2>What it is</h2>
 <p>{c.what}</p>
 {c.body_extra}
-<section class="examples" id="examples">
-<h2>Go example</h2>
-{code(c.example)}
-{run}
-</section>
+{example_section}
 <nav class="pager" style="margin-top:2rem">{prev_a}{next_a}</nav>
 </article>
 </div></div>
 <script src="../assets/book.js"></script>
 </body></html>
 """
+
+
+def write_env_sh() -> None:
+    cache = EXAMPLES / ".cache"
+    sh = f"""#!/usr/bin/env bash
+# Shared Go build cache for book examples (avoids /tmp quota exhaustion with webgpu CGO).
+_root="$(cd "$(dirname "${{BASH_SOURCE[0]}}")" && pwd)"
+export GOCACHE="${{GOCACHE:-$_root/.cache/gocache}}"
+export GOTMPDIR="${{GOTMPDIR:-$_root/.cache/gotmp}}"
+export TMPDIR="${{TMPDIR:-$_root/.cache/tmp}}"
+mkdir -p "$GOCACHE" "$GOTMPDIR" "$TMPDIR"
+"""
+    p = EXAMPLES / "env.sh"
+    p.write_text(sh, encoding="utf-8")
+    p.chmod(0o755)
+
+
+def write_examples_go_mod() -> None:
+    EXAMPLES.mkdir(parents=True, exist_ok=True)
+
+    def rel(p: Path) -> str:
+        return os.path.relpath(p, EXAMPLES)
+
+    go_mod = f"""module github.com/openfluke/welvet-book-examples
+
+go 1.22.5
+
+require github.com/openfluke/welvet v0.0.0
+
+replace github.com/openfluke/welvet => {rel(WELVET_ROOT)}
+
+replace github.com/openfluke/webgpu => {rel(WEBGPU_ROOT)}
+
+replace github.com/eliben/go-sentencepiece => {rel(SENTENCEPIECE_ROOT)}
+"""
+    (EXAMPLES / "go.mod").write_text(go_mod, encoding="utf-8")
+    write_env_sh()
+
+
+def write_example_files(chs: list[Chapter]) -> None:
+    write_examples_go_mod()
+    for c in chs:
+        if not c.runnable or not c.example.strip():
+            continue
+        if "package main" not in c.example:
+            continue
+        d = EXAMPLES / c.slug
+        d.mkdir(parents=True, exist_ok=True)
+        (d / "main.go").write_text(c.example.strip() + "\n", encoding="utf-8")
+
+
+def run_all_examples(chs: list[Chapter], timeout: float = 90.0) -> dict[str, dict]:
+    """Run each example; return slug → {exit_code, stdout, stderr, combined}."""
+    write_example_files(chs)
+    cache = EXAMPLES / ".cache"
+    bin_dir = cache / "bin"
+    cache.mkdir(parents=True, exist_ok=True)
+    bin_dir.mkdir(parents=True, exist_ok=True)
+    env = {
+        **os.environ,
+        "GOCACHE": str(cache / "gocache"),
+        "GOTMPDIR": str(cache / "gotmp"),
+        "TMPDIR": str(cache / "tmp"),
+    }
+    for d in (cache / "gocache", cache / "gotmp", cache / "tmp"):
+        d.mkdir(parents=True, exist_ok=True)
+
+    subprocess.run(
+        ["go", "mod", "tidy"],
+        cwd=EXAMPLES,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=env,
+    )
+    results: dict[str, dict] = {}
+    for c in chs:
+        if not c.runnable or not c.example.strip() or "package main" not in c.example:
+            continue
+        d = EXAMPLES / c.slug
+        if not (d / "main.go").is_file():
+            continue
+        print(f"  run {c.slug} …", flush=True)
+        bin_path = bin_dir / c.slug
+        try:
+            build = subprocess.run(
+                ["go", "build", "-o", str(bin_path), "."],
+                cwd=d,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+                env=env,
+            )
+            if build.returncode != 0:
+                combined = (build.stdout or "") + (build.stderr or "")
+                results[c.slug] = {
+                    "exit_code": build.returncode,
+                    "stdout": build.stdout or "",
+                    "stderr": build.stderr or "",
+                    "combined": _trim_output(combined),
+                }
+                print(f"    BUILD FAIL ({build.returncode})", flush=True)
+                continue
+            proc = subprocess.run(
+                [str(bin_path)],
+                cwd=d,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+                env=env,
+            )
+        except subprocess.TimeoutExpired:
+            results[c.slug] = {
+                "exit_code": 124,
+                "stdout": "",
+                "stderr": f"timeout after {timeout}s",
+                "combined": f"timeout after {timeout}s",
+            }
+            continue
+        combined = proc.stdout
+        if proc.stderr:
+            combined = (combined + "\n" if combined else "") + proc.stderr
+        results[c.slug] = {
+            "exit_code": proc.returncode,
+            "stdout": proc.stdout,
+            "stderr": proc.stderr,
+            "combined": _trim_output(combined.rstrip()),
+        }
+        mark = "OK" if proc.returncode == 0 else "FAIL"
+        print(f"    {mark} ({proc.returncode})", flush=True)
+    MANIFEST.write_text(json.dumps(results, indent=2) + "\n", encoding="utf-8")
+    return results
+
+
+def _trim_output(text: str, max_lines: int = 40) -> str:
+    lines = text.splitlines()
+    if len(lines) <= max_lines:
+        return text.strip()
+    return "\n".join(lines[:5] + ["…"] + lines[-max_lines + 6:]).strip()
+
+
+def load_manifest() -> dict[str, dict]:
+    if MANIFEST.is_file():
+        return json.loads(MANIFEST.read_text(encoding="utf-8"))
+    return {}
 
 
 def title_page() -> str:
@@ -1812,24 +1993,59 @@ def toc_page(chs: list[Chapter]) -> str:
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser(description="Generate Welvet HTML book + Go examples")
+    ap.add_argument("--run", action="store_true", help="go run every example and embed output in HTML")
+    ap.add_argument("--html-only", action="store_true", help="skip go run even if manifest missing")
+    args = ap.parse_args()
+
     CHDIR.mkdir(parents=True, exist_ok=True)
     (BOOK / "assets").mkdir(parents=True, exist_ok=True)
-    # wipe old chapters
     for p in CHDIR.glob("*.html"):
         p.unlink()
 
     chs = chapters()
     by = {c.slug: c for c in chs}
-    # ensure PARTS_NAV covers all
     listed = {s for _, ss in PARTS_NAV for s in ss}
     missing = [c.slug for c in chs if c.slug not in listed]
     if missing:
         raise SystemExit(f"PARTS_NAV missing: {missing}")
 
+    write_example_files(chs)
+
+    (EXAMPLES / "README.md").write_text(
+        "# Welvet book examples\n\n"
+        "One `main.go` per chapter (62 total).\n\n"
+        "```bash\n"
+        "cd welvet/examples/01-welvet\n"
+        "source ../env.sh   # shared GOCACHE — required for webgpu/CGO examples\n"
+        "go run .\n"
+        "```\n\n"
+        "Regenerate HTML + capture all outputs:\n\n"
+        "```bash\n"
+        "cd openfluke.github.io && python3 _gen_welvet_book.py --run\n"
+        "```\n",
+        encoding="utf-8",
+    )
+
+    run_results: dict[str, dict] = {}
+    if args.run:
+        print("Running examples …")
+        run_results = run_all_examples(chs)
+    elif not args.html_only:
+        run_results = load_manifest()
+
+    ok = sum(1 for r in run_results.values() if r.get("exit_code") == 0)
+    fail = len(run_results) - ok
+    if run_results:
+        print(f"Examples: {ok} OK, {fail} failed (manifest → {MANIFEST})")
+
     for i, c in enumerate(chs):
         prev = chs[i - 1] if i else None
         nxt = chs[i + 1] if i + 1 < len(chs) else None
-        (CHDIR / f"{c.slug}.html").write_text(render_chapter(c, prev, nxt, by), encoding="utf-8")
+        info = run_results.get(c.slug)
+        (CHDIR / f"{c.slug}.html").write_text(
+            render_chapter(c, prev, nxt, by, info), encoding="utf-8"
+        )
 
     (BOOK / "index.html").write_text(title_page(), encoding="utf-8")
     (BOOK / "toc.html").write_text(toc_page(chs), encoding="utf-8")
@@ -1841,11 +2057,16 @@ def main() -> None:
     (ROOT / ".nojekyll").write_text("", encoding="utf-8")
     (ROOT / "README.md").write_text(
         "# openfluke.github.io\n\n"
-        "**[Welvet feature book](welvet/)** — why/what for every engine package with Go examples.\n\n"
-        "Regenerate: `python3 _gen_welvet_book.py`\n",
+        "**[Welvet feature book](welvet/)** — why/what for every engine package with runnable Go examples.\n\n"
+        "```bash\n"
+        "python3 _gen_welvet_book.py --run   # HTML + main.go + go run outputs\n"
+        "cd welvet/examples/01-welvet && source ../env.sh && go run .\n"
+        "```\n",
         encoding="utf-8",
     )
     print(f"OK: {len(chs)} chapters → {BOOK}")
+    if fail and args.run:
+        print(f"WARNING: {fail} example(s) failed — outputs still embedded in HTML", file=sys.stderr)
 
 
 if __name__ == "__main__":

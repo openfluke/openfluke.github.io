@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>Centers on Dense (K×FeatureDim); soft assignment outputs. Smoke+census.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/26-kmeans/main.go">examples/26-kmeans/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/26-kmeans &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -126,8 +129,11 @@ func main() {
 	_, y, err := kmeans.Forward(l, x)
 	fmt.Println(y.Shape, err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>[1 4] &lt;nil&gt;</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="25-convt.html">← 25. layers/convt1 · convt2 · convt3</a><a href="27-parallel.html">27. layers/parallel — MoE combine →</a></nav>
 </article>
 </div></div>

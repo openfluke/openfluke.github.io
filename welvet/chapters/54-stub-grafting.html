@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>GraftGrids, ResidualGraft, GraftToGrid — Dense branches in v0.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/54-stub-grafting/main.go">examples/54-stub-grafting/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/54-stub-grafting &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -123,8 +126,11 @@ func main() {
 	out, err := grafting.GraftGrids([]*architecture.Grid{a, b}, parallel.CombineConcat)
 	fmt.Println(out != nil, err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>false grafting: no valid Dense branches</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="53-stub-evaluation.html">← 53. stub/evaluation</a><a href="55-stub-grouping.html">55. stub/grouping →</a></nav>
 </article>
 </div></div>

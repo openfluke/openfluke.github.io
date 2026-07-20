@@ -106,22 +106,29 @@
 <h2>What it is</h2>
 <p>octo (own module): download/convert/chat. flux2: MMDiT image. mosstts: Speak/SpeakToFile pipeline.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/43-apps/main.go">examples/43-apps/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/43-apps &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
-// Apps import the engine — the engine never imports apps.
-import (
-	_ "github.com/openfluke/welvet/model/transformer"
-)
+import "fmt"
 
 func main() {
-	// Prefer:
-	//   cd apps/octo &amp;&amp; go run .
-	//   // or flux2 / mosstts entrypoints once configured
+	fmt.Println("Apps import the engine — the engine never imports apps.")
+	fmt.Println("  cd apps/octo &amp;&amp; go run .")
+	fmt.Println("  cd apps/flux2 &amp;&amp; go run .")
+	fmt.Println("  cd apps/mosstts &amp;&amp; go run .")
 }</code></pre>
-<h3>Validate</h3><pre><code>cd apps/octo &amp;&amp; go run .   # when module wired</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>Apps import the engine — the engine never imports apps.
+  cd apps/octo &amp;&amp; go run .
+  cd apps/flux2 &amp;&amp; go run .
+  cd apps/mosstts &amp;&amp; go run .</code></pre>
+<h3>Validate (harness)</h3><pre><code>cd apps/octo &amp;&amp; go run .   # when module wired</code></pre>
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="42-transformer.html">← 42. model/transformer — generate</a><a href="44-stub-seed.html">44. stub/seed →</a></nav>
 </article>
 </div></div>

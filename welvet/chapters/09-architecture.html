@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>Grid/Cell/Coord, NewGrid, BindOp, HopOrder, SetRemoteLink/ResolveHop. VolumetricNetwork is an alias for Grid.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/09-architecture/main.go">examples/09-architecture/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/09-architecture &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -127,8 +130,11 @@ func main() {
 	_ = g.SetRemoteLink(0, 0, 1, 0, 0, 0, 0, 0) // spatial feedback hop
 	fmt.Println("cells", len(g.HopOrder()))
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>cells 2</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="08-tiling.html">← 8. tiling — SC/MC &amp; workgroups</a><a href="10-fusedgpu.html">10. fusedgpu — decoder on device →</a></nav>
 </article>
 </div></div>

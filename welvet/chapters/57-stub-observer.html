@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>Observer interface; ConsoleObserver / HTTPObserver / BufferObserver; ComputeLayerStats.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/57-stub-observer/main.go">examples/57-stub-observer/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/57-stub-observer &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -120,8 +123,11 @@ func main() {
 	var obs observer.Observer = &amp;observer.ConsoleObserver{}
 	fmt.Printf("%T\n", obs)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>*observer.ConsoleObserver</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="56-stub-introspection.html">← 56. stub/introspection</a><a href="58-stub-pipeline.html">58. stub/pipeline →</a></nav>
 </article>
 </div></div>

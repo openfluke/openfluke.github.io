@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>WebGPU forward; backward host today. Same dtype×quant axes as other weighted layers.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/15-layernorm/main.go">examples/15-layernorm/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/15-layernorm &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -126,8 +129,11 @@ func main() {
 	_, y, err := layernorm.Forward(l, x)
 	fmt.Println(len(y.Data), err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>8 &lt;nil&gt;</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="14-rmsnorm.html">← 14. layers/rmsnorm</a><a href="16-embedding.html">16. layers/embedding →</a></nav>
 </article>
 </div></div>

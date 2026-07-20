@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>ConfigFromGrid, Emit/EmitSweep, DefaultUDPPort. SoulGlitch-style consumers.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/36-tanhi/main.go">examples/36-tanhi/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/36-tanhi &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -120,8 +123,11 @@ func main() {
 	cfg := tanhi.ConfigFromGrid(g)
 	tanhi.EmitSweep(cfg, "epoch-0") // non-blocking best-effort
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>(no output)</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="35-tween.html">← 35. systems/tween</a><a href="37-telemetry.html">37. systems/telemetry →</a></nav>
 </article>
 </div></div>

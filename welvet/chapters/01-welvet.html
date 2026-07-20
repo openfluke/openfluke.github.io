@@ -112,8 +112,11 @@
   4. No QAT                               → DType + Format = truth
   5. One feature → one folder
   6. v1.0 = scorecard 100/100</pre><figcaption>Non-negotiable engine rules.</figcaption></figure>
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/01-welvet/main.go">examples/01-welvet/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/01-welvet &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -140,9 +143,12 @@ func main() {
 	}
 	fmt.Println("pre", len(pre.Data), "post", len(post.Data))
 }</code></pre>
-<h3>Validate</h3><pre><code>cd welvet &amp;&amp; go build ./...
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>pre 4 post 4</code></pre>
+<h3>Validate (harness)</h3><pre><code>cd welvet &amp;&amp; go build ./...
 cd w2a &amp;&amp; go test ./tests/dense -v</code></pre>
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="../toc.html">← Contents</a><a href="02-tree.html">2. Repository map →</a></nav>
 </article>
 </div></div>

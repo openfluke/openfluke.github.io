@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>u32-LE + JSON frames; ServeTCP/Dial; model_push vs local_lm. v0 workers echo.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/47-stub-donate/main.go">examples/47-stub-donate/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/47-stub-donate &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -120,8 +123,11 @@ func main() {
 	fmt.Println("default port", donate.DefaultPort)
 	// ln, err := donate.ServeTCP(donate.ServerOptions{Addr: ":17001", Mode: donate.ServerLocalLM})
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>default port 17001</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="46-stub-memory.html">← 46. stub/memory</a><a href="48-stub-fountain.html">48. stub/fountain →</a></nav>
 </article>
 </div></div>

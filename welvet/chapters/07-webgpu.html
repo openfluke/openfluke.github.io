@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>DenseGEMV family (incl. quant/I8/resident), DenseGEMVT/DenseDW, RMSNorm, LayerNorm fwd, Softmax family, SwiGLUFuse. Available()/InitError() gate use.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/07-webgpu/main.go">examples/07-webgpu/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/07-webgpu &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -129,8 +132,11 @@ func main() {
 	)
 	fmt.Println(y, err, webgpu.AdapterName())
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>[1.5 2.5] &lt;nil&gt; NVIDIA GeForce GTX 1650 SUPER</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="06-simd.html">← 6. simd — Plan 9 kernels</a><a href="08-tiling.html">8. tiling — SC/MC &amp; workgroups →</a></nav>
 </article>
 </div></div>

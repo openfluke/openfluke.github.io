@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>cnn1/cnn2/cnn3: host im2col then Proj Dense. Full timed matrices. Tiled conv shaders still ⬜.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/20-cnn/main.go">examples/20-cnn/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/20-cnn &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -128,8 +131,11 @@ func main() {
 	_, y, err := cnn2.Forward(l, x)
 	fmt.Println(y.Shape, err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>[1 4 6 6] &lt;nil&gt;</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="19-residual.html">← 19. layers/residual</a><a href="21-rnn-lstm.html">21. layers/rnn · lstm →</a></nav>
 </article>
 </div></div>

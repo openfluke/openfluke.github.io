@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>Dense→Dense compose in one cell. Nested non-Dense children still open.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/18-sequential/main.go">examples/18-sequential/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/18-sequential &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -126,8 +129,11 @@ func main() {
 	_, y, err := sequential.Forward(l, x)
 	fmt.Println(len(y.Data), err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>16 &lt;nil&gt;</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="17-softmax.html">← 17. layers/softmax</a><a href="19-residual.html">19. layers/residual →</a></nav>
 </article>
 </div></div>

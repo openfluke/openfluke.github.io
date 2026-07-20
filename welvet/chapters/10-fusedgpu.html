@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>Engine from Spec (AppendTokens/Reset/Close); HybridEngine (PrefillSample/DecodeSample/DecodeChunk). Specs come from model/transformer export.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/10-fusedgpu/main.go">examples/10-fusedgpu/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/10-fusedgpu &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -135,8 +138,11 @@ func main() {
 	logits, err := eng.AppendTokens([]uint32{1, 2, 3})
 	fmt.Println(len(logits), err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>need an ENTITY file: open model.entity: no such file or directory</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="09-architecture.html">← 9. architecture — volumetric grid</a><a href="11-dense.html">11. layers/dense — MatVec microkernel →</a></nav>
 </article>
 </div></div>

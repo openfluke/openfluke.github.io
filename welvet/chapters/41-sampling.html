@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>ArgMax, SampleTopK, ApplyRepetitionPenalty, BanIDs, SanitizeChatReply.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/41-sampling/main.go">examples/41-sampling/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/41-sampling &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -121,8 +124,12 @@ func main() {
 	fmt.Println(sampling.ArgMax(logits))
 	fmt.Println(sampling.SampleTopK(logits, 2, 0.8, true))
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>1
+1</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="40-tokenizer.html">← 40. model/tokenizer</a><a href="42-transformer.html">42. model/transformer — generate →</a></nav>
 </article>
 </div></div>

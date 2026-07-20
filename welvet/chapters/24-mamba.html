@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>InProj → softplus(Δ) scan → OutProj. Runtime wired; smoke+census (not full timed matrix).</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/24-mamba/main.go">examples/24-mamba/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/24-mamba &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -127,8 +130,11 @@ func main() {
 	_, y, err := mamba.Forward(l, x)
 	fmt.Println(y != nil, err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>true &lt;nil&gt;</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="23-gdn.html">← 23. layers/gdn — gated delta net</a><a href="25-convt.html">25. layers/convt1 · convt2 · convt3 →</a></nav>
 </article>
 </div></div>

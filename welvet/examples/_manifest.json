@@ -1,0 +1,374 @@
+{
+  "01-welvet": {
+    "exit_code": 0,
+    "stdout": "pre 4 post 4\n",
+    "stderr": "",
+    "combined": "pre 4 post 4"
+  },
+  "02-tree": {
+    "exit_code": 0,
+    "stdout": "import github.com/openfluke/welvet/core/\u2026\nimport github.com/openfluke/welvet/weights/\u2026\nimport github.com/openfluke/welvet/quant/\u2026\nimport github.com/openfluke/welvet/simd/\u2026\nimport github.com/openfluke/welvet/webgpu/\u2026\nimport github.com/openfluke/welvet/tiling/\u2026\nimport github.com/openfluke/welvet/architecture/\u2026\nimport github.com/openfluke/welvet/fusedgpu/\u2026\nimport github.com/openfluke/welvet/layers/\u2026\nimport github.com/openfluke/welvet/runtime/\u2026\nimport github.com/openfluke/welvet/systems/\u2026\nimport github.com/openfluke/welvet/model/\u2026\n",
+    "stderr": "",
+    "combined": "import github.com/openfluke/welvet/core/\u2026\nimport github.com/openfluke/welvet/weights/\u2026\nimport github.com/openfluke/welvet/quant/\u2026\nimport github.com/openfluke/welvet/simd/\u2026\nimport github.com/openfluke/welvet/webgpu/\u2026\nimport github.com/openfluke/welvet/tiling/\u2026\nimport github.com/openfluke/welvet/architecture/\u2026\nimport github.com/openfluke/welvet/fusedgpu/\u2026\nimport github.com/openfluke/welvet/layers/\u2026\nimport github.com/openfluke/welvet/runtime/\u2026\nimport github.com/openfluke/welvet/systems/\u2026\nimport github.com/openfluke/welvet/model/\u2026"
+  },
+  "03-core": {
+    "exit_code": 0,
+    "stdout": "simd bfloat16 8\n",
+    "stderr": "",
+    "combined": "simd bfloat16 8"
+  },
+  "04-weights": {
+    "exit_code": 0,
+    "stdout": "[3 4]\n",
+    "stderr": "",
+    "combined": "[3 4]"
+  },
+  "05-quant": {
+    "exit_code": 0,
+    "stdout": "rows 2 cols 4 y [0.6857143 -1.4901161e-08]\n",
+    "stderr": "",
+    "combined": "rows 2 cols 4 y [0.6857143 -1.4901161e-08]"
+  },
+  "06-simd": {
+    "exit_code": 0,
+    "stdout": "10\n",
+    "stderr": "",
+    "combined": "10"
+  },
+  "07-webgpu": {
+    "exit_code": 0,
+    "stdout": "[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER\n",
+    "stderr": "",
+    "combined": "[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER"
+  },
+  "08-tiling": {
+    "exit_code": 0,
+    "stdout": "32 true 16\n",
+    "stderr": "",
+    "combined": "32 true 16"
+  },
+  "09-architecture": {
+    "exit_code": 0,
+    "stdout": "cells 2\n",
+    "stderr": "",
+    "combined": "cells 2"
+  },
+  "10-fusedgpu": {
+    "exit_code": 0,
+    "stdout": "need an ENTITY file: open model.entity: no such file or directory\n",
+    "stderr": "",
+    "combined": "need an ENTITY file: open model.entity: no such file or directory"
+  },
+  "11-dense": {
+    "exit_code": 0,
+    "stdout": "8 32\n",
+    "stderr": "",
+    "combined": "8 32"
+  },
+  "12-mha": {
+    "exit_code": 0,
+    "stdout": "true 256 <nil>\n",
+    "stderr": "",
+    "combined": "true 256 <nil>"
+  },
+  "13-swiglu": {
+    "exit_code": 0,
+    "stdout": "64 <nil>\n",
+    "stderr": "",
+    "combined": "64 <nil>"
+  },
+  "14-rmsnorm": {
+    "exit_code": 0,
+    "stdout": "[0 0 0 0] <nil>\n",
+    "stderr": "",
+    "combined": "[0 0 0 0] <nil>"
+  },
+  "15-layernorm": {
+    "exit_code": 0,
+    "stdout": "8 <nil>\n",
+    "stderr": "",
+    "combined": "8 <nil>"
+  },
+  "16-embedding": {
+    "exit_code": 0,
+    "stdout": "[1 4 16] <nil>\n",
+    "stderr": "",
+    "combined": "[1 4 16] <nil>"
+  },
+  "17-softmax": {
+    "exit_code": 0,
+    "stdout": "[0.6380664 0.23473153 0.09543471 0.031767454] <nil>\n",
+    "stderr": "",
+    "combined": "[0.6380664 0.23473153 0.09543471 0.031767454] <nil>"
+  },
+  "18-sequential": {
+    "exit_code": 0,
+    "stdout": "16 <nil>\n",
+    "stderr": "",
+    "combined": "16 <nil>"
+  },
+  "19-residual": {
+    "exit_code": 0,
+    "stdout": "16 <nil>\n",
+    "stderr": "",
+    "combined": "16 <nil>"
+  },
+  "20-cnn": {
+    "exit_code": 0,
+    "stdout": "[1 4 6 6] <nil>\n",
+    "stderr": "",
+    "combined": "[1 4 6 6] <nil>"
+  },
+  "21-rnn-lstm": {
+    "exit_code": 0,
+    "stdout": "64 64\n",
+    "stderr": "",
+    "combined": "64 64"
+  },
+  "22-seqmix": {
+    "exit_code": 0,
+    "stdout": "attention\n",
+    "stderr": "",
+    "combined": "attention"
+  },
+  "23-gdn": {
+    "exit_code": 0,
+    "stdout": "<nil>\n",
+    "stderr": "",
+    "combined": "<nil>"
+  },
+  "24-mamba": {
+    "exit_code": 0,
+    "stdout": "true <nil>\n",
+    "stderr": "",
+    "combined": "true <nil>"
+  },
+  "25-convt": {
+    "exit_code": 0,
+    "stdout": "[1 2 17] <nil>\n",
+    "stderr": "",
+    "combined": "[1 2 17] <nil>"
+  },
+  "26-kmeans": {
+    "exit_code": 0,
+    "stdout": "[1 4] <nil>\n",
+    "stderr": "",
+    "combined": "[1 4] <nil>"
+  },
+  "27-parallel": {
+    "exit_code": 0,
+    "stdout": "[1 32] <nil>\n",
+    "stderr": "",
+    "combined": "[1 32] <nil>"
+  },
+  "28-metacognition": {
+    "exit_code": 0,
+    "stdout": "16 <nil>\n",
+    "stderr": "",
+    "combined": "16 <nil>"
+  },
+  "29-forward": {
+    "exit_code": 0,
+    "stdout": "true <nil>\n",
+    "stderr": "",
+    "combined": "true <nil>"
+  },
+  "30-backward": {
+    "exit_code": 0,
+    "stdout": "true <nil>\n",
+    "stderr": "",
+    "combined": "true <nil>"
+  },
+  "31-training": {
+    "exit_code": 0,
+    "stdout": "0 <nil>\n",
+    "stderr": "",
+    "combined": "0 <nil>"
+  },
+  "32-step": {
+    "exit_code": 0,
+    "stdout": "<nil>\n",
+    "stderr": "",
+    "combined": "<nil>"
+  },
+  "33-dna": {
+    "exit_code": 0,
+    "stdout": "{1 map[0,0,0,0:1] []}\n",
+    "stderr": "",
+    "combined": "{1 map[0,0,0,0:1] []}"
+  },
+  "34-evolution": {
+    "exit_code": 0,
+    "stdout": "<nil>\n",
+    "stderr": "",
+    "combined": "<nil>"
+  },
+  "35-tween": {
+    "exit_code": 0,
+    "stdout": "forward: no op at {0 0 0 0} (type Dense)\n",
+    "stderr": "",
+    "combined": "forward: no op at {0 0 0 0} (type Dense)"
+  },
+  "36-tanhi": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "combined": ""
+  },
+  "37-telemetry": {
+    "exit_code": 0,
+    "stdout": "{ID:demo TotalLayers:1 TotalParams:0 Layers:[{Z:0 Y:0 X:0 L:0 Type:Dense Activation:ReLU Parameters:0 InputShape:[] OutputShape:[] Branches:[] CombineMode:}]}\n",
+    "stderr": "",
+    "combined": "{ID:demo TotalLayers:1 TotalParams:0 Layers:[{Z:0 Y:0 X:0 L:0 Type:Dense Activation:ReLU Parameters:0 InputShape:[] OutputShape:[] Branches:[] CombineMode:}]}"
+  },
+  "38-entity": {
+    "exit_code": 0,
+    "stdout": "open model.entity: no such file or directory\n",
+    "stderr": "",
+    "combined": "open model.entity: no such file or directory"
+  },
+  "39-hf": {
+    "exit_code": 0,
+    "stdout": "hf: config.json: stat /path/to/hf-snapshot/config.json: no such file or directory\n",
+    "stderr": "",
+    "combined": "hf: config.json: stat /path/to/hf-snapshot/config.json: no such file or directory"
+  },
+  "40-tokenizer": {
+    "exit_code": 0,
+    "stdout": "failed to read tokenizer file: open tokenizer.json: no such file or directory\n",
+    "stderr": "",
+    "combined": "failed to read tokenizer file: open tokenizer.json: no such file or directory"
+  },
+  "41-sampling": {
+    "exit_code": 0,
+    "stdout": "1\n1\n",
+    "stderr": "",
+    "combined": "1\n1"
+  },
+  "42-transformer": {
+    "exit_code": 0,
+    "stdout": "open model.entity: no such file or directory\n",
+    "stderr": "",
+    "combined": "open model.entity: no such file or directory"
+  },
+  "43-apps": {
+    "exit_code": 0,
+    "stdout": "Apps import the engine \u2014 the engine never imports apps.\n  cd apps/octo && go run .\n  cd apps/flux2 && go run .\n  cd apps/mosstts && go run .\n",
+    "stderr": "",
+    "combined": "Apps import the engine \u2014 the engine never imports apps.\n  cd apps/octo && go run .\n  cd apps/flux2 && go run .\n  cd apps/mosstts && go run ."
+  },
+  "44-stub-seed": {
+    "exit_code": 0,
+    "stdout": "0.4118750632366808\n",
+    "stderr": "",
+    "combined": "0.4118750632366808"
+  },
+  "45-stub-serialization": {
+    "exit_code": 0,
+    "stdout": "101 <nil>\n",
+    "stderr": "",
+    "combined": "101 <nil>"
+  },
+  "46-stub-memory": {
+    "exit_code": 0,
+    "stdout": "{HostWeightsMB:0 GPUWeightsMB:0 GPUKVMB:0}\n",
+    "stderr": "",
+    "combined": "{HostWeightsMB:0 GPUWeightsMB:0 GPUKVMB:0}"
+  },
+  "47-stub-donate": {
+    "exit_code": 0,
+    "stdout": "default port 17001\n",
+    "stderr": "",
+    "combined": "default port 17001"
+  },
+  "48-stub-fountain": {
+    "exit_code": 0,
+    "stdout": "*fountain.LTEncoder <nil>\n",
+    "stderr": "",
+    "combined": "*fountain.LTEncoder <nil>"
+  },
+  "49-stub-hardware": {
+    "exit_code": 0,
+    "stdout": "{Model:Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz Logical:12 GOMAXPROCS:12}\nOS: linux | CPU: Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz (12) | RAM: 31.12 GB | GPU: Unknown GPU (0.0 GB)\n",
+    "stderr": "",
+    "combined": "{Model:Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz Logical:12 GOMAXPROCS:12}\nOS: linux | CPU: Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz (12) | RAM: 31.12 GB | GPU: Unknown GPU (0.0 GB)"
+  },
+  "50-stub-accel": {
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "combined": ""
+  },
+  "51-stub-clustering": {
+    "exit_code": 0,
+    "stdout": "2 [0 1]\n",
+    "stderr": "",
+    "combined": "2 [0 1]"
+  },
+  "52-stub-ensemble": {
+    "exit_code": 0,
+    "stdout": "[0 1 1]\n",
+    "stderr": "",
+    "combined": "[0 1 1]"
+  },
+  "53-stub-evaluation": {
+    "exit_code": 0,
+    "stdout": "<nil> evaluation: length mismatch inputs=1 expected=4\n",
+    "stderr": "",
+    "combined": "<nil> evaluation: length mismatch inputs=1 expected=4"
+  },
+  "54-stub-grafting": {
+    "exit_code": 0,
+    "stdout": "false grafting: no valid Dense branches\n",
+    "stderr": "",
+    "combined": "false grafting: no valid Dense branches"
+  },
+  "55-stub-grouping": {
+    "exit_code": 0,
+    "stdout": "true {MultiHeadAttention 64 4}\n",
+    "stderr": "",
+    "combined": "true {MultiHeadAttention 64 4}"
+  },
+  "56-stub-introspection": {
+    "exit_code": 0,
+    "stdout": "9 <nil>\n",
+    "stderr": "",
+    "combined": "9 <nil>"
+  },
+  "57-stub-observer": {
+    "exit_code": 0,
+    "stdout": "*observer.ConsoleObserver\n",
+    "stderr": "",
+    "combined": "*observer.ConsoleObserver"
+  },
+  "58-stub-pipeline": {
+    "exit_code": 0,
+    "stdout": "{PipelineTicks:0 SubLayerOps:0 MaxActiveJobs:0 MaxBlockSpread:0 MaxDistinctBlocks:0 MaxPendingTokens:0 StallFallback:false TokenDoneTick:[]}\n",
+    "stderr": "",
+    "combined": "{PipelineTicks:0 SubLayerOps:0 MaxActiveJobs:0 MaxBlockSpread:0 MaxDistinctBlocks:0 MaxPendingTokens:0 StallFallback:false TokenDoneTick:[]}"
+  },
+  "59-stub-templates": {
+    "exit_code": 0,
+    "stdout": "<|im_start|>system\nYou are helpful.\n<|im_start|>user\nSay hi\n<|im_start|>assistant\n\n",
+    "stderr": "",
+    "combined": "<|im_start|>system\nYou are helpful.\n<|im_start|>user\nSay hi\n<|im_start|>assistant"
+  },
+  "60-stub-universal": {
+    "exit_code": 0,
+    "stdout": "false universal: \"/path/to/snapshot\": open /path/to/snapshot: no such file or directory\n",
+    "stderr": "",
+    "combined": "false universal: \"/path/to/snapshot\": open /path/to/snapshot: no such file or directory"
+  },
+  "61-w2a": {
+    "exit_code": 0,
+    "stdout": "w2a is a separate module \u2014 engine packages never contain tests.\n\n  cd w2a\n  go run .                    # interactive menu\n  go test ./tests/dense -v    # timed FormatNone matrix\n  go test ./tests/mha -v      # MHA coverage\n",
+    "stderr": "",
+    "combined": "w2a is a separate module \u2014 engine packages never contain tests.\n\n  cd w2a\n  go run .                    # interactive menu\n  go test ./tests/dense -v    # timed FormatNone matrix\n  go test ./tests/mha -v      # MHA coverage"
+  },
+  "62-scorecard": {
+    "exit_code": 0,
+    "stdout": "v0.76\n",
+    "stderr": "",
+    "combined": "v0.76"
+  }
+}

@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>ExtractDNA, CompareNetworks, CosineSimilarity, FlattenOp / CollectStores across dtype×quant.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/33-dna/main.go">examples/33-dna/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/33-dna &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -126,8 +129,11 @@ func main() {
 	a := dna.ExtractDNA(g)
 	fmt.Println(dna.CompareNetworks(a, a))
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>{1 map[0,0,0,0:1] []}</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="32-step.html">← 32. runtime/step — step mesh</a><a href="34-evolution.html">34. systems/evolution →</a></nav>
 </article>
 </div></div>

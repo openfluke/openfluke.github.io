@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>MajorityVote, FindComplementaryMatches, PerformanceSimilarity.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/52-stub-ensemble/main.go">examples/52-stub-ensemble/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/52-stub-ensemble &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -120,8 +123,11 @@ func main() {
 	votes := [][]int{{0, 1, 1}, {0, 0, 1}, {0, 1, 0}}
 	fmt.Println(ensemble.MajorityVote(votes))
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>[0 1 1]</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="51-stub-clustering.html">← 51. stub/clustering</a><a href="53-stub-evaluation.html">53. stub/evaluation →</a></nav>
 </article>
 </div></div>

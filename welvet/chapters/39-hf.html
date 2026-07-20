@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>InspectSnapshot, DetectArchitecture, safetensors/MLX loaders, Qwen3.5 hybrid helpers.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/39-hf/main.go">examples/39-hf/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/39-hf &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -124,8 +127,11 @@ func main() {
 	}
 	fmt.Println(info)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>hf: config.json: stat /path/to/hf-snapshot/config.json: no such file or directory</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="38-entity.html">← 38. model/entity — .entity files</a><a href="40-tokenizer.html">40. model/tokenizer →</a></nav>
 </article>
 </div></div>

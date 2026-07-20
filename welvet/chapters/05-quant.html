@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>Pack / Unpack / MatVec / MatVecT for FormatNone…AffinePacked. SIMD inflate caches (EnsureFloatCache, EnsureQ4SIMDCache) exist for correct-but-not-peak paths.</p>
 <p>Families: classic Q8/Q4/Q5 · K-quants · IQ · TernaryPacked/BinaryPacked · AffinePacked.</p><p>Honesty: fused SIMD for Q4/Q8/BitNet; k/IQ/Affine SIMD often inflate-once F32Cache+DotTile (🚧).</p>
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/05-quant/main.go">examples/05-quant/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/05-quant &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -128,8 +131,11 @@ func main() {
 	}
 	fmt.Println("rows", b.Rows, "cols", b.Cols, "y", y)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>rows 2 cols 4 y [0.6857143 -1.4901161e-08]</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="04-weights.html">← 4. weights — FormatNone MatVec</a><a href="06-simd.html">6. simd — Plan 9 kernels →</a></nav>
 </article>
 </div></div>

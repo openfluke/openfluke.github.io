@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>EvaluateNetwork, MultiNetworkEvaluation, DeviationMetrics.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/53-stub-evaluation/main.go">examples/53-stub-evaluation/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/53-stub-evaluation &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -124,8 +127,11 @@ func main() {
 	rep, err := evaluation.EvaluateNetwork(g, in, []float64{0, 0, 0, 0})
 	fmt.Println(rep, err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>&lt;nil&gt; evaluation: length mismatch inputs=1 expected=4</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="52-stub-ensemble.html">← 52. stub/ensemble</a><a href="54-stub-grafting.html">54. stub/grafting →</a></nav>
 </article>
 </div></div>

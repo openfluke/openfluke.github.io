@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>Scatter upsample + Dense Proj. Smoke+census coverage today.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/25-convt/main.go">examples/25-convt/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/25-convt &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -126,8 +129,11 @@ func main() {
 	_, y, err := convt1.Forward(l, x)
 	fmt.Println(y.Shape, err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>[1 2 17] &lt;nil&gt;</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="24-mamba.html">← 24. layers/mamba — selective SSM</a><a href="26-kmeans.html">26. layers/kmeans →</a></nav>
 </article>
 </div></div>

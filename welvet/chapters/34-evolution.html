@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>SpliceDNA, NEATMutate, NewNEATPopulation, CloneGrid — dtype/quant preserved via SetFromF32.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/34-evolution/main.go">examples/34-evolution/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/34-evolution &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -127,8 +130,11 @@ func main() {
 	_, err = evolution.NEATMutate(child, evolution.DefaultNEATConfig(16))
 	fmt.Println(err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>&lt;nil&gt;</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="33-dna.html">← 33. systems/dna</a><a href="35-tween.html">35. systems/tween →</a></nav>
 </article>
 </div></div>

@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>Store holds DType + Format + Native/Packed bytes. New[T], MatVec, MatVecT, DecodeRow, SelectWire (F32/F64/I8). Dense and composite projs call this for FormatNone.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/04-weights/main.go">examples/04-weights/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/04-weights &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -129,8 +132,11 @@ func main() {
 	}
 	fmt.Println(y) // ≈ [3, 4]
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>[3 4]</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="03-core.html">← 3. core — types &amp; backends</a><a href="05-quant.html">5. quant — 20 pack formats →</a></nav>
 </article>
 </div></div>

@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>FromGrid, Footprint, InitScavenger, ReleaseTransient; WELVET_MEMORY_HISTORY=1.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/46-stub-memory/main.go">examples/46-stub-memory/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/46-stub-memory &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -122,8 +125,11 @@ func main() {
 	fp := memory.FromGrid(g)
 	fmt.Printf("%+v\n", fp)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>{HostWeightsMB:0 GPUWeightsMB:0 GPUKVMB:0}</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="45-stub-serialization.html">← 45. stub/serialization</a><a href="47-stub-donate.html">47. stub/donate →</a></nav>
 </article>
 </div></div>

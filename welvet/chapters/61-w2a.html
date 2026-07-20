@@ -106,34 +106,34 @@
 <h2>What it is</h2>
 <p>Interactive go run ., suites under suites/*, go test ./tests/<layer>. StampBackendNote / AffinePackable prevent fake ✅.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
-<pre><code>package dense_test
+<p><a class="go-file-link" href="../examples/61-w2a/main.go">examples/61-w2a/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/61-w2a &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
+<pre><code>package main
 
-import (
-	"testing"
+import "fmt"
 
-	"github.com/openfluke/w2a/suites"
-	denssuite "github.com/openfluke/w2a/suites/dense"
-)
-
-func TestDenseSuite(t *testing.T) {
-	restore, err := suites.BeginLog()
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer func() { suites.PrintReport(); restore() }()
-	for _, c := range denssuite.Cases() {
-		t.Run(c.Name, func(t *testing.T) {
-			if err := c.Run(); err != nil {
-				t.Fatal(err)
-			}
-		})
-	}
+func main() {
+	fmt.Println("w2a is a separate module — engine packages never contain tests.")
+	fmt.Println("")
+	fmt.Println("  cd w2a")
+	fmt.Println("  go run .                    # interactive menu")
+	fmt.Println("  go test ./tests/dense -v    # timed FormatNone matrix")
+	fmt.Println("  go test ./tests/mha -v      # MHA coverage")
 }</code></pre>
-<h3>Validate</h3><pre><code>cd w2a &amp;&amp; go run .
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>w2a is a separate module — engine packages never contain tests.
+
+  cd w2a
+  go run .                    # interactive menu
+  go test ./tests/dense -v    # timed FormatNone matrix
+  go test ./tests/mha -v      # MHA coverage</code></pre>
+<h3>Validate (harness)</h3><pre><code>cd w2a &amp;&amp; go run .
 cd w2a &amp;&amp; go test ./tests/dense -v &amp;&amp; go test ./tests/mha -v</code></pre>
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="60-stub-universal.html">← 60. stub/universal</a><a href="62-scorecard.html">62. Scorecard → v1.0 →</a></nav>
 </article>
 </div></div>

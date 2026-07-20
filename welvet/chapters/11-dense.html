@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>New / NewConfigured[T], Forward/Backward (dispatch on Exec.Backend), Place, ApplyGradSGD. Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM) reuse Dense children.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/11-dense/main.go">examples/11-dense/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/11-dense &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -134,8 +137,11 @@ func main() {
 	_ = dense.ApplyGradSGD(l, gW, 1e-3)
 	fmt.Println(len(gIn.Data), len(gW.Data))
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>8 32</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="10-fusedgpu.html">← 10. fusedgpu — decoder on device</a><a href="12-mha.html">12. layers/mha — attention →</a></nav>
 </article>
 </div></div>

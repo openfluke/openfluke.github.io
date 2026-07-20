@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>NewLTEncoder/Decoder, RecoverWeightBlobs, Neural/DenseFactory helpers.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/48-stub-fountain/main.go">examples/48-stub-fountain/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/48-stub-fountain &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -121,8 +124,11 @@ func main() {
 	enc, err := fountain.NewLTEncoder(src, 42)
 	fmt.Printf("%T %v\n", enc, err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>*fountain.LTEncoder &lt;nil&gt;</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="47-stub-donate.html">← 47. stub/donate</a><a href="49-stub-hardware.html">49. stub/hardware →</a></nav>
 </article>
 </div></div>

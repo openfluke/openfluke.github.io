@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>ExtractNetworkBlueprint, ExtractLayerTelemetry for introspection/UIs.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/37-telemetry/main.go">examples/37-telemetry/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/37-telemetry &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -122,8 +125,11 @@ func main() {
 	bp := telemetry.ExtractNetworkBlueprint(g, "demo")
 	fmt.Printf("%+v\n", bp)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>{ID:demo TotalLayers:1 TotalParams:0 Layers:[{Z:0 Y:0 X:0 L:0 Type:Dense Activation:ReLU Parameters:0 InputShape:[] OutputShape:[] Branches:[] CombineMode:}]}</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="36-tanhi.html">← 36. systems/tanhi — UDP HUD</a><a href="38-entity.html">38. model/entity — .entity files →</a></nav>
 </article>
 </div></div>

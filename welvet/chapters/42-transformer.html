@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>LoadEntity → Model; Generate; ApplyExec profiles; ExportFusedGPUSpec / hybrid sync.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/42-transformer/main.go">examples/42-transformer/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/42-transformer &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -137,8 +140,11 @@ func main() {
 	)
 	fmt.Println(text, err)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>open model.entity: no such file or directory</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="41-sampling.html">← 41. model/sampling</a><a href="43-apps.html">43. apps — octo · flux2 · mosstts →</a></nav>
 </article>
 </div></div>

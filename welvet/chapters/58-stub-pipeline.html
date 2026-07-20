@@ -106,8 +106,11 @@
 <h2>What it is</h2>
 <p>PipelineForwardStats, TokenTimelineSummary.</p>
 
+
 <section class="examples" id="examples">
 <h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/58-stub-pipeline/main.go">examples/58-stub-pipeline/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/58-stub-pipeline &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -120,8 +123,11 @@ func main() {
 	var s pipeline.PipelineForwardStats
 	fmt.Printf("%+v\n", s)
 }</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>{PipelineTicks:0 SubLayerOps:0 MaxActiveJobs:0 MaxBlockSpread:0 MaxDistinctBlocks:0 MaxPendingTokens:0 StallFallback:false TokenDoneTick:[]}</code></pre>
 
 </section>
+
 <nav class="pager" style="margin-top:2rem"><a href="57-stub-observer.html">← 57. stub/observer</a><a href="59-stub-templates.html">59. stub/templates →</a></nav>
 </article>
 </div></div>
