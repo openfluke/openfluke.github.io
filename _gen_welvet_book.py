@@ -1,0 +1,1852 @@
+#!/usr/bin/env python3
+"""Generate Welvet feature book (HTML) from engine inventory — not loom paste."""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+BOOK = ROOT / "welvet"
+CHDIR = BOOK / "chapters"
+
+
+@dataclass
+class Chapter:
+    slug: str
+    num: str
+    title: str
+    part: str
+    pkg: str  # import path or ""
+    status: str  # ok | partial | missing
+    status_label: str
+    why: str
+    what: str
+    body_extra: str = ""
+    example: str = ""
+    run: str = ""
+
+
+def esc(s: str) -> str:
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def code(s: str) -> str:
+    return f"<pre><code>{esc(s.strip())}</code></pre>"
+
+
+def status_badge(kind: str, label: str) -> str:
+    return f'<span class="status {kind}">{esc(label)}</span>'
+
+
+def ascii_fig(text: str, caption: str = "") -> str:
+    cap = f"<figcaption>{esc(caption)}</figcaption>" if caption else ""
+    return f'<figure class="diagram"><pre class="ascii">{esc(text.strip())}</pre>{cap}</figure>'
+
+
+# ---------------------------------------------------------------------------
+# Chapter catalog — every Welvet feature package
+# ---------------------------------------------------------------------------
+
+def chapters() -> list[Chapter]:
+    C = Chapter
+    out: list[Chapter] = []
+
+    out.append(C(
+        "01-welvet", "1", "What Welvet is", "I · Orientation",
+        "github.com/openfluke/welvet", "ok", "✅ engine",
+        why="Loom’s flat <code>poly/</code> package hit import-cycle and honesty walls "
+            "(QAT morph, silent fallbacks, god-layer). Welvet is the rewrite: one feature "
+            "per folder, storage-truth dtypes/quants, Dense as the shared MatVec microkernel, "
+            "tests only in <code>w2a</code>, apps only in <code>apps/</code>.",
+        what="An AI engine in Go: layers, 34 dtypes, 20 quant formats, and three backends "
+             "(CPU tiled · Plan 9 SIMD · WebGPU). Version tracks a 100-point scorecard "
+             "(today <strong>v0.76</strong>).",
+        body_extra=ascii_fig("""
+Rules
+  1. No tests in engine packages          → w2a/
+  2. No silent fallbacks                  → hard error
+  3. No hardcoded float32                 → Tensor[T]
+  4. No QAT                               → DType + Format = truth
+  5. One feature → one folder
+  6. v1.0 = scorecard 100/100
+""", "Non-negotiable engine rules."),
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+)
+
+func main() {
+	l, err := dense.New(8, 4, core.ActivationReLU, core.DTypeFloat32)
+	if err != nil {
+		panic(err)
+	}
+	l.Exec.Backend = core.BackendCPUTiled
+
+	x := core.NewTensor[float32](1, 8)
+	for i := range x.Data {
+		x.Data[i] = float32(i) * 0.1
+	}
+	pre, post, err := dense.Forward(l, x)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("pre", len(pre.Data), "post", len(post.Data))
+}
+""",
+        run="cd welvet && go build ./...\ncd w2a && go test ./tests/dense -v",
+    ))
+
+    out.append(C(
+        "02-tree", "2", "Repository map", "I · Orientation",
+        "", "ok", "✅ layout",
+        why="Readers need a single map of what is engine vs harness vs app vs stub.",
+        what="Top-level folders and their ownership. Engine packages never import w2a.",
+        body_extra=ascii_fig("""
+welvet/
+  core weights quant simd webgpu tiling architecture fusedgpu
+  layers/*          ← one folder per op
+  runtime/{forward,backward,training,step}
+  systems/{dna,evolution,tween,tanhi,telemetry}
+  model/{entity,hf,tokenizer,sampling,transformer}
+  apps/{octo,flux2,mosstts}
+  stub/*            ← designed surfaces, partial or empty
+  w2a/              ← harness (separate module)
+  tools/            ← eval / test tooling
+"""),
+        example="""
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	// Mental model only — list engine roots you depend on:
+	roots := []string{
+		"core", "weights", "quant", "simd", "webgpu", "tiling",
+		"architecture", "fusedgpu", "layers", "runtime", "systems", "model",
+	}
+	for _, r := range roots {
+		fmt.Println("import github.com/openfluke/welvet/" + r + "/…")
+	}
+	_ = os.Getenv // apps/stub/w2a are separate concerns
+}
+""",
+    ))
+
+    # Foundation
+    out.append(C(
+        "03-core", "3", "core — types & backends", "II · Foundation",
+        "github.com/openfluke/welvet/core", "ok", "✅",
+        why="Every polymorphic path needs one place for DType, LayerType, Activation, "
+            "Backend, Tensor[T], and slim Layer metadata — without QAT morph defaults.",
+        what="34 storage dtypes, Numeric generics, Tensor[T], ExecConfig "
+             "(BackendCPUTiled | BackendSIMD | BackendWebGPU), Activate/ActivateDeriv, "
+             "and converters for f16/bf16/fp8/fp4.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+)
+
+func main() {
+	t := core.NewTensor[float32](2, 4)
+	t.Data[0] = -1
+	t.Data[0] = core.Activate(t.Data[0], core.ActivationReLU) // 0
+
+	cfg := core.ExecConfig{
+		Backend:   core.BackendSIMD,
+		MultiCore: true,
+		TileSize:  32,
+	}
+	fmt.Println(cfg.Backend.String(), core.ParseDType("bfloat16"), t.Len())
+}
+""",
+    ))
+
+    out.append(C(
+        "04-weights", "4", "weights — FormatNone MatVec", "II · Foundation",
+        "github.com/openfluke/welvet/weights", "ok", "✅",
+        why="Unquantized matrices still need a typed store that streams MatVec without "
+            "forcing a float32 master or Morph-as-training.",
+        what="Store holds DType + Format + Native/Packed bytes. New[T], MatVec, MatVecT, "
+             "DecodeRow, SelectWire (F32/F64/I8). Dense and composite projs call this for FormatNone.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/quant"
+	"github.com/openfluke/welvet/weights"
+)
+
+func main() {
+	s, err := weights.New[float32](2, 2, []float32{1, 0, 0, 1}, core.DTypeFloat32, quant.FormatNone)
+	if err != nil {
+		panic(err)
+	}
+	y := make([]float32, 2)
+	if err := weights.MatVec(s, []float32{3, 4}, y); err != nil {
+		panic(err)
+	}
+	fmt.Println(y) // ≈ [3, 4]
+}
+""",
+    ))
+
+    out.append(C(
+        "05-quant", "5", "quant — 20 pack formats", "II · Foundation",
+        "github.com/openfluke/welvet/quant", "ok", "✅",
+        why="Inference and storage need classic Q-packs, k-quants, IQ, Ternary/Binary, and "
+            "Affine without a separate QAT training mode. Format is storage truth.",
+        what="Pack / Unpack / MatVec / MatVecT for FormatNone…AffinePacked. SIMD inflate "
+             "caches (EnsureFloatCache, EnsureQ4SIMDCache) exist for correct-but-not-peak paths.",
+        body_extra="<p>Families: classic Q8/Q4/Q5 · K-quants · IQ · TernaryPacked/BinaryPacked · AffinePacked.</p>"
+                   "<p>Honesty: fused SIMD for Q4/Q8/BitNet; k/IQ/Affine SIMD often inflate-once F32Cache+DotTile (🚧).</p>",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/quant"
+)
+
+func main() {
+	w := []float32{0.1, -0.2, 0.3, 0.4, -0.5, 0.6, 0.05, -0.15}
+	b, err := quant.Pack(quant.FormatQ4_0, w, 2, 4)
+	if err != nil {
+		panic(err)
+	}
+	y := make([]float32, 2)
+	if err := quant.MatVec(b, []float32{1, 1, 1, 1}, y); err != nil {
+		panic(err)
+	}
+	fmt.Println("rows", b.Rows, "cols", b.Cols, "y", y)
+}
+""",
+    ))
+
+    out.append(C(
+        "06-simd", "6", "simd — Plan 9 kernels", "II · Foundation",
+        "github.com/openfluke/welvet/simd", "ok", "✅",
+        why="CPU peak needs hand-written AVX2/NEON without a silent Go fallback that "
+            "pretends SIMD ran.",
+        what="amd64/arm64 .s kernels: DotTile, DotI8/U8, DotQ4_0, Saxpy, BitNet helpers, "
+             "packed f16/bf16/fp8/fp4 dots. SimdEnabled() false → BackendSIMD hard-errors.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/simd"
+)
+
+func main() {
+	if !simd.SimdEnabled() {
+		fmt.Println("SIMD not available on this arch — BackendSIMD must hard-error")
+		return
+	}
+	acc := simd.DotTile([]float32{1, 2, 3, 4}, []float32{1, 1, 1, 1}, 0, 4, 0)
+	fmt.Println(acc)
+}
+""",
+    ))
+
+    out.append(C(
+        "07-webgpu", "7", "webgpu — device GEMV & shaders", "II · Foundation",
+        "github.com/openfluke/welvet/webgpu", "ok", "✅",
+        why="GPU paths must bind a real adapter. Host “fake GPU” was banned so suites "
+            "cannot stamp WebGPU done when ALU ran on CPU.",
+        what="DenseGEMV family (incl. quant/I8/resident), DenseGEMVT/DenseDW, RMSNorm, "
+             "LayerNorm fwd, Softmax family, SwiGLUFuse. Available()/InitError() gate use.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/webgpu"
+)
+
+func main() {
+	if !webgpu.Available() {
+		fmt.Println("no adapter:", webgpu.InitError())
+		return
+	}
+	y := make([]float32, 2)
+	err := webgpu.DenseGEMV(
+		[]float32{1, 0, 0, 1},
+		[]float32{1.5, 2.5},
+		y, 1, 2, 2,
+	)
+	fmt.Println(y, err, webgpu.AdapterName())
+}
+""",
+    ))
+
+    out.append(C(
+        "08-tiling", "8", "tiling — SC/MC & workgroups", "II · Foundation",
+        "github.com/openfluke/welvet/tiling", "ok", "✅",
+        why="MatVec throughput depends on tile size and when to go multi-core vs GPU workgroups. "
+            "Centralizing caps keeps Dense and friends consistent.",
+        what="DefaultCPUTile, DefaultGPUWG, CPUTile, PreferMultiCore, GPUWorkgroupsX.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/tiling"
+)
+
+func main() {
+	tile := tiling.CPUTile(0) // default 32
+	mc := tiling.PreferMultiCore(8, 256, tile)
+	wg := tiling.GPUWorkgroupsX(1024, 0)
+	fmt.Println(tile, mc, wg)
+}
+""",
+    ))
+
+    out.append(C(
+        "09-architecture", "9", "architecture — volumetric grid", "II · Foundation",
+        "github.com/openfluke/welvet/architecture", "ok", "✅",
+        why="Networks are spatial (Depth×Rows×Cols×LayersPerCell), not only linear stacks. "
+            "Topology lives here; compute lives in layer packages.",
+        what="Grid/Cell/Coord, NewGrid, BindOp, HopOrder, SetRemoteLink/ResolveHop. "
+             "VolumetricNetwork is an alias for Grid.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 2, 1) // depth, rows, cols, layersPerCell
+	l, _ := dense.New(4, 4, core.ActivationLinear, core.DTypeFloat32)
+	if err := dense.Place(g, 0, 0, 0, 0, l); err != nil {
+		panic(err)
+	}
+	_ = g.SetRemoteLink(0, 0, 1, 0, 0, 0, 0, 0) // spatial feedback hop
+	fmt.Println("cells", len(g.HopOrder()))
+}
+""",
+    ))
+
+    out.append(C(
+        "10-fusedgpu", "10", "fusedgpu — decoder on device", "II · Foundation",
+        "github.com/openfluke/welvet/fusedgpu", "ok", "✅",
+        why="Token-by-token host round-trips kill decode. A fused engine keeps weights and "
+            "scratch resident for Q4_0 and BinaryG128 hybrid paths.",
+        what="Engine from Spec (AppendTokens/Reset/Close); HybridEngine "
+             "(PrefillSample/DecodeSample/DecodeChunk). Specs come from model/transformer export.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/fusedgpu"
+	"github.com/openfluke/welvet/model/transformer"
+)
+
+func main() {
+	m, err := transformer.LoadEntity("model.entity")
+	if err != nil {
+		fmt.Println("need an ENTITY file:", err)
+		return
+	}
+	spec, err := m.ExportFusedGPUSpec()
+	if err != nil {
+		panic(err)
+	}
+	eng, err := fusedgpu.NewFromSpec(spec)
+	if err != nil {
+		panic(err)
+	}
+	defer eng.Close()
+	logits, err := eng.AppendTokens([]uint32{1, 2, 3})
+	fmt.Println(len(logits), err)
+}
+""",
+    ))
+
+    # Layers
+    layer_specs = [
+        ("11-dense", "11", "layers/dense — MatVec microkernel",
+         "github.com/openfluke/welvet/layers/dense", "ok", "✅",
+         "Most FLOPs are W@x. One Dense stack owns FormatNone×34 and all quants × three backends "
+         "so every composite proj shares one correctness surface.",
+         "New / NewConfigured[T], Forward/Backward (dispatch on Exec.Backend), Place, ApplyGradSGD. "
+         "Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM) reuse Dense children.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/quant"
+)
+
+func main() {
+	init := make([]float32, 4*8)
+	l, err := dense.NewConfigured(8, 4, core.ActivationReLU, core.DTypeFloat32, quant.FormatNone, init)
+	if err != nil {
+		panic(err)
+	}
+	l.Exec.Backend = core.BackendCPUTiled
+	x := core.NewTensor[float32](1, 8)
+	pre, post, err := dense.Forward(l, x)
+	if err != nil {
+		panic(err)
+	}
+	gIn, gW, err := dense.Backward(l, post, x, pre)
+	_ = dense.ApplyGradSGD(l, gW, 1e-3)
+	fmt.Println(len(gIn.Data), len(gW.Data))
+}
+"""),
+        ("12-mha", "12", "layers/mha — attention",
+         "github.com/openfluke/welvet/layers/mha", "ok", "✅",
+         "Transformers need multi-head attention with masks, RoPE/ALiBi, GQA/MQA, and cross-attn — "
+         "without forking MatVec for every projection.",
+         "Q/K/V/O are Dense children. Presets: DecoderCausal, EncoderBidirectional, CrossAttention, … "
+         "Attn/RoPE ALU is host today; on-device attn shaders are still open.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/mha"
+)
+
+func main() {
+	l, err := mha.New(mha.DecoderCausal(32, 4, 4))
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 8, 32) // [batch, seq, dim]
+	pre, post, err := mha.Forward(l, x)
+	fmt.Println(pre != nil, len(post.Data), err)
+}
+"""),
+        ("13-swiglu", "13", "layers/swiglu — gated FFN",
+         "github.com/openfluke/welvet/layers/swiglu", "ok", "✅",
+         "Modern decoder FFNs are SiLU(gate)⊙up → down. Projections must share Dense’s quant/backend matrix.",
+         "Gate/Up/Down Dense children; DefaultFFN(dModel); WebGPU SiLU⊙ fuse on forward.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/swiglu"
+)
+
+func main() {
+	l, err := swiglu.New(swiglu.DefaultFFN(64))
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 64)
+	_, post, err := swiglu.Forward(l, x)
+	fmt.Println(len(post.Data), err)
+}
+"""),
+        ("14-rmsnorm", "14", "layers/rmsnorm",
+         "github.com/openfluke/welvet/layers/rmsnorm", "ok", "✅",
+         "Llama-style blocks normalize by RMS, not mean+var. Needs native fwd/bwd and WebGPU shaders.",
+         "Per-token RMS + γ on weights.Store; WebGPU fwd+bwd; SIMD DotTile stats + host scale.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/rmsnorm"
+	"github.com/openfluke/welvet/quant"
+)
+
+func main() {
+	gamma := []float32{1, 1, 1, 1}
+	l, err := rmsnorm.NewConfigured(rmsnorm.Config{Dim: 4}, core.DTypeFloat32, quant.FormatNone, gamma)
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 4)
+	_, y, err := rmsnorm.Forward(l, x)
+	fmt.Println(y.Data, err)
+}
+"""),
+        ("15-layernorm", "15", "layers/layernorm",
+         "github.com/openfluke/welvet/layers/layernorm", "ok", "✅",
+         "Classic mean+var normalization with γ/β — still required for many HF architectures.",
+         "WebGPU forward; backward host today. Same dtype×quant axes as other weighted layers.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/layernorm"
+)
+
+func main() {
+	l, err := layernorm.New(layernorm.Config{Dim: 8})
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 8)
+	_, y, err := layernorm.Forward(l, x)
+	fmt.Println(len(y.Data), err)
+}
+"""),
+        ("16-embedding", "16", "layers/embedding",
+         "github.com/openfluke/welvet/layers/embedding", "ok", "✅",
+         "Token IDs must gather rows from a table — not a Dense MatVec — with scatter grads on backward.",
+         "Config{VocabSize, EmbeddingDim, SeqLen}; table on weights.Store; host gather on SIMD/WebGPU today.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/embedding"
+)
+
+func main() {
+	l, err := embedding.New(embedding.Config{VocabSize: 32, EmbeddingDim: 16, SeqLen: 4})
+	if err != nil {
+		panic(err)
+	}
+	ids := core.NewTensor[float32](1, 4)
+	ids.Data[0], ids.Data[1] = 3, 7
+	_, y, err := embedding.Forward(l, ids)
+	fmt.Println(y.Shape, err)
+}
+"""),
+        ("17-softmax", "17", "layers/softmax",
+         "github.com/openfluke/welvet/layers/softmax", "ok", "✅",
+         "Classification heads and attention need stable softmax variants, including sparse/Gumbel/Entmax for research paths.",
+         "Weightless layer; KindStandard/Temperature/Grid/Hierarchical/Gumbel/Masked/Sparse/… "
+         "WebGPU covers std family; exotic kinds hard-error on GPU (no silent host).",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/softmax"
+)
+
+func main() {
+	l, err := softmax.New(softmax.Config{Dim: 4, Kind: softmax.KindStandard})
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 4)
+	copy(x.Data, []float32{2, 1, 0.1, -1})
+	_, y, err := softmax.Forward(l, x)
+	fmt.Println(y.Data, err)
+}
+"""),
+        ("18-sequential", "18", "layers/sequential",
+         "github.com/openfluke/welvet/layers/sequential", "ok", "✅",
+         "Some cells need an ordered Dense chain without burning grid hops.",
+         "Dense→Dense compose in one cell. Nested non-Dense children still open.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/sequential"
+)
+
+func main() {
+	l, err := sequential.New(sequential.Config{Dim: 16, Depth: 3})
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 16)
+	_, y, err := sequential.Forward(l, x)
+	fmt.Println(len(y.Data), err)
+}
+"""),
+        ("19-residual", "19", "layers/residual",
+         "github.com/openfluke/welvet/layers/residual", "ok", "✅",
+         "Skip connections stabilize deep stacks: y = F(x) + x with correct skip grads.",
+         "F is Dense Dim→Dim (Depth≥1). Heterogeneous non-Dense F still open.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/residual"
+)
+
+func main() {
+	l, err := residual.New(residual.Config{Dim: 16, Depth: 2})
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 16)
+	_, y, err := residual.Forward(l, x)
+	fmt.Println(len(y.Data), err)
+}
+"""),
+        ("20-cnn", "20", "layers/cnn1 · cnn2 · cnn3",
+         "github.com/openfluke/welvet/layers/cnn2", "ok", "✅",
+         "Conv nets must sit on the same dtype×quant×backend matrix as Dense. im2col → Dense GEMV is the intentional first cut.",
+         "cnn1/cnn2/cnn3: host im2col then Proj Dense. Full timed matrices. Tiled conv shaders still ⬜.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/cnn2"
+)
+
+func main() {
+	l, err := cnn2.New(cnn2.Config{
+		InChannels: 1, Filters: 4, Height: 8, Width: 8, Kernel: 3, Stride: 1,
+	})
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 1, 8, 8)
+	_, y, err := cnn2.Forward(l, x)
+	fmt.Println(y.Shape, err)
+}
+"""),
+        ("21-rnn-lstm", "21", "layers/rnn · lstm",
+         "github.com/openfluke/welvet/layers/lstm", "ok", "✅",
+         "Sequence models before transformers still need vanilla RNN and LSTM with BPTT on the shared MatVec stack.",
+         "IH/HH (and LSTM gates) via Dense; recurrence ALU host; device required for WebGPU path.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/lstm"
+	"github.com/openfluke/welvet/layers/rnn"
+)
+
+func main() {
+	r, _ := rnn.New(rnn.Config{InputSize: 8, HiddenSize: 16, SeqLen: 4})
+	l, _ := lstm.New(lstm.Config{InputSize: 8, HiddenSize: 16, SeqLen: 4})
+	x := core.NewTensor[float32](1, 4, 8)
+	_, yr, _ := rnn.Forward(r, x)
+	_, yl, _ := lstm.Forward(l, x)
+	fmt.Println(len(yr.Data), len(yl.Data))
+}
+"""),
+        ("22-seqmix", "22", "layers/seqmix — mixer contract",
+         "github.com/openfluke/welvet/layers/seqmix", "ok", "✅",
+         "Attention, SSM, linear attn, and conv mixers must not be accidental forks of mha. Naming the contract keeps packages honest.",
+         "KindAttention | KindSSM | KindLinearAttn | KindConvMix and Contract{Kind,DModel,MaxT}. No compute here.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/layers/seqmix"
+)
+
+func main() {
+	c := seqmix.Contract{Kind: seqmix.KindAttention, DModel: 64, MaxT: 2048}
+	fmt.Println(c.Kind.String()) // attention
+}
+"""),
+        ("23-gdn", "23", "layers/gdn — gated delta net",
+         "github.com/openfluke/welvet/layers/gdn", "partial", "🚧",
+         "Linear attention / decode-first mixers (Gated DeltaNet) need a first-class package under KindLinearAttn.",
+         "BinaryG128 projections, ForwardDecode, Reset. Grid-wide Exec still open. Smoke+census coverage.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/layers/gdn"
+)
+
+func main() {
+	l, err := gdn.New(gdn.Config{
+		HiddenSize: 64, NumKeyHeads: 4, NumValueHeads: 4,
+		KeyHeadDim: 16, ValueHeadDim: 16, ConvKernel: 4,
+	})
+	if err != nil {
+		fmt.Println("config rejected:", err)
+		return
+	}
+	l.Reset()
+	x := make([]float32, 64)
+	y := make([]float32, 64)
+	fmt.Println(l.ForwardDecode(x, y))
+}
+"""),
+        ("24-mamba", "24", "layers/mamba — selective SSM",
+         "github.com/openfluke/welvet/layers/mamba", "partial", "🚧",
+         "SSM mixers (KindSSM) are not MHA clones — they need their own selective-scan path.",
+         "InProj → softplus(Δ) scan → OutProj. Runtime wired; smoke+census (not full timed matrix).",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/mamba"
+)
+
+func main() {
+	l, err := mamba.New(mamba.Config{DModel: 32, DState: 16, Expand: 2, SeqLen: 8})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	x := core.NewTensor[float32](1, 8, 32)
+	_, y, err := mamba.Forward(l, x)
+	fmt.Println(y != nil, err)
+}
+"""),
+        ("25-convt", "25", "layers/convt1 · convt2 · convt3",
+         "github.com/openfluke/welvet/layers/convt1", "partial", "🚧",
+         "Generators and U-Nets need transposed convolution as a peer of CNN, on the same Dense proj surface.",
+         "Scatter upsample + Dense Proj. Smoke+census coverage today.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/convt1"
+)
+
+func main() {
+	l, err := convt1.New(convt1.Config{InChannels: 4, Filters: 2, SeqLen: 8, Kernel: 3, Stride: 2})
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 4, 8)
+	_, y, err := convt1.Forward(l, x)
+	fmt.Println(y.Shape, err)
+}
+"""),
+        ("26-kmeans", "26", "layers/kmeans",
+         "github.com/openfluke/welvet/layers/kmeans", "partial", "🚧",
+         "Soft clustering as a differentiable layer lets topology experiments sit inside the same train loop.",
+         "Centers on Dense (K×FeatureDim); soft assignment outputs. Smoke+census.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/kmeans"
+)
+
+func main() {
+	l, err := kmeans.New(kmeans.Config{NumClusters: 4, FeatureDim: 8})
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 8)
+	_, y, err := kmeans.Forward(l, x)
+	fmt.Println(y.Shape, err)
+}
+"""),
+        ("27-parallel", "27", "layers/parallel — MoE combine",
+         "github.com/openfluke/welvet/layers/parallel", "partial", "🚧",
+         "Mixture-of-experts and multi-path cells need concat/add/avg/filter combines over branches.",
+         "Dense branches today; filter gate mode for soft MoE. Smoke+census. Heterogeneous residual graft still open.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/parallel"
+)
+
+func main() {
+	l, err := parallel.New(parallel.Config{
+		Dim: 16, Branches: 2, OutFeat: 16, Combine: parallel.CombineConcat,
+	})
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 16)
+	_, y, err := parallel.Forward(l, x)
+	fmt.Println(y.Shape, err)
+}
+"""),
+        ("28-metacognition", "28", "layers/metacognition",
+         "github.com/openfluke/welvet/layers/metacognition", "partial", "🚧",
+         "Observed layers can apply heuristic stability rules (gate/scale/reset) without dtype morph/QAT.",
+         "Wraps Dense + DefaultStabilityRules(); Stats exposed. Smoke+census.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/metacognition"
+)
+
+func main() {
+	l, err := metacognition.New(metacognition.Config{
+		Dim: 16, Rules: metacognition.DefaultStabilityRules(),
+	})
+	if err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[float32](1, 16)
+	_, y, err := metacognition.Forward(l, x)
+	fmt.Println(len(y.Data), err)
+}
+"""),
+    ]
+    for slug, num, title, pkg, st, lab, why, what, ex in layer_specs:
+        out.append(C(slug, num, title, "III · Layers", pkg, st, lab, why, what, "", ex))
+
+    # Runtime
+    out.append(C(
+        "29-forward", "29", "runtime/forward", "IV · Runtime",
+        "github.com/openfluke/welvet/runtime/forward", "ok", "✅",
+        why="A grid of heterogeneous ops needs one walker that dispatches by concrete type and fails loudly on unknowns.",
+        what="Forward[T](grid, input) → Result tape; Cell[T] for single-cell dispatch. Covers Dense…Residual + extended wired ops.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/runtime/forward"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	l, _ := dense.New(8, 8, core.ActivationLinear, core.DTypeFloat32)
+	_ = dense.Place(g, 0, 0, 0, 0, l)
+	res, err := forward.Forward(g, core.NewTensor[float32](1, 8))
+	fmt.Println(res != nil, err)
+}
+""",
+    ))
+
+    out.append(C(
+        "30-backward", "30", "runtime/backward", "IV · Runtime",
+        "github.com/openfluke/welvet/runtime/backward", "ok", "✅",
+        why="Training needs a reverse tape over the same ops forward used — no separate graph framework.",
+        what="Backward[T](fwdResult, gradOut) walks the tape and returns per-op weight grads.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/runtime/backward"
+	"github.com/openfluke/welvet/runtime/forward"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	l, _ := dense.New(4, 4, core.ActivationLinear, core.DTypeFloat32)
+	_ = dense.Place(g, 0, 0, 0, 0, l)
+	fwd, _ := forward.Forward(g, core.NewTensor[float32](1, 4))
+	bwd, err := backward.Backward(fwd, core.NewTensor[float32](1, 4))
+	fmt.Println(bwd != nil, err)
+}
+""",
+    ))
+
+    out.append(C(
+        "31-training", "31", "runtime/training", "IV · Runtime",
+        "github.com/openfluke/welvet/runtime/training", "ok", "✅",
+        why="Suites and small nets need MSE+SGD and tween hooks without inventing an external trainer.",
+        what="MSE/MSEGrad, SGD, Step, ApplyTween/StepTween, StepMesh. No QAT dual path — storage dtype is truth.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/runtime/forward"
+	"github.com/openfluke/welvet/runtime/training"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	l, _ := dense.New(4, 4, core.ActivationLinear, core.DTypeFloat32)
+	_ = dense.Place(g, 0, 0, 0, 0, l)
+	fwd, _ := forward.Forward(g, core.NewTensor[float32](1, 4))
+	loss, err := training.Step(fwd, core.NewTensor[float32](1, 4), 1e-2)
+	fmt.Println(loss, err)
+}
+""",
+    ))
+
+    out.append(C(
+        "32-step", "32", "runtime/step — step mesh", "IV · Runtime",
+        "github.com/openfluke/welvet/runtime/step", "ok", "✅",
+        why="Spatial feedback (remote links) needs a discrete-time mesh where every cell updates from a double buffer — different from a decoder wavefront.",
+        what="State[T], StepForward/StepBackward/StepApplyTween across the grid for all wired Ops × dtype × quant × CPU/SIMD.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/runtime/step"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	l, _ := dense.New(4, 4, core.ActivationLinear, core.DTypeFloat32)
+	_ = dense.Place(g, 0, 0, 0, 0, l)
+	st := step.New[float32](g)
+	_, err := step.StepForward(g, st, false)
+	fmt.Println(err)
+}
+""",
+    ))
+
+    # Systems
+    for slug, num, title, pkg, why, what, ex in [
+        ("33-dna", "33", "systems/dna", "github.com/openfluke/welvet/systems/dna",
+         "Quant and train must be measurable as topology/weight fingerprints — DNA detects logic shifts.",
+         "ExtractDNA, CompareNetworks, CosineSimilarity, FlattenOp / CollectStores across dtype×quant.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/systems/dna"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	l, _ := dense.New(4, 4, core.ActivationLinear, core.DTypeFloat32)
+	_ = dense.Place(g, 0, 0, 0, 0, l)
+	a := dna.ExtractDNA(g)
+	fmt.Println(dna.CompareNetworks(a, a))
+}
+"""),
+        ("34-evolution", "34", "systems/evolution", "github.com/openfluke/welvet/systems/evolution",
+         "Topology search and weight crossover need first-class splice + NEAT on CPU-resident grids.",
+         "SpliceDNA, NEATMutate, NewNEATPopulation, CloneGrid — dtype/quant preserved via SetFromF32.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/systems/evolution"
+)
+
+func main() {
+	a, b := architecture.NewGrid(1, 1, 1, 1), architecture.NewGrid(1, 1, 1, 1)
+	child, err := evolution.SpliceDNA(a, b, evolution.DefaultSpliceConfig())
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	_, err = evolution.NEATMutate(child, evolution.DefaultNEATConfig(16))
+	fmt.Println(err)
+}
+"""),
+        ("35-tween", "35", "systems/tween", "github.com/openfluke/welvet/systems/tween",
+         "Target propagation (chain-rule or Hebbian layerwise gaps) is an alternative credit-assignment path.",
+         "NewState, Forward, BackwardChainRule / BackwardLayerwise, ApplyGaps; SIMD DotTile/Saxpy budgets.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/systems/tween"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	st := tween.NewState[float32](g, tween.DefaultConfig())
+	_, err := tween.Forward(g, st, core.NewTensor[float32](1, 4))
+	fmt.Println(err)
+}
+"""),
+        ("36-tanhi", "36", "systems/tanhi — UDP HUD", "github.com/openfluke/welvet/systems/tanhi",
+         "Training visualization must never block the engine — best-effort UDP JSON-lines to a HUD.",
+         "ConfigFromGrid, Emit/EmitSweep, DefaultUDPPort. SoulGlitch-style consumers.",
+         """
+package main
+
+import (
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/systems/tanhi"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	cfg := tanhi.ConfigFromGrid(g)
+	tanhi.EmitSweep(cfg, "epoch-0") // non-blocking best-effort
+}
+"""),
+        ("37-telemetry", "37", "systems/telemetry", "github.com/openfluke/welvet/systems/telemetry",
+         "Static structural blueprints (sizes, op kinds) differ from live tanhi events.",
+         "ExtractNetworkBlueprint, ExtractLayerTelemetry for introspection/UIs.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/systems/telemetry"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	bp := telemetry.ExtractNetworkBlueprint(g, "demo")
+	fmt.Printf("%+v\\n", bp)
+}
+"""),
+    ]:
+        out.append(C(slug, num, title, "V · Systems", pkg, "ok", "✅", why, what, "", ex))
+
+    # Model
+    out.append(C(
+        "38-entity", "38", "model/entity — .entity files", "VI · Model IO",
+        "github.com/openfluke/welvet/model/entity", "ok", "✅",
+        why="HF safetensors are awkward for native topology + packed weights. ENTITY is the Welvet checkpoint.",
+        what="Open/Inspect/IsEntity, LoadBlob/LoadQuantBlob, PackFromHF/ImportFromHF, WriteTransformerFile, SerializeNetwork.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/model/entity"
+)
+
+func main() {
+	info, err := entity.Inspect("model.entity")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	ef, err := entity.Open("model.entity")
+	if err != nil {
+		panic(err)
+	}
+	defer ef.Close()
+	fmt.Println(info, ef.HasTokenizerBlob())
+}
+""",
+    ))
+
+    out.append(C(
+        "39-hf", "39", "model/hf — snapshots", "VI · Model IO",
+        "github.com/openfluke/welvet/model/hf", "ok", "✅",
+        why="Import starts with probing HF/MLX layouts before packing ENTITY.",
+        what="InspectSnapshot, DetectArchitecture, safetensors/MLX loaders, Qwen3.5 hybrid helpers.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/model/hf"
+)
+
+func main() {
+	info, err := hf.InspectSnapshot("/path/to/hf-snapshot")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(info)
+}
+""",
+    ))
+
+    out.append(C(
+        "40-tokenizer", "40", "model/tokenizer", "VI · Model IO",
+        "github.com/openfluke/welvet/model/tokenizer", "ok", "✅",
+        why="Generate needs encode/decode of HF tokenizer.json without pulling Python.",
+        what="LoadTokenizer, Encode/Decode, LoadForEntity.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/model/tokenizer"
+)
+
+func main() {
+	tok, err := tokenizer.LoadTokenizer("tokenizer.json")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	ids := tok.Encode("hello welvet", true)
+	fmt.Println(ids, tok.Decode(ids, true))
+}
+""",
+    ))
+
+    out.append(C(
+        "41-sampling", "41", "model/sampling", "VI · Model IO",
+        "github.com/openfluke/welvet/model/sampling", "ok", "✅",
+        why="Logits → token ID needs ArgMax, TopK+temperature, penalties, and chat hygiene in one place.",
+        what="ArgMax, SampleTopK, ApplyRepetitionPenalty, BanIDs, SanitizeChatReply.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/model/sampling"
+)
+
+func main() {
+	logits := []float32{0.1, 2.4, 0.3, -1}
+	fmt.Println(sampling.ArgMax(logits))
+	fmt.Println(sampling.SampleTopK(logits, 2, 0.8, true))
+}
+""",
+    ))
+
+    out.append(C(
+        "42-transformer", "42", "model/transformer — generate", "VI · Model IO",
+        "github.com/openfluke/welvet/model/transformer", "ok", "✅",
+        why="ENTITY packs must run as Llama-style decoders with KV cache, profiles (SIMD/WebGPU/fused), and chat templates.",
+        what="LoadEntity → Model; Generate; ApplyExec profiles; ExportFusedGPUSpec / hybrid sync.",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/model/tokenizer"
+	"github.com/openfluke/welvet/model/transformer"
+)
+
+func main() {
+	m, err := transformer.LoadEntity("model.entity")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	tok, err := tokenizer.LoadTokenizer("tokenizer.json")
+	if err != nil {
+		panic(err)
+	}
+	if err := m.ApplyExec(transformer.ProfileSIMDMultiCore()); err != nil {
+		panic(err)
+	}
+	text, _, err := m.Generate(
+		tok.Encode, tok.Decode, nil,
+		"You are helpful.", "Say hi.",
+		transformer.GenOptions{MaxTokens: 32, Silent: true},
+	)
+	fmt.Println(text, err)
+}
+""",
+    ))
+
+    # Apps
+    out.append(C(
+        "43-apps", "43", "apps — octo · flux2 · mosstts", "VII · Apps",
+        "github.com/openfluke/welvet/apps/…", "partial", "🚧",
+        why="Products must not pollute engine packages. Octo is the model shell; flux2/mosstts are domain apps.",
+        what="octo (own module): download/convert/chat. flux2: MMDiT image. mosstts: Speak/SpeakToFile pipeline.",
+        example="""
+package main
+
+// Apps import the engine — the engine never imports apps.
+import (
+	_ "github.com/openfluke/welvet/model/transformer"
+)
+
+func main() {
+	// Prefer:
+	//   cd apps/octo && go run .
+	//   // or flux2 / mosstts entrypoints once configured
+}
+""",
+        run="cd apps/octo && go run .   # when module wired",
+    ))
+
+    # Stubs — each one
+    stubs = [
+        ("44-stub-seed", "44", "stub/seed", "github.com/openfluke/welvet/stub/seed",
+         "Ship topology recipes (layer seeds → He-init) without weight blobs.",
+         "SeedFrom/From, RNG, InitStoreHe, Dense/MHA/SwiGLU/CNN infinite manifests.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/stub/seed"
+)
+
+func main() {
+	s := seed.From("demo-net", 0)
+	rng := seed.New(s)
+	fmt.Println(rng.NormFloat64())
+}
+"""),
+        ("45-stub-serialization", "45", "stub/serialization", "github.com/openfluke/welvet/stub/serialization",
+         "Volumetric grids need JSON/ENTITY persist beyond transformer packs.",
+         "SerializeEntity/LoadEntity, SerializeGrid/GridFromSpec — native FormatNone bytes; packed via wire.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/stub/serialization"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	raw, err := serialization.SerializeGrid(g)
+	fmt.Println(len(raw), err)
+}
+"""),
+        ("46-stub-memory", "46", "stub/memory", "github.com/openfluke/welvet/stub/memory",
+         "HF→ENTITY and GPU upload need footprint accounting and optional history charts.",
+         "FromGrid, Footprint, InitScavenger, ReleaseTransient; WELVET_MEMORY_HISTORY=1.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/stub/memory"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	fp := memory.FromGrid(g)
+	fmt.Printf("%+v\\n", fp)
+}
+"""),
+        ("47-stub-donate", "47", "stub/donate", "github.com/openfluke/welvet/stub/donate",
+         "LAN donors should accept framed JSON jobs without embedding HTTP in the engine.",
+         "u32-LE + JSON frames; ServeTCP/Dial; model_push vs local_lm. v0 workers echo.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/stub/donate"
+)
+
+func main() {
+	fmt.Println("default port", donate.DefaultPort)
+	// ln, err := donate.ServeTCP(donate.ServerOptions{Addr: ":17001", Mode: donate.ServerLocalLM})
+}
+"""),
+        ("48-stub-fountain", "48", "stub/fountain", "github.com/openfluke/welvet/stub/fountain",
+         "Recover specialist weight blobs over lossy links via LT fountain codes, then ensemble.",
+         "NewLTEncoder/Decoder, RecoverWeightBlobs, Neural/DenseFactory helpers.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/stub/fountain"
+)
+
+func main() {
+	src := [][]byte{make([]byte, 64), make([]byte, 64), make([]byte, 64)}
+	enc, err := fountain.NewLTEncoder(src, 42)
+	fmt.Printf("%T %v\\n", enc, err)
+}
+"""),
+        ("49-stub-hardware", "49", "stub/hardware", "github.com/openfluke/welvet/stub/hardware",
+         "Dispatchers and UIs need a portable host audit (OS/CPU/RAM/GPU).",
+         "Audit() → SystemAudit with linux /proc or platform fallbacks.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/stub/hardware"
+)
+
+func main() {
+	a := hardware.Audit()
+	fmt.Printf("%+v\\n", a.CPU)
+	fmt.Println(hardware.Description())
+}
+"""),
+        ("50-stub-accel", "50", "stub/accel — NPU/Metal/QNN", "github.com/openfluke/welvet/stub/accel",
+         "Vendor accelerators (Intel NPU, Qualcomm QNN, Apple Metal) will plug beside WebGPU — not replace it.",
+         "Package is doc.go only today (⬜). No symbols yet; reserved for plugin loader design.",
+         """
+package main
+
+// import "github.com/openfluke/welvet/stub/accel"
+// No exported API yet — see package doc.go for intent.
+
+func main() {}
+"""),
+        ("51-stub-clustering", "51", "stub/clustering", "github.com/openfluke/welvet/stub/clustering",
+         "Offline clustering helpers on tensors without inventing a second math stack.",
+         "KMeansCluster, HierarchicalGroup, distance/silhouette helpers.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/stub/clustering"
+)
+
+func main() {
+	pts := []*core.Tensor[float32]{
+		core.NewTensor[float32](2),
+		core.NewTensor[float32](2),
+	}
+	pts[0].Data[0], pts[0].Data[1] = 0, 0
+	pts[1].Data[0], pts[1].Data[1] = 1, 1
+	cent, assign := clustering.KMeansCluster(pts, 2, 10, false)
+	fmt.Println(len(cent), assign)
+}
+"""),
+        ("52-stub-ensemble", "52", "stub/ensemble", "github.com/openfluke/welvet/stub/ensemble",
+         "Combine multiple model votes and find complementary specialists.",
+         "MajorityVote, FindComplementaryMatches, PerformanceSimilarity.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/stub/ensemble"
+)
+
+func main() {
+	votes := [][]int{{0, 1, 1}, {0, 0, 1}, {0, 1, 0}}
+	fmt.Println(ensemble.MajorityVote(votes))
+}
+"""),
+        ("53-stub-evaluation", "53", "stub/evaluation", "github.com/openfluke/welvet/stub/evaluation",
+         "Benchmark grids through runtime/forward with deviation metrics.",
+         "EvaluateNetwork, MultiNetworkEvaluation, DeviationMetrics.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/stub/evaluation"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	in := []*core.Tensor[float32]{core.NewTensor[float32](1, 4)}
+	rep, err := evaluation.EvaluateNetwork(g, in, []float64{0, 0, 0, 0})
+	fmt.Println(rep, err)
+}
+"""),
+        ("54-stub-grafting", "54", "stub/grafting", "github.com/openfluke/welvet/stub/grafting",
+         "Merge grids into Parallel/Residual structures for topology experiments.",
+         "GraftGrids, ResidualGraft, GraftToGrid — Dense branches in v0.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/layers/parallel"
+	"github.com/openfluke/welvet/stub/grafting"
+)
+
+func main() {
+	a, b := architecture.NewGrid(1, 1, 1, 1), architecture.NewGrid(1, 1, 1, 1)
+	out, err := grafting.GraftGrids([]*architecture.Grid{a, b}, parallel.CombineConcat)
+	fmt.Println(out != nil, err)
+}
+"""),
+        ("55-stub-grouping", "55", "stub/grouping", "github.com/openfluke/welvet/stub/grouping",
+         "Detect layer archetypes from safetensor-style names before mounting.",
+         "GroupRelatedTensors, DetectMHA/DetectSwiGLU/DetectRMSNorm → ArchetypeHint.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/stub/grouping"
+)
+
+func main() {
+	tensors := []grouping.DetectedTensor{
+		{Name: "model.layers.0.self_attn.q_proj.weight"},
+		{Name: "model.layers.0.self_attn.k_proj.weight"},
+		{Name: "model.layers.0.self_attn.v_proj.weight"},
+		{Name: "model.layers.0.self_attn.o_proj.weight"},
+	}
+	ok, hint := grouping.DetectMHA("block0", tensors, 64, 4)
+	fmt.Println(ok, hint)
+}
+"""),
+        ("56-stub-introspection", "56", "stub/introspection", "github.com/openfluke/welvet/stub/introspection",
+         "UIs and FFI need to list Grid methods without hardcoding every export.",
+         "GetMethods, GetMethodsJSON, GetMethodSignature.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/stub/introspection"
+)
+
+func main() {
+	g := architecture.NewGrid(1, 1, 1, 1)
+	methods, err := introspection.GetMethods(g)
+	fmt.Println(len(methods), err)
+}
+"""),
+        ("57-stub-observer", "57", "stub/observer", "github.com/openfluke/welvet/stub/observer",
+         "Attach forward/backward observers for debugging without coupling to tanhi UDP.",
+         "Observer interface; ConsoleObserver / HTTPObserver / BufferObserver; ComputeLayerStats.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/stub/observer"
+)
+
+func main() {
+	var obs observer.Observer = &observer.ConsoleObserver{}
+	fmt.Printf("%T\\n", obs)
+}
+"""),
+        ("58-stub-pipeline", "58", "stub/pipeline", "github.com/openfluke/welvet/stub/pipeline",
+         "Decoder wavefront stats helpers — not a full Lucy-style pipeline runner yet.",
+         "PipelineForwardStats, TokenTimelineSummary.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/stub/pipeline"
+)
+
+func main() {
+	var s pipeline.PipelineForwardStats
+	fmt.Printf("%+v\\n", s)
+}
+"""),
+        ("59-stub-templates", "59", "stub/templates", "github.com/openfluke/welvet/stub/templates",
+         "Chat prompts must match model families (ChatML, Llama3, BitNet) without app-specific string glue.",
+         "Template.BuildPrompt; presets ChatML, Llama3, BitNetInstruction, MicrosoftBitNetChat.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/stub/templates"
+)
+
+func main() {
+	p := templates.ChatML.BuildPrompt(nil, "You are helpful.", "Say hi")
+	fmt.Println(p)
+}
+"""),
+        ("60-stub-universal", "60", "stub/universal", "github.com/openfluke/welvet/stub/universal",
+         "Probe unknown safetensor geometry and mount placeholder grids until full weight import lands.",
+         "LoadUniversal / LoadUniversalDetailed, ProbeDeepGeometry, MountGeometrically.",
+         """
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/stub/universal"
+)
+
+func main() {
+	g, err := universal.LoadUniversal("/path/to/snapshot")
+	fmt.Println(g != nil, err)
+}
+"""),
+    ]
+    for slug, num, title, pkg, why, what, ex in stubs:
+        st, lab = ("missing", "⬜") if "accel" in slug else ("partial", "🚧")
+        out.append(C(slug, num, title, "VIII · Stubs", pkg, st, lab, why, what, "", ex))
+
+    out.append(C(
+        "61-w2a", "61", "w2a — validation harness", "IX · Validate",
+        "github.com/openfluke/w2a", "partial", "🚧 harness",
+        why="Engine packages must stay free of tests. w2a owns timed 34×20×3 matrices, gap census, and honesty stamps.",
+        what="Interactive go run ., suites under suites/*, go test ./tests/<layer>. StampBackendNote / AffinePackable prevent fake ✅.",
+        example="""
+package dense_test
+
+import (
+	"testing"
+
+	"github.com/openfluke/w2a/suites"
+	denssuite "github.com/openfluke/w2a/suites/dense"
+)
+
+func TestDenseSuite(t *testing.T) {
+	restore, err := suites.BeginLog()
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() { suites.PrintReport(); restore() }()
+	for _, c := range denssuite.Cases() {
+		t.Run(c.Name, func(t *testing.T) {
+			if err := c.Run(); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+}
+""",
+        run="cd w2a && go run .\ncd w2a && go test ./tests/dense -v && go test ./tests/mha -v",
+    ))
+
+    out.append(C(
+        "62-scorecard", "62", "Scorecard → v1.0", "IX · Validate",
+        "", "partial", "v0.76",
+        why="Version is earned from a weighted board, not marketing. Peak-fused kernels and stubs still leave points on the table.",
+        what="version = 0.{round(earned)} until 100 → v1.0. Biggest remaining: §12 peak fused (14), extended layers, apps/stubs/accel.",
+        body_extra="""
+<table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
+<tr><td>1–4</td><td>Foundation + Dense + transformer + CNN/RNN</td><td>50</td><td>~48.5</td></tr>
+<tr><td>5</td><td>Extended layers</td><td>7</td><td>3.5</td></tr>
+<tr><td>6–8</td><td>Runtime + systems + model</td><td>21</td><td>21</td></tr>
+<tr><td>9–11</td><td>Apps + stubs + accel</td><td>8</td><td>3.0</td></tr>
+<tr><td>12</td><td>Peak fused / no host ALU</td><td>14</td><td>0</td></tr>
+<tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>76</strong></td></tr>
+</tbody></table>
+""",
+        example="""
+package main
+
+import "fmt"
+
+func main() {
+	// Recompute when a board row flips ✅/🚧/⬜ in welvet/README.md
+	earned := 76.0
+	fmt.Printf("v0.%02.0f\\n", earned) // v0.76 until earned==100 → v1.0
+}
+""",
+    ))
+
+    return out
+
+
+# ---------------------------------------------------------------------------
+# HTML rendering
+# ---------------------------------------------------------------------------
+
+PARTS_NAV = [
+    ("I · Orientation", ["01-welvet", "02-tree"]),
+    ("II · Foundation", ["03-core", "04-weights", "05-quant", "06-simd", "07-webgpu", "08-tiling", "09-architecture", "10-fusedgpu"]),
+    ("III · Layers", [
+        "11-dense", "12-mha", "13-swiglu", "14-rmsnorm", "15-layernorm", "16-embedding", "17-softmax",
+        "18-sequential", "19-residual", "20-cnn", "21-rnn-lstm", "22-seqmix", "23-gdn", "24-mamba",
+        "25-convt", "26-kmeans", "27-parallel", "28-metacognition",
+    ]),
+    ("IV · Runtime", ["29-forward", "30-backward", "31-training", "32-step"]),
+    ("V · Systems", ["33-dna", "34-evolution", "35-tween", "36-tanhi", "37-telemetry"]),
+    ("VI · Model IO", ["38-entity", "39-hf", "40-tokenizer", "41-sampling", "42-transformer"]),
+    ("VII · Apps", ["43-apps"]),
+    ("VIII · Stubs", [
+        "44-stub-seed", "45-stub-serialization", "46-stub-memory", "47-stub-donate",
+        "48-stub-fountain", "49-stub-hardware", "50-stub-accel",
+        "51-stub-clustering", "52-stub-ensemble", "53-stub-evaluation", "54-stub-grafting",
+        "55-stub-grouping", "56-stub-introspection", "57-stub-observer", "58-stub-pipeline",
+        "59-stub-templates", "60-stub-universal",
+    ]),
+    ("IX · Validate", ["61-w2a", "62-scorecard"]),
+]
+
+
+def nav_html(by_slug: dict[str, Chapter], prefix: str) -> str:
+    parts = [
+        f'<aside class="sidebar"><a class="brand" href="{prefix}index.html">Welvet</a>'
+        f'<div class="brand-sub">Feature book · v0.76</div>'
+        f'<div class="nav-group"><h2>Front</h2>'
+        f'<a href="{prefix}index.html">Title</a>'
+        f'<a href="{prefix}toc.html">Contents</a></div>'
+    ]
+    for part, slugs in PARTS_NAV:
+        parts.append(f'<div class="nav-group"><h2>{esc(part)}</h2>')
+        for s in slugs:
+            c = by_slug[s]
+            href = f"{prefix}chapters/{c.slug}.html" if prefix else f"{c.slug}.html"
+            if prefix == "../":
+                href = f"{c.slug}.html"
+            short = c.title.split("—")[0].split("·")[0].strip()
+            if len(short) > 28:
+                short = short[:27] + "…"
+            parts.append(f'<a href="{href}">{esc(c.num)}. {esc(short)}</a>')
+        parts.append("</div>")
+    parts.append("</aside>")
+    return "\n".join(parts)
+
+
+def render_chapter(c: Chapter, prev: Chapter | None, next_: Chapter | None, by_slug: dict[str, Chapter]) -> str:
+    nav = nav_html(by_slug, "../")
+    prev_a = f'<a href="../toc.html">← Contents</a>' if prev is None else f'<a href="{prev.slug}.html">← {esc(prev.num)}. {esc(prev.title[:40])}</a>'
+    next_a = f'<a href="../toc.html">Contents →</a>' if next_ is None else f'<a href="{next_.slug}.html">{esc(next_.num)}. {esc(next_.title[:40])} →</a>'
+    pkg = f'<p class="pill-row"><span class="pill">{esc(c.pkg)}</span>{status_badge(c.status, c.status_label)}</p>' if c.pkg else f'<p>{status_badge(c.status, c.status_label)}</p>'
+    run = f"<h3>Validate</h3>{code(c.run)}" if c.run else ""
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{esc(c.num)}. {esc(c.title)} — Welvet</title>
+<link rel="stylesheet" href="../assets/book.css"/>
+</head>
+<body>
+<a class="skip" href="#main">Skip</a>
+<div class="shell">
+{nav}
+<div class="main">
+<div class="topbar">
+<button class="menu-btn" id="menu-btn" type="button">Menu</button>
+<div class="meta">{esc(c.part)}</div>
+<nav class="pager">{prev_a}{next_a}</nav>
+</div>
+<article class="content" id="main">
+<p class="chapter-kicker">Chapter {esc(c.num)}</p>
+<h1>{esc(c.title)}</h1>
+{pkg}
+<hr class="rule"/>
+<h2>Why it exists</h2>
+<p>{c.why}</p>
+<h2>What it is</h2>
+<p>{c.what}</p>
+{c.body_extra}
+<section class="examples" id="examples">
+<h2>Go example</h2>
+{code(c.example)}
+{run}
+</section>
+<nav class="pager" style="margin-top:2rem">{prev_a}{next_a}</nav>
+</article>
+</div></div>
+<script src="../assets/book.js"></script>
+</body></html>
+"""
+
+
+def title_page() -> str:
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Welvet — Feature Book</title>
+<link rel="stylesheet" href="assets/book.css"/>
+</head>
+<body>
+<main class="title-page">
+<div class="title-card">
+<p class="eyebrow">OpenFluke · github.com/openfluke/welvet</p>
+<h1>Welvet</h1>
+<p class="subtitle">Feature book — why and what for every engine package, with runnable Go examples. Built from the Welvet tree, not a loom paste.</p>
+<div class="title-meta">
+<div><strong>Version</strong> v0.76 · scorecard toward v1.0</div>
+<div><strong>Module</strong> github.com/openfluke/welvet</div>
+<div><strong>Harness</strong> github.com/openfluke/w2a</div>
+</div>
+<div class="cta-row">
+<a class="btn btn-primary" href="toc.html">Contents</a>
+<a class="btn btn-ghost" href="chapters/01-welvet.html">Start</a>
+<a class="btn btn-ghost" href="https://github.com/openfluke/welvet">Source</a>
+</div>
+</div>
+</main>
+</body></html>
+"""
+
+
+def toc_page(chs: list[Chapter]) -> str:
+    by = {c.slug: c for c in chs}
+    nav = nav_html(by, "")
+    # fix chapter hrefs for root toc
+    nav = nav.replace('href="chapters/', 'href="chapters/').replace('href="01-', 'href="chapters/01-')
+    # rebuild nav properly for root
+    parts = [
+        '<aside class="sidebar"><a class="brand" href="index.html">Welvet</a>'
+        '<div class="brand-sub">Feature book · v0.76</div>'
+        '<div class="nav-group"><h2>Front</h2>'
+        '<a href="index.html">Title</a><a href="toc.html">Contents</a></div>'
+    ]
+    for part, slugs in PARTS_NAV:
+        parts.append(f'<div class="nav-group"><h2>{esc(part)}</h2>')
+        for s in slugs:
+            c = by[s]
+            short = c.title.split("—")[0].strip()
+            if len(short) > 28:
+                short = short[:27] + "…"
+            parts.append(f'<a href="chapters/{c.slug}.html">{esc(c.num)}. {esc(short)}</a>')
+        parts.append("</div>")
+    parts.append("</aside>")
+    nav = "\n".join(parts)
+
+    body = ['<p class="lede">One chapter per Welvet feature. Each page: <strong>why</strong>, <strong>what</strong>, status, and a <strong>Go example</strong>.</p>',
+            '<div class="pill-row"><span class="pill">62 chapters</span><span class="pill">engine · layers · runtime · systems · model · stubs · w2a</span></div>']
+    for part, slugs in PARTS_NAV:
+        body.append(f'<p class="part">{esc(part)}</p><ul class="toc-list">')
+        for s in slugs:
+            c = by[s]
+            body.append(
+                f'<li><a href="chapters/{c.slug}.html"><span class="num">{esc(c.num)}</span>'
+                f'<span><span class="title">{esc(c.title)}</span>'
+                f'<div class="blurb">{status_badge(c.status, c.status_label)}'
+                f'{" · " + esc(c.pkg) if c.pkg else ""}</div></span></a></li>'
+            )
+        body.append("</ul>")
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Contents — Welvet Feature Book</title>
+<link rel="stylesheet" href="assets/book.css"/>
+</head>
+<body>
+<div class="shell">
+{nav}
+<div class="main">
+<div class="topbar">
+<button class="menu-btn" id="menu-btn" type="button">Menu</button>
+<div class="meta">Front</div>
+<nav class="pager"><a href="index.html">← Title</a><a href="chapters/01-welvet.html">Ch 1 →</a></nav>
+</div>
+<article class="content" id="main">
+<p class="chapter-kicker">Index</p>
+<h1>Table of contents</h1>
+{"".join(body)}
+</article>
+</div></div>
+<script src="assets/book.js"></script>
+</body></html>
+"""
+
+
+def main() -> None:
+    CHDIR.mkdir(parents=True, exist_ok=True)
+    (BOOK / "assets").mkdir(parents=True, exist_ok=True)
+    # wipe old chapters
+    for p in CHDIR.glob("*.html"):
+        p.unlink()
+
+    chs = chapters()
+    by = {c.slug: c for c in chs}
+    # ensure PARTS_NAV covers all
+    listed = {s for _, ss in PARTS_NAV for s in ss}
+    missing = [c.slug for c in chs if c.slug not in listed]
+    if missing:
+        raise SystemExit(f"PARTS_NAV missing: {missing}")
+
+    for i, c in enumerate(chs):
+        prev = chs[i - 1] if i else None
+        nxt = chs[i + 1] if i + 1 < len(chs) else None
+        (CHDIR / f"{c.slug}.html").write_text(render_chapter(c, prev, nxt, by), encoding="utf-8")
+
+    (BOOK / "index.html").write_text(title_page(), encoding="utf-8")
+    (BOOK / "toc.html").write_text(toc_page(chs), encoding="utf-8")
+    (ROOT / "index.html").write_text(
+        "<!DOCTYPE html><meta charset=utf-8><meta http-equiv=refresh content='0;url=welvet/'>"
+        "<title>OpenFluke</title><a href='welvet/'>Welvet feature book</a>\n",
+        encoding="utf-8",
+    )
+    (ROOT / ".nojekyll").write_text("", encoding="utf-8")
+    (ROOT / "README.md").write_text(
+        "# openfluke.github.io\n\n"
+        "**[Welvet feature book](welvet/)** — why/what for every engine package with Go examples.\n\n"
+        "Regenerate: `python3 _gen_welvet_book.py`\n",
+        encoding="utf-8",
+    )
+    print(f"OK: {len(chs)} chapters → {BOOK}")
+
+
+if __name__ == "__main__":
+    main()
