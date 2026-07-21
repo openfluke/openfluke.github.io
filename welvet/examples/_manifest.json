@@ -257,124 +257,130 @@
     "stderr": "",
     "combined": "Apps import the engine \u2014 the engine never imports apps.\n  cd apps/octo && go run .\n  cd apps/flux2 && go run .\n  cd apps/mosstts && go run ."
   },
-  "44-stub-seed": {
+  "44-octo": {
+    "exit_code": 0,
+    "stdout": "Octo is its own module \u2014 the engine never imports it.\n  cd apps/octo && go run .\n  download -> convert -> .entity -> chat / serve / bench\n",
+    "stderr": "",
+    "combined": "Octo is its own module \u2014 the engine never imports it.\n  cd apps/octo && go run .\n  download -> convert -> .entity -> chat / serve / bench"
+  },
+  "45-stub-seed": {
     "exit_code": 0,
     "stdout": "0.4118750632366808\n",
     "stderr": "",
     "combined": "0.4118750632366808"
   },
-  "45-stub-serialization": {
+  "46-stub-serialization": {
     "exit_code": 0,
     "stdout": "101 <nil>\n",
     "stderr": "",
     "combined": "101 <nil>"
   },
-  "46-stub-memory": {
+  "47-stub-memory": {
     "exit_code": 0,
     "stdout": "{HostWeightsMB:0 GPUWeightsMB:0 GPUKVMB:0}\n",
     "stderr": "",
     "combined": "{HostWeightsMB:0 GPUWeightsMB:0 GPUKVMB:0}"
   },
-  "47-stub-donate": {
+  "48-stub-donate": {
     "exit_code": 0,
     "stdout": "default port 17001\n",
     "stderr": "",
     "combined": "default port 17001"
   },
-  "48-stub-fountain": {
+  "49-stub-fountain": {
     "exit_code": 0,
     "stdout": "*fountain.LTEncoder <nil>\n",
     "stderr": "",
     "combined": "*fountain.LTEncoder <nil>"
   },
-  "49-stub-hardware": {
+  "50-stub-hardware": {
     "exit_code": 0,
     "stdout": "{Model:Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz Logical:12 GOMAXPROCS:12}\nOS: linux | CPU: Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz (12) | RAM: 31.12 GB | GPU: Unknown GPU (0.0 GB)\n",
     "stderr": "",
     "combined": "{Model:Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz Logical:12 GOMAXPROCS:12}\nOS: linux | CPU: Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz (12) | RAM: 31.12 GB | GPU: Unknown GPU (0.0 GB)"
   },
-  "50-stub-accel": {
+  "51-stub-accel": {
     "exit_code": 0,
     "stdout": "",
     "stderr": "",
     "combined": ""
   },
-  "51-stub-clustering": {
+  "52-stub-clustering": {
     "exit_code": 0,
     "stdout": "2 [1 0]\n",
     "stderr": "",
     "combined": "2 [1 0]"
   },
-  "52-stub-ensemble": {
+  "53-stub-ensemble": {
     "exit_code": 0,
     "stdout": "[0 1 1]\n",
     "stderr": "",
     "combined": "[0 1 1]"
   },
-  "53-stub-evaluation": {
+  "54-stub-evaluation": {
     "exit_code": 0,
     "stdout": "<nil> evaluation: length mismatch inputs=1 expected=4\n",
     "stderr": "",
     "combined": "<nil> evaluation: length mismatch inputs=1 expected=4"
   },
-  "54-stub-grafting": {
+  "55-stub-grafting": {
     "exit_code": 0,
     "stdout": "false grafting: no valid Dense branches\n",
     "stderr": "",
     "combined": "false grafting: no valid Dense branches"
   },
-  "55-stub-grouping": {
+  "56-stub-grouping": {
     "exit_code": 0,
     "stdout": "true {MultiHeadAttention 64 4}\n",
     "stderr": "",
     "combined": "true {MultiHeadAttention 64 4}"
   },
-  "56-stub-introspection": {
+  "57-stub-introspection": {
     "exit_code": 0,
     "stdout": "9 <nil>\n",
     "stderr": "",
     "combined": "9 <nil>"
   },
-  "57-stub-observer": {
+  "58-stub-observer": {
     "exit_code": 0,
     "stdout": "*observer.ConsoleObserver\n",
     "stderr": "",
     "combined": "*observer.ConsoleObserver"
   },
-  "58-stub-pipeline": {
+  "59-stub-pipeline": {
     "exit_code": 0,
     "stdout": "{PipelineTicks:0 SubLayerOps:0 MaxActiveJobs:0 MaxBlockSpread:0 MaxDistinctBlocks:0 MaxPendingTokens:0 StallFallback:false TokenDoneTick:[]}\n",
     "stderr": "",
     "combined": "{PipelineTicks:0 SubLayerOps:0 MaxActiveJobs:0 MaxBlockSpread:0 MaxDistinctBlocks:0 MaxPendingTokens:0 StallFallback:false TokenDoneTick:[]}"
   },
-  "59-stub-templates": {
+  "60-stub-templates": {
     "exit_code": 0,
     "stdout": "<|im_start|>system\nYou are helpful.\n<|im_start|>user\nSay hi\n<|im_start|>assistant\n\n",
     "stderr": "",
     "combined": "<|im_start|>system\nYou are helpful.\n<|im_start|>user\nSay hi\n<|im_start|>assistant"
   },
-  "60-stub-universal": {
+  "61-stub-universal": {
     "exit_code": 0,
     "stdout": "false universal: \"/path/to/snapshot\": open /path/to/snapshot: no such file or directory\n",
     "stderr": "",
     "combined": "false universal: \"/path/to/snapshot\": open /path/to/snapshot: no such file or directory"
   },
-  "61-w2a": {
+  "62-w2a": {
     "exit_code": 0,
     "stdout": "w2a is a separate module \u2014 engine packages never contain tests.\n\n  cd w2a\n  go run .                    # interactive menu\n  go test ./tests/dense -v    # timed FormatNone matrix\n  go test ./tests/mha -v      # MHA coverage\n",
     "stderr": "",
     "combined": "w2a is a separate module \u2014 engine packages never contain tests.\n\n  cd w2a\n  go run .                    # interactive menu\n  go test ./tests/dense -v    # timed FormatNone matrix\n  go test ./tests/mha -v      # MHA coverage"
   },
-  "62-scorecard": {
+  "63-validation": {
     "exit_code": 0,
-    "stdout": "v0.76\n",
+    "stdout": "w2a suite: 137039/137039 matrix cells OK, 326/326 cases PASS\ngaps: 0   fails: 0   result: PASS\n",
     "stderr": "",
-    "combined": "v0.76"
+    "combined": "w2a suite: 137039/137039 matrix cells OK, 326/326 cases PASS\ngaps: 0   fails: 0   result: PASS"
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v0.81\n",
+    "stdout": "v0.95\n",
     "stderr": "",
-    "combined": "v0.81"
+    "combined": "v0.95"
   }
 }

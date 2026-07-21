@@ -127,7 +127,12 @@ func main() {
 	fmt.Println("  go test ./tests/mha -v      # MHA coverage")
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>w2a is a separate module — engine packages never contain tests.
+
+  cd w2a
+  go run .                    # interactive menu
+  go test ./tests/dense -v    # timed FormatNone matrix
+  go test ./tests/mha -v      # MHA coverage</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd w2a &amp;&amp; go run .
 cd w2a &amp;&amp; go test ./tests/dense -v &amp;&amp; go test ./tests/mha -v</code></pre>
 </section>
