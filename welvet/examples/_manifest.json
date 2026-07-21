@@ -373,8 +373,8 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v0.78\n",
+    "stdout": "v0.81\n",
     "stderr": "",
-    "combined": "v0.78"
+    "combined": "v0.81"
   }
 }

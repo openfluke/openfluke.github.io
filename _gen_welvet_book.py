@@ -124,7 +124,7 @@ def chapters() -> list[Chapter]:
             "tests only in <code>w2a</code>, apps only in <code>apps/</code>.",
         what="An AI engine in Go: layers, 34 dtypes, 20 quant formats, and three backends "
              "(CPU tiled · Plan 9 SIMD · WebGPU). Version tracks a 100-point scorecard "
-             "(today <strong>v0.78</strong>).",
+             "(today <strong>v0.81</strong>).",
         body_extra=ascii_fig("""
 Rules
   1. No tests in engine packages          → w2a/
@@ -772,9 +772,9 @@ func main() {
 }
 """),
         ("23-gdn", "23", "layers/gdn — gated delta net",
-         "github.com/openfluke/welvet/layers/gdn", "partial", "🚧",
+         "github.com/openfluke/welvet/layers/gdn", "ok", "✅",
          "Linear attention / decode-first mixers (Gated DeltaNet) need a first-class package under KindLinearAttn.",
-         "BinaryG128 projections, ForwardDecode, Reset. Grid-wide Exec still open. Smoke+census coverage.",
+         "Exec CPU/SIMD/WebGPU; ForwardDecode; truncated BPTT; full timed matrix + train grids (Float32-primary).",
          """
 package main
 
@@ -800,9 +800,9 @@ func main() {
 }
 """),
         ("24-mamba", "24", "layers/mamba — selective SSM",
-         "github.com/openfluke/welvet/layers/mamba", "partial", "🚧",
+         "github.com/openfluke/welvet/layers/mamba", "ok", "✅",
          "SSM mixers (KindSSM) are not MHA clones — they need their own selective-scan path.",
-         "InProj → softplus(Δ) scan → OutProj. Runtime wired; smoke+census (not full timed matrix).",
+         "InProj → softplus(Δ) scan → OutProj. Full timed matrix + train grids (scan ALU host).",
          """
 package main
 
@@ -825,9 +825,9 @@ func main() {
 }
 """),
         ("25-convt", "25", "layers/convt1 · convt2 · convt3",
-         "github.com/openfluke/welvet/layers/convt1", "partial", "🚧",
+         "github.com/openfluke/welvet/layers/convt1", "ok", "✅",
          "Generators and U-Nets need transposed convolution as a peer of CNN, on the same Dense proj surface.",
-         "Scatter upsample + Dense Proj. Smoke+census coverage today.",
+         "Scatter upsample + Dense Proj. Full timed matrix + train grids (tiled transpose shaders still §12).",
          """
 package main
 
@@ -849,9 +849,9 @@ func main() {
 }
 """),
         ("26-kmeans", "26", "layers/kmeans",
-         "github.com/openfluke/welvet/layers/kmeans", "partial", "🚧",
+         "github.com/openfluke/welvet/layers/kmeans", "ok", "✅",
          "Soft clustering as a differentiable layer lets topology experiments sit inside the same train loop.",
-         "Centers on Dense (K×FeatureDim); soft assignment outputs. Smoke+census.",
+         "Centers on Dense (K×FeatureDim); soft assignment outputs. Full timed matrix + train grids.",
          """
 package main
 
@@ -873,9 +873,9 @@ func main() {
 }
 """),
         ("27-parallel", "27", "layers/parallel — MoE combine",
-         "github.com/openfluke/welvet/layers/parallel", "partial", "🚧",
+         "github.com/openfluke/welvet/layers/parallel", "ok", "✅",
          "Mixture-of-experts and multi-path cells need concat/add/avg/filter combines over branches.",
-         "Dense branches today; filter gate mode for soft MoE. Smoke+census. Heterogeneous residual graft still open.",
+         "Dense branches; filter gate mode for soft MoE. Full timed matrix + train grids. Heterogeneous residual graft still open.",
          """
 package main
 
@@ -899,9 +899,9 @@ func main() {
 }
 """),
         ("28-metacognition", "28", "layers/metacognition",
-         "github.com/openfluke/welvet/layers/metacognition", "partial", "🚧",
+         "github.com/openfluke/welvet/layers/metacognition", "ok", "✅",
          "Observed layers can apply heuristic stability rules (gate/scale/reset) without dtype morph/QAT.",
-         "Wraps Dense + DefaultStabilityRules(); Stats exposed. Smoke+census.",
+         "Wraps Dense + DefaultStabilityRules(); Stats exposed. Full timed matrix + train grids.",
          """
 package main
 
@@ -1727,7 +1727,7 @@ func main() {
 <tr><td><strong>Total</strong></td><td><strong>137,039</strong></td><td><strong>137,039</strong></td><td><strong>326</strong></td></tr>
 </tbody>
 </table>
-<p class="example-meta">Case-only suites (checks, no timed matrix): convt1/2/3, gdn, kmeans, mamba, parallel, metacognition, seed, serialization, memory, donate, fountain, hardware, helpers — all cases PASS.</p>
+<p class="example-meta">Full timed matrices: dense…residual + §5 gdn/mamba/convt/kmeans/parallel/metacognition. Case-only stubs: seed, serialization, memory, donate, fountain, hardware, helpers.</p>
 <h3>Dense timed matrix — highlights</h3>
 <p>All 34 dtypes run forward and backward on CPU-tiled, Plan 9 SIMD, and WebGPU with zero gaps. Fastest forward paths on SIMD: <code>int8</code> 45µs, <code>float32</code> 57µs, <code>int4</code> 87µs; WebGPU stays in the ~165–490µs band across every dtype.</p>
 """,
@@ -1747,17 +1747,17 @@ func main() {
 
     out.append(C(
         "64-scorecard", "64", "Scorecard → v1.0", "IX · Validate",
-        "", "partial", "v0.78",
+        "", "partial", "v0.81",
         why="Version is earned from a weighted board, not marketing. Peak-fused kernels and stubs still leave points on the table.",
         what="version = 0.{round(earned)} until 100 → v1.0. Biggest remaining: §12 peak fused (14), extended layers, apps/stubs/accel.",
         body_extra="""
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
-<tr><td>1–4</td><td>Foundation + Dense (all fused SIMD quants) + transformer + CNN/RNN</td><td>50</td><td>50</td></tr>
-<tr><td>5</td><td>Extended layers</td><td>7</td><td>3.5</td></tr>
+<tr><td>1–4</td><td>Foundation + Dense + transformer + CNN/RNN + extended</td><td>57</td><td>57</td></tr>
+<tr><td>5</td><td>Extended layers</td><td>7</td><td>7</td></tr>
 <tr><td>6–8</td><td>Runtime + systems + model</td><td>21</td><td>21</td></tr>
 <tr><td>9–11</td><td>Apps + stubs + accel</td><td>8</td><td>3.0</td></tr>
 <tr><td>12</td><td>Peak fused / no host ALU</td><td>14</td><td>0</td></tr>
-<tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>77.5</strong></td></tr>
+<tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>81</strong></td></tr>
 </tbody></table>
 """,
         example="""
@@ -1767,8 +1767,8 @@ import "fmt"
 
 func main() {
 	// Recompute when a board row flips ✅/🚧/⬜ in welvet/README.md
-	earned := 77.5
-	fmt.Printf("v0.%02.0f\\n", earned) // round(77.5) → v0.78 until earned==100 → v1.0
+	earned := 81.0
+	fmt.Printf("v0.%02.0f\\n", earned) // round(81) → v0.81 until earned==100 → v1.0
 }
 """,
     ))

@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.78</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.81</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -102,12 +102,12 @@
 
 <p class="chapter-kicker">Chapter 23</p>
 <h1>layers/gdn — gated delta net</h1>
-<p class="pill-row"><span class="pill">github.com/openfluke/welvet/layers/gdn</span><span class="status partial">🚧</span></p>
+<p class="pill-row"><span class="pill">github.com/openfluke/welvet/layers/gdn</span><span class="status ok">✅</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
 <p>Linear attention / decode-first mixers (Gated DeltaNet) need a first-class package under KindLinearAttn.</p>
 <h2>What it is</h2>
-<p>BinaryG128 projections, ForwardDecode, Reset. Grid-wide Exec still open. Smoke+census coverage.</p>
+<p>Exec CPU/SIMD/WebGPU; ForwardDecode; truncated BPTT; full timed matrix + train grids (Float32-primary).</p>
 
 
 <section class="examples" id="examples">
