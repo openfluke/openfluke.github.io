@@ -111,9 +111,10 @@ def title_logo_html() -> str:
 # Chapter catalog — every Welvet feature package
 # ---------------------------------------------------------------------------
 
-def chapters() -> list[Chapter]:
+def chapters(version: str = "v0.95", earned: float = 95.0) -> list[Chapter]:
     C = Chapter
     out: list[Chapter] = []
+    earned_i = int(round(earned))
 
     out.append(C(
         "01-welvet", "1", "What Welvet is", "I · Orientation",
@@ -123,8 +124,8 @@ def chapters() -> list[Chapter]:
             "per folder, storage-truth dtypes/quants, Dense as the shared MatVec microkernel, "
             "tests only in <code>w2a</code>, apps only in <code>apps/</code>.",
         what="An AI engine in Go: layers, 34 dtypes, 20 quant formats, and three backends "
-             "(CPU tiled · Plan 9 SIMD · WebGPU). Version tracks a 100-point scorecard "
-             "(today <strong>v0.81</strong>).",
+             f"(CPU tiled · Plan 9 SIMD · WebGPU). Version tracks a 100-point scorecard "
+             f"(today <strong>{esc(version)}</strong>).",
         body_extra=ascii_fig("""
 Rules
   1. No tests in engine packages          → w2a/
@@ -1747,29 +1748,30 @@ func main() {
 
     out.append(C(
         "64-scorecard", "64", "Scorecard → v1.0", "IX · Validate",
-        "", "partial", "v0.81",
-        why="Version is earned from a weighted board, not marketing. Peak-fused kernels and stubs still leave points on the table.",
-        what="version = 0.{round(earned)} until 100 → v1.0. Biggest remaining: §12 peak fused (14), extended layers, apps/stubs/accel.",
-        body_extra="""
+        "", "partial", version,
+        why="Version is earned from a weighted board, not marketing. Apps, stubs, and Accel still leave points on the table.",
+        what=f"version = 0.{{round(earned)}} until 100 → v1.0. Today <strong>{esc(version)}</strong> "
+             f"({earned_i}/100). Biggest remaining: apps/stubs (§9–10) and Accel (§11).",
+        body_extra=f"""
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
-<tr><td>1–4</td><td>Foundation + Dense + transformer + CNN/RNN + extended</td><td>57</td><td>57</td></tr>
+<tr><td>1–4</td><td>Foundation + Dense + transformer + CNN/RNN</td><td>50</td><td>50</td></tr>
 <tr><td>5</td><td>Extended layers</td><td>7</td><td>7</td></tr>
 <tr><td>6–8</td><td>Runtime + systems + model</td><td>21</td><td>21</td></tr>
 <tr><td>9–11</td><td>Apps + stubs + accel</td><td>8</td><td>3.0</td></tr>
-<tr><td>12</td><td>Peak fused / no host ALU</td><td>14</td><td>0</td></tr>
-<tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>81</strong></td></tr>
+<tr><td>12</td><td>Peak fused / no host ALU</td><td>14</td><td>14</td></tr>
+<tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>{earned_i}</strong></td></tr>
 </tbody></table>
 """,
-        example="""
+        example=f"""
 package main
 
 import "fmt"
 
-func main() {
+func main() {{
 	// Recompute when a board row flips ✅/🚧/⬜ in welvet/README.md
-	earned := 81.0
-	fmt.Printf("v0.%02.0f\\n", earned) // round(81) → v0.81 until earned==100 → v1.0
-}
+	earned := {earned:.1f}
+	fmt.Printf("v0.%02.0f\\n", earned) // round({earned_i}) → {version} until earned==100 → v1.0
+}}
 """,
     ))
 
@@ -2423,7 +2425,7 @@ def main() -> None:
     for p in CHDIR.glob("*.html"):
         p.unlink()
 
-    chs = chapters()
+    chs = chapters(version, earned)
     by = {c.slug: c for c in chs}
     listed = {s for _, ss in PARTS_NAV for s in ss}
     missing = [c.slug for c in chs if c.slug not in listed]
