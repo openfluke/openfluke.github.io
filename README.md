@@ -9,4 +9,4 @@ python3 _gen_welvet_book.py --run --pdf    # + PDF in dist/ (upload to GitHub Re
 cd welvet/examples/01-welvet && source ../env.sh && go run .
 ```
 
-PDF is **not** committed — version **v0.76** from `welvet/README.md`, upload `dist/welvet-feature-book-v0.76.pdf` to [GitHub Releases](https://github.com/openfluke/openfluke.github.io/releases).
+PDF is **not** committed — version **v0.78** from `welvet/README.md`, upload `dist/welvet-feature-book-v0.78.pdf` to [GitHub Releases](https://github.com/openfluke/openfluke.github.io/releases).

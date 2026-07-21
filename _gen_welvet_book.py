@@ -124,7 +124,7 @@ def chapters() -> list[Chapter]:
             "tests only in <code>w2a</code>, apps only in <code>apps/</code>.",
         what="An AI engine in Go: layers, 34 dtypes, 20 quant formats, and three backends "
              "(CPU tiled · Plan 9 SIMD · WebGPU). Version tracks a 100-point scorecard "
-             "(today <strong>v0.76</strong>).",
+             "(today <strong>v0.78</strong>).",
         body_extra=ascii_fig("""
 Rules
   1. No tests in engine packages          → w2a/
@@ -286,10 +286,11 @@ func main() {
         "github.com/openfluke/welvet/quant", "ok", "✅",
         why="Inference and storage need classic Q-packs, k-quants, IQ, Ternary/Binary, and "
             "Affine without a separate QAT training mode. Format is storage truth.",
-        what="Pack / Unpack / MatVec / MatVecT for FormatNone…AffinePacked. SIMD inflate "
-             "caches (EnsureFloatCache, EnsureQ4SIMDCache) exist for correct-but-not-peak paths.",
+        what="Pack / Unpack / MatVec / MatVecT for FormatNone…AffinePacked. Dense SIMD once-projects "
+             "codes into Int8QS + scales (EnsureQ* / EnsureK/IQ/AffineSIMDCache) — no full-matrix F32 inflate for k/IQ/Affine.",
         body_extra="<p>Families: classic Q8/Q4/Q5 · K-quants · IQ · TernaryPacked/BinaryPacked · AffinePacked.</p>"
-                   "<p>Honesty: fused SIMD for Q4/Q8/BitNet; k/IQ/Affine SIMD often inflate-once F32Cache+DotTile (🚧).</p>",
+                   "<p>Honesty: fused Dense SIMD for all 20 quants (group DotKRow / DotIQRow / DotAffineRow + classic Q*/BitNet). "
+                   "Peak dedicated k/IQ Plan 9 <code>.s</code> remains scorecard §12.</p>",
         example="""
 package main
 
@@ -320,7 +321,8 @@ func main() {
         why="CPU peak needs hand-written AVX2/NEON without a silent Go fallback that "
             "pretends SIMD ran.",
         what="amd64/arm64 .s kernels: DotTile, DotI8/U8, DotQ4_0, Saxpy, BitNet helpers, "
-             "packed f16/bf16/fp8/fp4 dots. SimdEnabled() false → BackendSIMD hard-errors.",
+             "packed f16/bf16/fp8/fp4 dots; Go fused DotKRow / DotIQRow / DotAffineRow for k/IQ/Affine. "
+             "SimdEnabled() false → BackendSIMD hard-errors.",
         example="""
 package main
 
@@ -472,6 +474,7 @@ func main() {
          "Most FLOPs are W@x. One Dense stack owns FormatNone×34 and all quants × three backends "
          "so every composite proj shares one correctness surface.",
          "New / NewConfigured[T], Forward/Backward (dispatch on Exec.Backend), Place, ApplyGradSGD. "
+         "SIMD: fused Dot* for classic Q*, k/IQ (group scales), AffinePacked code-dot — no F32 inflate. "
          "Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM) reuse Dense children.",
          """
 package main
@@ -1744,17 +1747,17 @@ func main() {
 
     out.append(C(
         "64-scorecard", "64", "Scorecard → v1.0", "IX · Validate",
-        "", "partial", "v0.76",
+        "", "partial", "v0.78",
         why="Version is earned from a weighted board, not marketing. Peak-fused kernels and stubs still leave points on the table.",
         what="version = 0.{round(earned)} until 100 → v1.0. Biggest remaining: §12 peak fused (14), extended layers, apps/stubs/accel.",
         body_extra="""
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
-<tr><td>1–4</td><td>Foundation + Dense + transformer + CNN/RNN</td><td>50</td><td>~48.5</td></tr>
+<tr><td>1–4</td><td>Foundation + Dense (all fused SIMD quants) + transformer + CNN/RNN</td><td>50</td><td>50</td></tr>
 <tr><td>5</td><td>Extended layers</td><td>7</td><td>3.5</td></tr>
 <tr><td>6–8</td><td>Runtime + systems + model</td><td>21</td><td>21</td></tr>
 <tr><td>9–11</td><td>Apps + stubs + accel</td><td>8</td><td>3.0</td></tr>
 <tr><td>12</td><td>Peak fused / no host ALU</td><td>14</td><td>0</td></tr>
-<tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>76</strong></td></tr>
+<tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>77.5</strong></td></tr>
 </tbody></table>
 """,
         example="""
@@ -1764,8 +1767,8 @@ import "fmt"
 
 func main() {
 	// Recompute when a board row flips ✅/🚧/⬜ in welvet/README.md
-	earned := 76.0
-	fmt.Printf("v0.%02.0f\\n", earned) // v0.76 until earned==100 → v1.0
+	earned := 77.5
+	fmt.Printf("v0.%02.0f\\n", earned) // round(77.5) → v0.78 until earned==100 → v1.0
 }
 """,
     ))

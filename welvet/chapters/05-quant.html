@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.76</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.78</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -107,8 +107,8 @@
 <h2>Why it exists</h2>
 <p>Inference and storage need classic Q-packs, k-quants, IQ, Ternary/Binary, and Affine without a separate QAT training mode. Format is storage truth.</p>
 <h2>What it is</h2>
-<p>Pack / Unpack / MatVec / MatVecT for FormatNone…AffinePacked. SIMD inflate caches (EnsureFloatCache, EnsureQ4SIMDCache) exist for correct-but-not-peak paths.</p>
-<p>Families: classic Q8/Q4/Q5 · K-quants · IQ · TernaryPacked/BinaryPacked · AffinePacked.</p><p>Honesty: fused SIMD for Q4/Q8/BitNet; k/IQ/Affine SIMD often inflate-once F32Cache+DotTile (🚧).</p>
+<p>Pack / Unpack / MatVec / MatVecT for FormatNone…AffinePacked. Dense SIMD once-projects codes into Int8QS + scales (EnsureQ* / EnsureK/IQ/AffineSIMDCache) — no full-matrix F32 inflate for k/IQ/Affine.</p>
+<p>Families: classic Q8/Q4/Q5 · K-quants · IQ · TernaryPacked/BinaryPacked · AffinePacked.</p><p>Honesty: fused Dense SIMD for all 20 quants (group DotKRow / DotIQRow / DotAffineRow + classic Q*/BitNet). Peak dedicated k/IQ Plan 9 <code>.s</code> remains scorecard §12.</p>
 
 <section class="examples" id="examples">
 <h2>Go example</h2>

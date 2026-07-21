@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.76</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.78</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -107,7 +107,7 @@
 <h2>Why it exists</h2>
 <p>CPU peak needs hand-written AVX2/NEON without a silent Go fallback that pretends SIMD ran.</p>
 <h2>What it is</h2>
-<p>amd64/arm64 .s kernels: DotTile, DotI8/U8, DotQ4_0, Saxpy, BitNet helpers, packed f16/bf16/fp8/fp4 dots. SimdEnabled() false → BackendSIMD hard-errors.</p>
+<p>amd64/arm64 .s kernels: DotTile, DotI8/U8, DotQ4_0, Saxpy, BitNet helpers, packed f16/bf16/fp8/fp4 dots; Go fused DotKRow / DotIQRow / DotAffineRow for k/IQ/Affine. SimdEnabled() false → BackendSIMD hard-errors.</p>
 
 
 <section class="examples" id="examples">

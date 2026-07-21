@@ -370,5 +370,11 @@
     "stdout": "v0.76\n",
     "stderr": "",
     "combined": "v0.76"
+  },
+  "64-scorecard": {
+    "exit_code": 0,
+    "stdout": "v0.78\n",
+    "stderr": "",
+    "combined": "v0.78"
   }
 }

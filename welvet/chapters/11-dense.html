@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.76</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.78</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -107,7 +107,7 @@
 <h2>Why it exists</h2>
 <p>Most FLOPs are W@x. One Dense stack owns FormatNone×34 and all quants × three backends so every composite proj shares one correctness surface.</p>
 <h2>What it is</h2>
-<p>New / NewConfigured[T], Forward/Backward (dispatch on Exec.Backend), Place, ApplyGradSGD. Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM) reuse Dense children.</p>
+<p>New / NewConfigured[T], Forward/Backward (dispatch on Exec.Backend), Place, ApplyGradSGD. SIMD: fused Dot* for classic Q*, k/IQ (group scales), AffinePacked code-dot — no F32 inflate. Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM) reuse Dense children.</p>
 
 
 <section class="examples" id="examples">
