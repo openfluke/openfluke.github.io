@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	cells, cases := 137039, 326
-	fmt.Printf("w2a suite: %d/%d matrix cells OK, %d/%d cases PASS\n", cells, cells, cases, cases)
-	fmt.Println("gaps: 0   fails: 0   result: PASS")
+	cells, ok, gap, cases := 228054, 227194, 860, 456
+	fmt.Printf("w2a suite: %d cells (OK %d GAP %d FAIL 0)\n", cells, ok, gap)
+	fmt.Printf("cases: %d/%d PASS   result: PASS\n", cases, cases)
 }

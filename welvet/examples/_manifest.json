@@ -379,9 +379,9 @@
   },
   "63-validation": {
     "exit_code": 0,
-    "stdout": "w2a suite: 137039/137039 matrix cells OK, 326/326 cases PASS\ngaps: 0   fails: 0   result: PASS\n",
+    "stdout": "w2a suite: 228054 cells (OK 227194 GAP 860 FAIL 0)\ncases: 456/456 PASS   result: PASS\n",
     "stderr": "",
-    "combined": "w2a suite: 137039/137039 matrix cells OK, 326/326 cases PASS\ngaps: 0   fails: 0   result: PASS"
+    "combined": "w2a suite: 228054 cells (OK 227194 GAP 860 FAIL 0)\ncases: 456/456 PASS   result: PASS"
   },
   "64-scorecard": {
     "exit_code": 0,

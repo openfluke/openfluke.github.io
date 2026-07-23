@@ -1776,34 +1776,32 @@ func main() {
 
     out.append(C(
         "63-validation", "63", "Validation report — full suite", "IX · Validate",
-        "github.com/openfluke/w2a", "ok", "✅ 137k cells",
-        why="Claims are cheap; a green matrix is not. This is the actual output of one full w2a run so the book's ✅ marks are backed by numbers you can reproduce, not asserted.",
-        what="Every timed layer sweeps its dtype × format × backend matrix; every suite runs its case checks. The run below is zero-gap and zero-fail across the whole board.",
+        "github.com/openfluke/w2a", "ok", "✅ 228k cells",
+        why="Claims are cheap; a stamped matrix is not. This is the actual output of one full w2a run so the book's ✅ marks are backed by numbers you can reproduce, not asserted.",
+        what="Every timed layer sweeps its dtype × format × backend matrix; every suite runs its case checks. "
+             "Latest full board: FAIL 0, cases all PASS; honesty stamps still record GAP cells (not silent skips).",
         body_extra="""
-<div class="callout"><strong>Full suite: PASS</strong>137,039 matrix cells — OK 137,039 · GAP 0 · FAIL 0. 326 suite cases — PASS 326 · FAIL 0. Elapsed 24m09s on amd64 with an NVIDIA GTX 1650 SUPER.</div>
-<h3>Coverage by layer (timed matrices)</h3>
+<div class="callout"><strong>Full suite: PASS</strong>228,054 matrix cells — OK 227,194 · GAP 860 · FAIL 0. 456 suite cases — PASS 456 · FAIL 0. Elapsed 1h21m32s. Good enough for Caber / GitHub release: no fails, gaps are declared.</div>
+<h3>Coverage by layer (highlights)</h3>
 <table>
-<thead><tr><th>Layer</th><th>Cells</th><th>OK</th><th>Cases</th></tr></thead>
+<thead><tr><th>Layer</th><th>Cells</th><th>OK</th><th>GAP</th><th>Cases</th></tr></thead>
 <tbody>
-<tr><td>dense</td><td>2,802</td><td>2,802</td><td>18</td></tr>
-<tr><td>mha</td><td>2,847</td><td>2,847</td><td>18</td></tr>
-<tr><td>softmax</td><td>2,847</td><td>2,847</td><td>19</td></tr>
-<tr><td>cnn1 · cnn2 · cnn3</td><td>2,847 ea</td><td>2,847 ea</td><td>14 ea</td></tr>
-<tr><td>embedding · layernorm · lstm</td><td>2,847 ea</td><td>2,847 ea</td><td>14 ea</td></tr>
-<tr><td>residual · rmsnorm · rnn</td><td>2,847 ea</td><td>2,847 ea</td><td>14 ea</td></tr>
-<tr><td>sequential · swiglu</td><td>2,847 ea</td><td>2,847 ea</td><td>14 ea</td></tr>
-<tr><td>dna</td><td>16,159</td><td>16,159</td><td>6</td></tr>
-<tr><td>evolution</td><td>16,152</td><td>16,152</td><td>6</td></tr>
-<tr><td>step</td><td>32,458</td><td>32,458</td><td>11</td></tr>
-<tr><td>tween</td><td>32,457</td><td>32,457</td><td>10</td></tr>
-<tr><td><strong>Total</strong></td><td><strong>137,039</strong></td><td><strong>137,039</strong></td><td><strong>326</strong></td></tr>
+<tr><td>step</td><td>43,903</td><td>43,903</td><td>0</td><td>13</td></tr>
+<tr><td>tween</td><td>32,457</td><td>32,457</td><td>0</td><td>10</td></tr>
+<tr><td>dna</td><td>16,159</td><td>16,159</td><td>0</td><td>6</td></tr>
+<tr><td>evolution</td><td>16,152</td><td>16,152</td><td>0</td><td>6</td></tr>
+<tr><td>dense</td><td>5,775</td><td>5,774</td><td>1</td><td>25</td></tr>
+<tr><td>mha · swiglu · cnn* · rnn/lstm · norms · …</td><td>~5,763 ea</td><td>~all OK</td><td>0–few</td><td>14–23 ea</td></tr>
+<tr><td>parallel</td><td>6,415</td><td>6,369</td><td>46</td><td>20</td></tr>
+<tr><td>convt1–3</td><td>5,763 ea</td><td>5,649 ea</td><td>114 ea</td><td>14 ea</td></tr>
+<tr><td>gdn</td><td>555</td><td>93</td><td>462</td><td>17</td></tr>
+<tr><td>mamba</td><td>5,763</td><td>5,755</td><td>8</td><td>14</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>228,054</strong></td><td><strong>227,194</strong></td><td><strong>860</strong></td><td><strong>456</strong></td></tr>
 </tbody>
 </table>
-<p class="example-meta">Full timed matrices: dense…residual + §5 gdn/mamba/convt/kmeans/parallel/metacognition. Case-only stubs: seed, serialization, memory, donate, fountain, hardware, helpers.</p>
-<h3>Dense timed matrix — highlights</h3>
-<p>All 34 dtypes run forward and backward on CPU-tiled, Plan 9 SIMD, and WebGPU with zero gaps. Fastest forward paths on SIMD: <code>int8</code> 45µs, <code>float32</code> 57µs, <code>int4</code> 87µs; WebGPU stays in the ~165–490µs band across every dtype.</p>
+<p class="example-meta">GAPs are honesty stamps (paths not claimed done) — concentrated in gdn / convt / a few poly_train cells. Case-only stubs: seed, serialization, memory, donate, fountain, hardware, helpers, weights.</p>
 <h3>Cross-numeric train</h3>
-<p>Beyond matched float32 acts: W2A Step <strong>Cross-Numeric Train</strong> sweeps every Op kind × FormatNone weight dtype × Go <code>Numeric</code> activation host (smoke ~735 cells; full census ~10.7k). Storage truth is checked after <code>StepMesh</code> — no retained f32 master for non-float32 FormatNone. Public Dense demotion + full W×A showcase: <a href="https://github.com/openfluke/down-the-dem">down-the-dem</a> (see also chapter <a href="65-cross-numeric.html">65 · Cross-numeric train</a>).</p>
+<p>W2A Step includes <strong>Cross-Numeric Train</strong> (kinds × weight dtype × act host; full census ~10.7k under the <code>train</code> op). Storage truth checked after <code>StepMesh</code> — no retained f32 master for non-float32 FormatNone. Public Dense demotion + W×A showcase: <a href="https://github.com/openfluke/down-the-dem">down-the-dem</a> (chapter <a href="65-cross-numeric.html">65</a>).</p>
 """,
         example="""
 package main
@@ -1811,12 +1809,12 @@ package main
 import "fmt"
 
 func main() {
-	cells, cases := 137039, 326
-	fmt.Printf("w2a suite: %d/%d matrix cells OK, %d/%d cases PASS\\n", cells, cells, cases, cases)
-	fmt.Println("gaps: 0   fails: 0   result: PASS")
+	cells, ok, gap, cases := 228054, 227194, 860, 456
+	fmt.Printf("w2a suite: %d cells (OK %d GAP %d FAIL 0)\\n", cells, ok, gap)
+	fmt.Printf("cases: %d/%d PASS   result: PASS\\n", cases, cases)
 }
 """,
-        run="cd w2a && go run .   # full timed suite (~24m); writes logs/suite.txt",
+        run="cd w2a && go run .   # full timed suite (~1h20m); writes logs/suite.txt",
     ))
 
     out.append(C(
