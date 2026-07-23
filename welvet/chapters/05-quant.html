@@ -48,6 +48,7 @@
 <a href="30-backward.html">30. runtime/backward</a>
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -105,9 +106,9 @@
 <p class="pill-row"><span class="pill">github.com/openfluke/welvet/quant</span><span class="status ok">✅</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Inference and storage need classic Q-packs, k-quants, IQ, Ternary/Binary, and Affine without a separate QAT training mode. Format is storage truth.</p>
+<p>Inference, storage, and train need classic Q-packs, k-quants, IQ, Ternary/Binary, and Affine without a separate QAT mode or retained f32 master. Format is storage truth.</p>
 <h2>What it is</h2>
-<p>Pack / Unpack / MatVec / MatVecT for FormatNone…AffinePacked. Dense SIMD once-projects codes into Int8QS + scales (EnsureQ* / EnsureK/IQ/AffineSIMDCache) — no full-matrix F32 inflate for k/IQ/Affine.</p>
+<p>Pack / Unpack / MatVec / MatVecT for FormatNone…AffinePacked. Dense SIMD once-projects codes into Int8QS + scales (EnsureQ* / EnsureK/IQ/AffineSIMDCache) — no full-matrix F32 inflate for k/IQ/Affine. SGD on packed stores: short-lived unpack scratch → update → re-Pack; Packed stays truth.</p>
 <p>Families: classic Q8/Q4/Q5 · K-quants · IQ · TernaryPacked/BinaryPacked · AffinePacked.</p><p>Honesty: fused Dense SIMD for all 20 quants (group DotKRow / DotIQRow / DotAffineRow + classic Q*/BitNet). Peak dedicated k/IQ Plan 9 <code>.s</code> remains scorecard §12.</p>
 
 <section class="examples" id="examples">

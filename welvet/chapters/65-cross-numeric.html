@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>29. runtime/forward — Welvet</title>
+<title>65. Cross-numeric train + down-the-dem — Welvet</title>
 <link rel="stylesheet" href="../assets/book.css"/>
 </head>
 <body>
@@ -97,24 +97,34 @@
 <div class="topbar">
 <button class="menu-btn" id="menu-btn" type="button">Menu</button>
 <div class="meta">IV · Runtime</div>
-<nav class="pager"><a href="28-metacognition.html">← 28. layers/metacognition</a><a href="30-backward.html">30. runtime/backward →</a></nav>
+<nav class="pager"><a href="32-step.html">← 32. runtime/step — step mesh</a><a href="33-dna.html">33. systems/dna →</a></nav>
 </div>
 <article class="content" id="main">
 
-<p class="chapter-kicker">Chapter 29</p>
-<h1>runtime/forward</h1>
-<p class="pill-row"><span class="pill">github.com/openfluke/welvet/runtime/forward</span><span class="status ok">✅</span></p>
+<p class="chapter-kicker">Chapter 65</p>
+<h1>Cross-numeric train + down-the-dem</h1>
+<p class="pill-row"><span class="pill">github.com/openfluke/welvet/runtime/training</span><span class="status ok">✅</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>A grid of heterogeneous ops needs one walker that dispatches by concrete type and fails loudly on unknowns.</p>
+<p>Weight storage dtype and activation Tensor[T] are independent axes. Proving train without a retained float32 master means sweeping W×A — not only matched float32 acts.</p>
 <h2>What it is</h2>
-<p>Forward[T](grid, input) → Result tape; Cell[T] for single-cell dispatch. Covers Dense…Residual + extended wired ops.</p>
+<p>W2A Step Cross-Numeric Train: polyops.AllKinds() × FormatNone weight dtype × Go Numeric act host (smoke ~735; full ~10.7k) via StepMesh, then assert no retained f32 master. Public Dense volumetric showcase: down-the-dem — dtype demotion ladder, packed quants, and the full 34×15×3 perm matrix with charts/PDF.</p>
+
+<p><strong>down-the-dem</strong> — same 5-layer Dense stack on cubes 1³ / 2³ / 3³; only the number story changes:</p>
+<ul>
+<li><strong>dtype</strong> — FormatNone demotion (wide → 1-bit), in-dtype SGD</li>
+<li><strong>quant</strong> — packed formats; unpack → update → re-Pack</li>
+<li><strong>perm</strong> — every weight dtype × every act host (1,530 cells on three grids)</li>
+</ul>
+<p>Repo + report: <a href="https://github.com/openfluke/down-the-dem">github.com/openfluke/down-the-dem</a>
+ · PDF: <code>report/down-the-dem.pdf</code> in that repo.
+ Honesty: runnable storage-truth train ≠ task accuracy or native low-precision GEMV ALU.</p>
 
 
 <section class="examples" id="examples">
 <h2>Go example</h2>
-<p><a class="go-file-link" href="../examples/29-forward/main.go">examples/29-forward/main.go</a></p>
-<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/29-forward &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
+<p><a class="go-file-link" href="../examples/65-cross-numeric/main.go">examples/65-cross-numeric/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/65-cross-numeric &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
@@ -123,23 +133,40 @@ import (
 	"github.com/openfluke/welvet/architecture"
 	"github.com/openfluke/welvet/core"
 	"github.com/openfluke/welvet/layers/dense"
-	"github.com/openfluke/welvet/runtime/forward"
+	"github.com/openfluke/welvet/quant"
+	"github.com/openfluke/welvet/runtime/training"
 )
 
 func main() {
+	// Weight storage: int8 FormatNone. Activations/grads: Tensor[int8].
 	g := architecture.NewGrid(1, 1, 1, 1)
-	l, _ := dense.New(8, 8, core.ActivationLinear, core.DTypeFloat32)
-	_ = dense.Place(g, 0, 0, 0, 0, l)
-	res, err := forward.Forward(g, core.NewTensor[float32](1, 8))
-	fmt.Println(res != nil, err)
+	init := make([]float32, 4*4)
+	for i := range init {
+		init[i] = 0.1
+	}
+	l, err := dense.NewConfigured(4, 4, core.ActivationLinear, core.DTypeInt8, quant.FormatNone, init)
+	if err != nil {
+		panic(err)
+	}
+	if err := dense.Place(g, 0, 0, 0, 0, l); err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[int8](1, 4)
+	y := core.NewTensor[int8](1, 4)
+	for i := 0; i &lt; 4; i++ {
+		x.Data[i] = int8(i + 1)
+		y.Data[i] = int8(i)
+	}
+	loss, _, err := training.StepMesh(g, x, y, 1, 0.05)
+	fmt.Println(loss, err, l.Weights.RetainsF32Master())
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>true &lt;nil&gt;</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>1.5 &lt;nil&gt; false</code></pre>
 
 </section>
 
 
-<nav class="pager" style="margin-top:2rem"><a href="28-metacognition.html">← 28. layers/metacognition</a><a href="30-backward.html">30. runtime/backward →</a></nav>
+<nav class="pager" style="margin-top:2rem"><a href="32-step.html">← 32. runtime/step — step mesh</a><a href="33-dna.html">33. systems/dna →</a></nav>
 </article>
 </div></div>
 <script src="../assets/book.js"></script>

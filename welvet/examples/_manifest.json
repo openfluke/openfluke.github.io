@@ -37,9 +37,9 @@
   },
   "07-webgpu": {
     "exit_code": 0,
-    "stdout": "[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER\n",
-    "stderr": "",
-    "combined": "[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER"
+    "stdout": "no adapter: webgpu: RequestDevice: failed to request device\n",
+    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
+    "combined": "no adapter: webgpu: RequestDevice: failed to request device\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
   },
   "08-tiling": {
     "exit_code": 0,
@@ -191,6 +191,12 @@
     "stderr": "",
     "combined": "<nil>"
   },
+  "65-cross-numeric": {
+    "exit_code": 0,
+    "stdout": "1.5 <nil> false\n",
+    "stderr": "",
+    "combined": "1.5 <nil> false"
+  },
   "33-dna": {
     "exit_code": 0,
     "stdout": "{1 map[0,0,0,0:1] []}\n",
@@ -325,9 +331,9 @@
   },
   "55-stub-grafting": {
     "exit_code": 0,
-    "stdout": "false grafting: no valid Dense branches\n",
+    "stdout": "false grafting: no valid branches\n",
     "stderr": "",
-    "combined": "false grafting: no valid Dense branches"
+    "combined": "false grafting: no valid branches"
   },
   "56-stub-grouping": {
     "exit_code": 0,

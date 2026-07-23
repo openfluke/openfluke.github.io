@@ -132,8 +132,9 @@ Rules
   2. No silent fallbacks                  → hard error
   3. No hardcoded float32                 → Tensor[T]
   4. No QAT                               → DType + Format = truth
-  5. One feature → one folder
-  6. v1.0 = scorecard 100/100
+  5. Train keeps storage truth            → in-dtype / re-Pack SGD, no retained f32 master
+  6. One feature → one folder
+  7. v1.0 = scorecard 100/100
 """, "Non-negotiable engine rules.") + """
 <h2>Origin</h2>
 <p class="origin-byline"><strong>Samuel Watson</strong></p>
@@ -253,10 +254,13 @@ func main() {
     out.append(C(
         "04-weights", "4", "weights — FormatNone MatVec", "II · Foundation",
         "github.com/openfluke/welvet/weights", "ok", "✅",
-        why="Unquantized matrices still need a typed store that streams MatVec without "
+        why="Unquantized matrices still need a typed store that streams MatVec and SGD without "
             "forcing a float32 master or Morph-as-training.",
         what="Store holds DType + Format + Native/Packed bytes. New[T], MatVec, MatVecT, "
-             "DecodeRow, SelectWire (F32/F64/I8). Dense and composite projs call this for FormatNone.",
+             "DecodeRow, SelectWire (F32/F64/I8), ApplySGD. FormatNone: update in native lanes "
+             "(float32 payload is the only f32 buffer; float64 uses native ALU; other dtypes "
+             "decode→update→re-encode). Packed: unpack→update→re-Pack then drop scratch. "
+             "RetainsF32Master() is true only for FormatNone+float32. Dense and composite projs share this store.",
         example="""
 package main
 
@@ -285,10 +289,11 @@ func main() {
     out.append(C(
         "05-quant", "5", "quant — 20 pack formats", "II · Foundation",
         "github.com/openfluke/welvet/quant", "ok", "✅",
-        why="Inference and storage need classic Q-packs, k-quants, IQ, Ternary/Binary, and "
-            "Affine without a separate QAT training mode. Format is storage truth.",
+        why="Inference, storage, and train need classic Q-packs, k-quants, IQ, Ternary/Binary, and "
+            "Affine without a separate QAT mode or retained f32 master. Format is storage truth.",
         what="Pack / Unpack / MatVec / MatVecT for FormatNone…AffinePacked. Dense SIMD once-projects "
-             "codes into Int8QS + scales (EnsureQ* / EnsureK/IQ/AffineSIMDCache) — no full-matrix F32 inflate for k/IQ/Affine.",
+             "codes into Int8QS + scales (EnsureQ* / EnsureK/IQ/AffineSIMDCache) — no full-matrix F32 inflate for k/IQ/Affine. "
+             "SGD on packed stores: short-lived unpack scratch → update → re-Pack; Packed stays truth.",
         body_extra="<p>Families: classic Q8/Q4/Q5 · K-quants · IQ · TernaryPacked/BinaryPacked · AffinePacked.</p>"
                    "<p>Honesty: fused Dense SIMD for all 20 quants (group DotKRow / DotIQRow / DotAffineRow + classic Q*/BitNet). "
                    "Peak dedicated k/IQ Plan 9 <code>.s</code> remains scorecard §12.</p>",
@@ -473,10 +478,11 @@ func main() {
         ("11-dense", "11", "layers/dense — MatVec microkernel",
          "github.com/openfluke/welvet/layers/dense", "ok", "✅",
          "Most FLOPs are W@x. One Dense stack owns FormatNone×34 and all quants × three backends "
-         "so every composite proj shares one correctness surface.",
-         "New / NewConfigured[T], Forward/Backward (dispatch on Exec.Backend), Place, ApplyGradSGD. "
+         "so every composite proj shares one correctness surface — including native in-dtype SGD.",
+         "New / NewConfigured[T], Forward/Backward (dispatch on Exec.Backend), Place, ApplyGradSGD "
+         "(→ weights.ApplySGD on the store). "
          "SIMD: fused Dot* for classic Q*, k/IQ (group scales), AffinePacked code-dot — no F32 inflate. "
-         "Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM) reuse Dense children.",
+         "Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM) reuse Dense children and the same SGD path.",
          """
 package main
 
@@ -989,8 +995,11 @@ func main() {
     out.append(C(
         "31-training", "31", "runtime/training", "IV · Runtime",
         "github.com/openfluke/welvet/runtime/training", "ok", "✅",
-        why="Suites and small nets need MSE+SGD and tween hooks without inventing an external trainer.",
-        what="MSE/MSEGrad, SGD, Step, ApplyTween/StepTween, StepMesh. No QAT dual path — storage dtype is truth.",
+        why="Suites and small nets need MSE+SGD and tween hooks without inventing an external trainer "
+            "or a retained float32 master beside storage.",
+        what="MSE/MSEGrad, SGD, Step, ApplyTween/StepTween, StepMesh. Layer-agnostic ApplyGradSGD "
+             "dispatch (Dense…Mamba/GDN/…). FormatNone: in-dtype ApplySGD; packed: unpack→update→re-Pack. "
+             "No QAT dual path — storage dtype/format is truth after every step.",
         example="""
 package main
 
@@ -1018,8 +1027,11 @@ func main() {
     out.append(C(
         "32-step", "32", "runtime/step — step mesh", "IV · Runtime",
         "github.com/openfluke/welvet/runtime/step", "ok", "✅",
-        why="Spatial feedback (remote links) needs a discrete-time mesh where every cell updates from a double buffer — different from a decoder wavefront.",
-        what="State[T], StepForward/StepBackward/StepApplyTween across the grid for all wired Ops × dtype × quant × CPU/SIMD.",
+        why="Spatial feedback (remote links) needs a discrete-time mesh where every cell updates from a double buffer — different from a decoder wavefront. "
+            "Cross-numeric train also needs the same mesh with weight DType ⊥ activation Tensor[T].",
+        what="State[T], StepForward/StepBackward/StepApplyTween / StepMesh across the grid for all wired Ops × dtype × quant × CPU/SIMD. "
+             "W2A Cross-Numeric Train: polyops.AllKinds() × weight dtype × act host "
+             "(smoke ~21×7×5 ≈ 735; full ~21×34×15 ≈ 10.7k) — asserts no retained f32 master after StepMesh.",
         example="""
 package main
 
@@ -1039,6 +1051,65 @@ func main() {
 	st := step.New[float32](g)
 	_, err := step.StepForward(g, st, false)
 	fmt.Println(err)
+}
+""",
+    ))
+
+    out.append(C(
+        "65-cross-numeric", "65", "Cross-numeric train + down-the-dem", "IV · Runtime",
+        "github.com/openfluke/welvet/runtime/training", "ok", "✅",
+        why="Weight storage dtype and activation Tensor[T] are independent axes. "
+            "Proving train without a retained float32 master means sweeping W×A — not only matched float32 acts.",
+        what="W2A Step Cross-Numeric Train: polyops.AllKinds() × FormatNone weight dtype × Go Numeric act host "
+             "(smoke ~735; full ~10.7k) via StepMesh, then assert no retained f32 master. "
+             "Public Dense volumetric showcase: down-the-dem — dtype demotion ladder, packed quants, "
+             "and the full 34×15×3 perm matrix with charts/PDF.",
+        body_extra="""
+<p><strong>down-the-dem</strong> — same 5-layer Dense stack on cubes 1³ / 2³ / 3³; only the number story changes:</p>
+<ul>
+<li><strong>dtype</strong> — FormatNone demotion (wide → 1-bit), in-dtype SGD</li>
+<li><strong>quant</strong> — packed formats; unpack → update → re-Pack</li>
+<li><strong>perm</strong> — every weight dtype × every act host (1,530 cells on three grids)</li>
+</ul>
+<p>Repo + report: <a href="https://github.com/openfluke/down-the-dem">github.com/openfluke/down-the-dem</a>
+ · PDF: <code>report/down-the-dem.pdf</code> in that repo.
+ Honesty: runnable storage-truth train ≠ task accuracy or native low-precision GEMV ALU.</p>
+""",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/architecture"
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/quant"
+	"github.com/openfluke/welvet/runtime/training"
+)
+
+func main() {
+	// Weight storage: int8 FormatNone. Activations/grads: Tensor[int8].
+	g := architecture.NewGrid(1, 1, 1, 1)
+	init := make([]float32, 4*4)
+	for i := range init {
+		init[i] = 0.1
+	}
+	l, err := dense.NewConfigured(4, 4, core.ActivationLinear, core.DTypeInt8, quant.FormatNone, init)
+	if err != nil {
+		panic(err)
+	}
+	if err := dense.Place(g, 0, 0, 0, 0, l); err != nil {
+		panic(err)
+	}
+	x := core.NewTensor[int8](1, 4)
+	y := core.NewTensor[int8](1, 4)
+	for i := 0; i < 4; i++ {
+		x.Data[i] = int8(i + 1)
+		y.Data[i] = int8(i)
+	}
+	loss, _, err := training.StepMesh(g, x, y, 1, 0.05)
+	fmt.Println(loss, err, l.Weights.RetainsF32Master())
 }
 """,
     ))
@@ -1731,6 +1802,8 @@ func main() {
 <p class="example-meta">Full timed matrices: dense…residual + §5 gdn/mamba/convt/kmeans/parallel/metacognition. Case-only stubs: seed, serialization, memory, donate, fountain, hardware, helpers.</p>
 <h3>Dense timed matrix — highlights</h3>
 <p>All 34 dtypes run forward and backward on CPU-tiled, Plan 9 SIMD, and WebGPU with zero gaps. Fastest forward paths on SIMD: <code>int8</code> 45µs, <code>float32</code> 57µs, <code>int4</code> 87µs; WebGPU stays in the ~165–490µs band across every dtype.</p>
+<h3>Cross-numeric train</h3>
+<p>Beyond matched float32 acts: W2A Step <strong>Cross-Numeric Train</strong> sweeps every Op kind × FormatNone weight dtype × Go <code>Numeric</code> activation host (smoke ~735 cells; full census ~10.7k). Storage truth is checked after <code>StepMesh</code> — no retained f32 master for non-float32 FormatNone. Public Dense demotion + full W×A showcase: <a href="https://github.com/openfluke/down-the-dem">down-the-dem</a> (see also chapter <a href="65-cross-numeric.html">65 · Cross-numeric train</a>).</p>
 """,
         example="""
 package main
@@ -1790,7 +1863,7 @@ PARTS_NAV = [
         "18-sequential", "19-residual", "20-cnn", "21-rnn-lstm", "22-seqmix", "23-gdn", "24-mamba",
         "25-convt", "26-kmeans", "27-parallel", "28-metacognition",
     ]),
-    ("IV · Runtime", ["29-forward", "30-backward", "31-training", "32-step"]),
+    ("IV · Runtime", ["29-forward", "30-backward", "31-training", "32-step", "65-cross-numeric"]),
     ("V · Systems", ["33-dna", "34-evolution", "35-tween", "36-tanhi", "37-telemetry"]),
     ("VI · Model IO", ["38-entity", "39-hf", "40-tokenizer", "41-sampling", "42-transformer"]),
     ("VII · Apps", ["43-apps", "44-octo"]),

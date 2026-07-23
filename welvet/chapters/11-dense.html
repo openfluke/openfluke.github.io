@@ -48,6 +48,7 @@
 <a href="30-backward.html">30. runtime/backward</a>
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -105,9 +106,9 @@
 <p class="pill-row"><span class="pill">github.com/openfluke/welvet/layers/dense</span><span class="status ok">✅</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Most FLOPs are W@x. One Dense stack owns FormatNone×34 and all quants × three backends so every composite proj shares one correctness surface.</p>
+<p>Most FLOPs are W@x. One Dense stack owns FormatNone×34 and all quants × three backends so every composite proj shares one correctness surface — including native in-dtype SGD.</p>
 <h2>What it is</h2>
-<p>New / NewConfigured[T], Forward/Backward (dispatch on Exec.Backend), Place, ApplyGradSGD. SIMD: fused Dot* for classic Q*, k/IQ (group scales), AffinePacked code-dot — no F32 inflate. Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM) reuse Dense children.</p>
+<p>New / NewConfigured[T], Forward/Backward (dispatch on Exec.Backend), Place, ApplyGradSGD (→ weights.ApplySGD on the store). SIMD: fused Dot* for classic Q*, k/IQ (group scales), AffinePacked code-dot — no F32 inflate. Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM) reuse Dense children and the same SGD path.</p>
 
 
 <section class="examples" id="examples">

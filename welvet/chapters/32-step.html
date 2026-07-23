@@ -48,6 +48,7 @@
 <a href="30-backward.html">30. runtime/backward</a>
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -96,7 +97,7 @@
 <div class="topbar">
 <button class="menu-btn" id="menu-btn" type="button">Menu</button>
 <div class="meta">IV · Runtime</div>
-<nav class="pager"><a href="31-training.html">← 31. runtime/training</a><a href="33-dna.html">33. systems/dna →</a></nav>
+<nav class="pager"><a href="31-training.html">← 31. runtime/training</a><a href="65-cross-numeric.html">65. Cross-numeric train + down-the-dem →</a></nav>
 </div>
 <article class="content" id="main">
 
@@ -105,9 +106,9 @@
 <p class="pill-row"><span class="pill">github.com/openfluke/welvet/runtime/step</span><span class="status ok">✅</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Spatial feedback (remote links) needs a discrete-time mesh where every cell updates from a double buffer — different from a decoder wavefront.</p>
+<p>Spatial feedback (remote links) needs a discrete-time mesh where every cell updates from a double buffer — different from a decoder wavefront. Cross-numeric train also needs the same mesh with weight DType ⊥ activation Tensor[T].</p>
 <h2>What it is</h2>
-<p>State[T], StepForward/StepBackward/StepApplyTween across the grid for all wired Ops × dtype × quant × CPU/SIMD.</p>
+<p>State[T], StepForward/StepBackward/StepApplyTween / StepMesh across the grid for all wired Ops × dtype × quant × CPU/SIMD. W2A Cross-Numeric Train: polyops.AllKinds() × weight dtype × act host (smoke ~21×7×5 ≈ 735; full ~21×34×15 ≈ 10.7k) — asserts no retained f32 master after StepMesh.</p>
 
 
 <section class="examples" id="examples">
@@ -139,7 +140,7 @@ func main() {
 </section>
 
 
-<nav class="pager" style="margin-top:2rem"><a href="31-training.html">← 31. runtime/training</a><a href="33-dna.html">33. systems/dna →</a></nav>
+<nav class="pager" style="margin-top:2rem"><a href="31-training.html">← 31. runtime/training</a><a href="65-cross-numeric.html">65. Cross-numeric train + down-the-dem →</a></nav>
 </article>
 </div></div>
 <script src="../assets/book.js"></script>

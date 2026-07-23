@@ -48,6 +48,7 @@
 <a href="30-backward.html">30. runtime/backward</a>
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -105,9 +106,9 @@
 <p class="pill-row"><span class="pill">github.com/openfluke/welvet/runtime/training</span><span class="status ok">✅</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Suites and small nets need MSE+SGD and tween hooks without inventing an external trainer.</p>
+<p>Suites and small nets need MSE+SGD and tween hooks without inventing an external trainer or a retained float32 master beside storage.</p>
 <h2>What it is</h2>
-<p>MSE/MSEGrad, SGD, Step, ApplyTween/StepTween, StepMesh. No QAT dual path — storage dtype is truth.</p>
+<p>MSE/MSEGrad, SGD, Step, ApplyTween/StepTween, StepMesh. Layer-agnostic ApplyGradSGD dispatch (Dense…Mamba/GDN/…). FormatNone: in-dtype ApplySGD; packed: unpack→update→re-Pack. No QAT dual path — storage dtype/format is truth after every step.</p>
 
 
 <section class="examples" id="examples">

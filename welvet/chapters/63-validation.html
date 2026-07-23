@@ -48,6 +48,7 @@
 <a href="30-backward.html">30. runtime/backward</a>
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -131,6 +132,8 @@
 <p class="example-meta">Full timed matrices: dense…residual + §5 gdn/mamba/convt/kmeans/parallel/metacognition. Case-only stubs: seed, serialization, memory, donate, fountain, hardware, helpers.</p>
 <h3>Dense timed matrix — highlights</h3>
 <p>All 34 dtypes run forward and backward on CPU-tiled, Plan 9 SIMD, and WebGPU with zero gaps. Fastest forward paths on SIMD: <code>int8</code> 45µs, <code>float32</code> 57µs, <code>int4</code> 87µs; WebGPU stays in the ~165–490µs band across every dtype.</p>
+<h3>Cross-numeric train</h3>
+<p>Beyond matched float32 acts: W2A Step <strong>Cross-Numeric Train</strong> sweeps every Op kind × FormatNone weight dtype × Go <code>Numeric</code> activation host (smoke ~735 cells; full census ~10.7k). Storage truth is checked after <code>StepMesh</code> — no retained f32 master for non-float32 FormatNone. Public Dense demotion + full W×A showcase: <a href="https://github.com/openfluke/down-the-dem">down-the-dem</a> (see also chapter <a href="65-cross-numeric.html">65 · Cross-numeric train</a>).</p>
 
 
 <section class="examples" id="examples">

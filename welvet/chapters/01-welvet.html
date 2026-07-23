@@ -48,6 +48,7 @@
 <a href="30-backward.html">30. runtime/backward</a>
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -113,8 +114,9 @@
   2. No silent fallbacks                  → hard error
   3. No hardcoded float32                 → Tensor[T]
   4. No QAT                               → DType + Format = truth
-  5. One feature → one folder
-  6. v1.0 = scorecard 100/100</pre><figcaption>Non-negotiable engine rules.</figcaption></figure>
+  5. Train keeps storage truth            → in-dtype / re-Pack SGD, no retained f32 master
+  6. One feature → one folder
+  7. v1.0 = scorecard 100/100</pre><figcaption>Non-negotiable engine rules.</figcaption></figure>
 <h2>Origin</h2>
 <p class="origin-byline"><strong>Samuel Watson</strong></p>
 <p>Samuel Watson created OpenFluke after intensive T-ALL treatment (post-2018), from a simple frustration: AI tooling was heavy, opaque, and not portable enough to move models cleanly across operating systems or personal devices. Setting up GPU paths often meant large, brittle installs before experimentation could even begin.</p>

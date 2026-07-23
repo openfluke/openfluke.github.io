@@ -48,6 +48,7 @@
 <a href="30-backward.html">30. runtime/backward</a>
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -105,9 +106,9 @@
 <p class="pill-row"><span class="pill">github.com/openfluke/welvet/weights</span><span class="status ok">✅</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Unquantized matrices still need a typed store that streams MatVec without forcing a float32 master or Morph-as-training.</p>
+<p>Unquantized matrices still need a typed store that streams MatVec and SGD without forcing a float32 master or Morph-as-training.</p>
 <h2>What it is</h2>
-<p>Store holds DType + Format + Native/Packed bytes. New[T], MatVec, MatVecT, DecodeRow, SelectWire (F32/F64/I8). Dense and composite projs call this for FormatNone.</p>
+<p>Store holds DType + Format + Native/Packed bytes. New[T], MatVec, MatVecT, DecodeRow, SelectWire (F32/F64/I8), ApplySGD. FormatNone: update in native lanes (float32 payload is the only f32 buffer; float64 uses native ALU; other dtypes decode→update→re-encode). Packed: unpack→update→re-Pack then drop scratch. RetainsF32Master() is true only for FormatNone+float32. Dense and composite projs share this store.</p>
 
 
 <section class="examples" id="examples">
