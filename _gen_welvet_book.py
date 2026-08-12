@@ -64,23 +64,25 @@ def ascii_fig(text: str, caption: str = "") -> str:
 
 
 def read_welvet_version() -> tuple[str, float]:
-    """Read scorecard version from welvet/README.md (single source of truth)."""
+    """Read version from welvet/README.md (Version cell preferred; supports patches)."""
     text = (WELVET_ROOT / "README.md").read_text(encoding="utf-8")
+    ver: str | None = None
+    m = re.search(r"\|\s*\*\*Version\*\*\s*\|\s*\*\*(v[\d.]+)\*\*", text)
+    if m:
+        ver = m.group(1)
     earned: float | None = None
     m = re.search(r"\*\*(\d+(?:\.\d+)?)\s*/\s*100\*\*\s*pts", text)
     if m:
         earned = float(m.group(1))
-    if earned is None:
-        m = re.search(r"\|\s*\*\*Version\*\*\s*\|\s*\*\*(v[\d.]+)\*\*", text)
-        if m:
-            v = m.group(1)
-            if v == "v1.0":
-                earned = 100.0
-            elif v.startswith("v0."):
-                earned = float(v[3:])
+    if earned is None and ver:
+        if ver == "v1.0":
+            earned = 100.0
+        elif ver.startswith("v0."):
+            earned = float(ver[3:].split(".", 1)[0])
     if earned is None:
         earned = 76.0
-    ver = "v1.0" if earned >= 100 else f"v0.{int(round(earned)):02d}"
+    if ver is None:
+        ver = "v1.0" if earned >= 100 else f"v0.{int(round(earned)):02d}"
     return ver, earned
 
 
@@ -187,9 +189,10 @@ func main() {
         body_extra=ascii_fig("""
 welvet/
   core weights quant simd webgpu tiling architecture fusedgpu
-  layers/*          ← one folder per op
+  layers/*          ← one folder per op (parallel = MoE + cameral)
   runtime/{forward,backward,training,step}
   systems/{dna,evolution,tween,tanhi,telemetry}
+  lucy/             ← SoftAcc / Score measuring (shared by benches)
   model/{entity,hf,tokenizer,sampling,transformer}
   apps/{octo,flux2,mosstts}
   stub/*            ← designed surfaces, partial or empty
@@ -208,7 +211,7 @@ func main() {
 	// Mental model only — list engine roots you depend on:
 	roots := []string{
 		"core", "weights", "quant", "simd", "webgpu", "tiling",
-		"architecture", "fusedgpu", "layers", "runtime", "systems", "model",
+		"architecture", "fusedgpu", "layers", "runtime", "systems", "lucy", "model",
 	}
 	for _, r := range roots {
 		fmt.Println("import github.com/openfluke/welvet/" + r + "/…")
@@ -879,10 +882,14 @@ func main() {
 	fmt.Println(y.Shape, err)
 }
 """),
-        ("27-parallel", "27", "layers/parallel — MoE combine",
+        ("27-parallel", "27", "layers/parallel — MoE + cameral",
          "github.com/openfluke/welvet/layers/parallel", "ok", "✅",
-         "Mixture-of-experts and multi-path cells need concat/add/avg/filter combines over branches.",
-         "Dense branches; filter gate mode for soft MoE. Full timed matrix + train grids. Heterogeneous residual graft still open.",
+         "Mixture-of-experts and multi-path cells need concat/add/avg/filter combines. "
+         "Cameral graphs need sibling hemispheres that share input, merge outputs, and "
+         "optionally train under distinct modes.",
+         "Parallel branches + Stack sandwiches. Hemispheres / Bicameral / Sandwich build "
+         "nested multi-cameral nets. SetBranchModes + TrainStackMSE let each hemi use a "
+         "different TrainMode (BP / Tween / TweenChain).",
          """
 package main
 
@@ -891,18 +898,25 @@ import (
 
 	"github.com/openfluke/welvet/core"
 	"github.com/openfluke/welvet/layers/parallel"
+	"github.com/openfluke/welvet/quant"
 )
 
 func main() {
-	l, err := parallel.New(parallel.Config{
-		Dim: 16, Branches: 2, OutFeat: 16, Combine: parallel.CombineConcat,
-	})
+	// Dense stem → 2 hemispheres (add) → Dense head
+	s, err := parallel.Bicameral(8, 16, 1, core.ActivationLeakyReLU,
+		core.DTypeFloat32, quant.FormatNone)
 	if err != nil {
 		panic(err)
 	}
-	x := core.NewTensor[float32](1, 16)
-	_, y, err := parallel.Forward(l, x)
-	fmt.Println(y.Shape, err)
+	// Mix: left hemi StepBP, right hemi StepTweenChain
+	hemi := s.Children[1].(*parallel.Layer)
+	hemi.SetBranchModes(parallel.ModeStepBP, parallel.ModeStepTweenChain)
+
+	x := core.NewTensor[float32](1, 8)
+	t := core.NewTensor[float32](1, 1)
+	t.Data[0] = 0.5
+	loss, err := parallel.TrainStackMSE(s, x, t, parallel.ModeStepBP, 0.01)
+	fmt.Println("loss", loss, "err", err)
 }
 """),
         ("28-metacognition", "28", "layers/metacognition",
@@ -933,7 +947,35 @@ func main() {
 """),
     ]
     for slug, num, title, pkg, st, lab, why, what, ex in layer_specs:
-        out.append(C(slug, num, title, "III · Layers", pkg, st, lab, why, what, "", ex))
+        extra = ""
+        if slug == "27-parallel":
+            extra = ascii_fig("""
+input x
+   │
+   ▼
+ Dense stem
+   │
+   ├──────────┐
+   ▼          ▼
+ Hemi L     Hemi R     ← own Dense weights
+ StepBP     TweenChain ← BranchModes
+   │          │
+   └──── add ─┘
+         │
+         ▼
+    Dense head → ŷ → MSE
+""", "Cameral Mix: one TrainMode per hemisphere; one loss on the merge.") + """
+<h2>Cameral API (v0.95.1)</h2>
+<ul>
+<li><code>Hemispheres(n)</code> — n Dense twins, merged by add/avg/concat/filter</li>
+<li><code>Bicameral</code> / <code>Sandwich</code> — stem → Parallel → head Stack</li>
+<li><code>SetBranchModes(...)</code> — stamp per-hemi <code>TrainMode</code></li>
+<li><code>TrainStackMSE</code> — forward → MSE → per-branch update (honours BranchModes)</li>
+</ul>
+<p>Uniform Bi/Tri/Quad still train via Grid <code>training.Step</code> (one mode for the net).
+Mix jobs need the Stack path so each cameral actually uses its own mode.</p>
+"""
+        out.append(C(slug, num, title, "III · Layers", pkg, st, lab, why, what, extra, ex))
 
     # Runtime
     out.append(C(
@@ -1222,6 +1264,46 @@ func main() {
 """),
     ]:
         out.append(C(slug, num, title, "V · Systems", pkg, "ok", "✅", why, what, "", ex))
+
+    out.append(C(
+        "66-lucy", "66", "lucy — SoftAcc / Score measuring", "V · Systems",
+        "github.com/openfluke/welvet/lucy", "ok", "✅",
+        why="Adaptation benches (test41-w, tide, live_mnist) need one shared measuring math — "
+            "SoftAcc, Availability, AdaptPct, Score — not three copies of the formulas.",
+        what="Pure measuring package: SoftAcc / SoftAccProb, Window + Snapshot, Finalize. "
+             "No datasets, no train loops. Sine scale 0.10; classification SoftAccProb scale 1.0.",
+        body_extra=ascii_fig("""
+SoftAcc      = 100 × (1 − |pred−target| / scale)   clamped [0,100]
+Availability = InferMs / (InferMs + TrainMs) × 100
+Score        = Throughput × Availability × SoftAcc / 10_000
+AdaptPct     = mean SoftAcc in AdaptWindows after each switch
+""", "Lucy Score terms (shared by test41-w · tide · live_mnist).") + """
+<p><code>tide/metrics</code> re-exports this package for existing tide callers.
+Engine tests for lucy live under <code>w2a/tests/lucy</code>.</p>
+""",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/lucy"
+)
+
+func main() {
+	a := lucy.SoftAccOne(0.72, 0.80) // sine scale 0.10
+	p := lucy.SoftAccProb(0.91, 1.0) // class scale 1.0
+	var snap lucy.Snapshot
+	snap.SoftAcc = a
+	snap.InferMs = 8
+	snap.TrainMs = 2
+	snap.Throughput = 12000
+	lucy.Finalize(&snap, lucy.Options{AdaptWindows: 10})
+	fmt.Printf("soft=%.1f class=%.1f avail=%.1f score=%.0f\\n",
+		a, p, snap.Availability, snap.Score)
+}
+""",
+    ))
 
     # Model
     out.append(C(
@@ -1820,9 +1902,10 @@ func main() {
     out.append(C(
         "64-scorecard", "64", "Scorecard → v1.0", "IX · Validate",
         "", "partial", version,
-        why="Version is earned from a weighted board, not marketing. Apps, stubs, and Accel still leave points on the table.",
-        what=f"version = 0.{{round(earned)}} until 100 → v1.0. Today <strong>{esc(version)}</strong> "
-             f"({earned_i}/100). Biggest remaining: apps/stubs (§9–10) and Accel (§11).",
+        why="Version is earned from a weighted board, not marketing. Apps, stubs, and Accel still leave points on the table. "
+            "Patch tags (v0.95.1) ship engine deltas without moving the scorecard.",
+        what=f"version = 0.{{round(earned)}} until 100 → v1.0. Scorecard today <strong>{earned_i}/100</strong>; "
+             f"this book tags <strong>{esc(version)}</strong>. Biggest remaining: apps/stubs (§9–10) and Accel (§11).",
         body_extra=f"""
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
 <tr><td>1–4</td><td>Foundation + Dense + transformer + CNN/RNN</td><td>50</td><td>50</td></tr>
@@ -1832,6 +1915,12 @@ func main() {
 <tr><td>12</td><td>Peak fused / no host ALU</td><td>14</td><td>14</td></tr>
 <tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>{earned_i}</strong></td></tr>
 </tbody></table>
+<h3>v0.95.1 patch (this release)</h3>
+<ul>
+<li><strong>lucy</strong> — SoftAcc / Availability / AdaptPct / Score harness</li>
+<li><strong>Nested multi-cameral</strong> — Hemispheres + Stack sandwiches</li>
+<li><strong>BranchModes</strong> — distinct TrainMode per hemisphere via TrainStackMSE</li>
+</ul>
 """,
         example=f"""
 package main
@@ -1839,9 +1928,10 @@ package main
 import "fmt"
 
 func main() {{
-	// Recompute when a board row flips ✅/🚧/⬜ in welvet/README.md
+	// Scorecard earned from welvet/README.md; Version cell may be a patch tag.
 	earned := {earned:.1f}
-	fmt.Printf("v0.%02.0f\\n", earned) // round({earned_i}) → {version} until earned==100 → v1.0
+	fmt.Println("{version}") // patch tag; scorecard round(earned) → v0.{earned_i:02d} until 100 → v1.0
+	_ = earned
 }}
 """,
     ))
@@ -1862,7 +1952,7 @@ PARTS_NAV = [
         "25-convt", "26-kmeans", "27-parallel", "28-metacognition",
     ]),
     ("IV · Runtime", ["29-forward", "30-backward", "31-training", "32-step", "65-cross-numeric"]),
-    ("V · Systems", ["33-dna", "34-evolution", "35-tween", "36-tanhi", "37-telemetry"]),
+    ("V · Systems", ["33-dna", "34-evolution", "35-tween", "36-tanhi", "37-telemetry", "66-lucy"]),
     ("VI · Model IO", ["38-entity", "39-hf", "40-tokenizer", "41-sampling", "42-transformer"]),
     ("VII · Apps", ["43-apps", "44-octo"]),
     ("VIII · Stubs", [

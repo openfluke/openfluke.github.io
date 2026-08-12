@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>1. What Welvet is — Welvet</title>
+<title>66. lucy — SoftAcc / Score measuring — Welvet</title>
 <link rel="stylesheet" href="../assets/book.css"/>
 </head>
 <body>
@@ -97,78 +97,58 @@
 <div class="main">
 <div class="topbar">
 <button class="menu-btn" id="menu-btn" type="button">Menu</button>
-<div class="meta">I · Orientation</div>
-<nav class="pager"><a href="../toc.html">← Contents</a><a href="02-tree.html">2. Repository map →</a></nav>
+<div class="meta">V · Systems</div>
+<nav class="pager"><a href="37-telemetry.html">← 37. systems/telemetry</a><a href="38-entity.html">38. model/entity — .entity files →</a></nav>
 </div>
 <article class="content" id="main">
 
-<p class="chapter-kicker">Chapter 1</p>
-<h1>What Welvet is</h1>
-<p class="pill-row"><span class="pill">github.com/openfluke/welvet</span><span class="status ok">✅ engine</span></p>
+<p class="chapter-kicker">Chapter 66</p>
+<h1>lucy — SoftAcc / Score measuring</h1>
+<p class="pill-row"><span class="pill">github.com/openfluke/welvet/lucy</span><span class="status ok">✅</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Loom’s flat <code>poly/</code> package hit import-cycle and honesty walls (QAT morph, silent fallbacks, god-layer). Welvet is the rewrite: one feature per folder, storage-truth dtypes/quants, Dense as the shared MatVec microkernel, tests only in <code>w2a</code>, apps only in <code>apps/</code>.</p>
+<p>Adaptation benches (test41-w, tide, live_mnist) need one shared measuring math — SoftAcc, Availability, AdaptPct, Score — not three copies of the formulas.</p>
 <h2>What it is</h2>
-<p>An AI engine in Go: layers, 34 dtypes, 20 quant formats, and three backends (CPU tiled · Plan 9 SIMD · WebGPU). Version tracks a 100-point scorecard (today <strong>v0.95.1</strong>).</p>
-<figure class="diagram"><pre class="ascii">Rules
-  1. No tests in engine packages          → w2a/
-  2. No silent fallbacks                  → hard error
-  3. No hardcoded float32                 → Tensor[T]
-  4. No QAT                               → DType + Format = truth
-  5. Train keeps storage truth            → in-dtype / re-Pack SGD, no retained f32 master
-  6. One feature → one folder
-  7. v1.0 = scorecard 100/100</pre><figcaption>Non-negotiable engine rules.</figcaption></figure>
-<h2>Origin</h2>
-<p class="origin-byline"><strong>Samuel Watson</strong></p>
-<p>Samuel Watson created OpenFluke after intensive T-ALL treatment (post-2018), from a simple frustration: AI tooling was heavy, opaque, and not portable enough to move models cleanly across operating systems or personal devices. Setting up GPU paths often meant large, brittle installs before experimentation could even begin.</p>
-<p>That gap drove a long detour through cybersecurity, MBA, and psychology before returning through applied AI study - and finding that most paths still taught framework usage more than system construction. The result was a build journey across <a href="https://github.com/planetbridging">planetbridging</a> into OpenFluke projects, from paragon and loom to Welvet.</p>
-<p>The early breakthroughs were practical and hard-won: first dense nets in Go, then WebGPU proof points (for example <a href="https://github.com/openfluke/iso-demo/releases/tag/v0.1.0">iso-demo v0.1.0</a>), then repeated cycles of speed, layers, 3D, tiling, SIMD, and bit-oriented model paths for personal intelligence.</p>
-<p><strong>Why "OpenFluke"</strong>: open source values plus a life-saving fluke blood test that caught cancer early.<br/>
-<strong>Why "Welvet"</strong>: a name shaped in gaming sessions with family.</p>
-<blockquote>
-<p>I wish this tool existed in 2018 to keep trying things in AI and asking "what if I try this?" - and maybe help deterministic medical deployment of AI models.</p>
-</blockquote>
-<p class="example-meta">"Our duty, as soldiers, is to protect humanity. Whatever the cost." - Master Chief</p>
+<p>Pure measuring package: SoftAcc / SoftAccProb, Window + Snapshot, Finalize. No datasets, no train loops. Sine scale 0.10; classification SoftAccProb scale 1.0.</p>
+<figure class="diagram"><pre class="ascii">SoftAcc      = 100 × (1 − |pred−target| / scale)   clamped [0,100]
+Availability = InferMs / (InferMs + TrainMs) × 100
+Score        = Throughput × Availability × SoftAcc / 10_000
+AdaptPct     = mean SoftAcc in AdaptWindows after each switch</pre><figcaption>Lucy Score terms (shared by test41-w · tide · live_mnist).</figcaption></figure>
+<p><code>tide/metrics</code> re-exports this package for existing tide callers.
+Engine tests for lucy live under <code>w2a/tests/lucy</code>.</p>
 
 
 <section class="examples" id="examples">
 <h2>Go example</h2>
-<p><a class="go-file-link" href="../examples/01-welvet/main.go">examples/01-welvet/main.go</a></p>
-<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/01-welvet &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
+<p><a class="go-file-link" href="../examples/66-lucy/main.go">examples/66-lucy/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/66-lucy &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
 import (
 	"fmt"
 
-	"github.com/openfluke/welvet/core"
-	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/lucy"
 )
 
 func main() {
-	l, err := dense.New(8, 4, core.ActivationReLU, core.DTypeFloat32)
-	if err != nil {
-		panic(err)
-	}
-	l.Exec.Backend = core.BackendCPUTiled
-
-	x := core.NewTensor[float32](1, 8)
-	for i := range x.Data {
-		x.Data[i] = float32(i) * 0.1
-	}
-	pre, post, err := dense.Forward(l, x)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("pre", len(pre.Data), "post", len(post.Data))
+	a := lucy.SoftAccOne(0.72, 0.80) // sine scale 0.10
+	p := lucy.SoftAccProb(0.91, 1.0) // class scale 1.0
+	var snap lucy.Snapshot
+	snap.SoftAcc = a
+	snap.InferMs = 8
+	snap.TrainMs = 2
+	snap.Throughput = 12000
+	lucy.Finalize(&amp;snap, lucy.Options{AdaptWindows: 10})
+	fmt.Printf("soft=%.1f class=%.1f avail=%.1f score=%.0f\n",
+		a, p, snap.Availability, snap.Score)
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>pre 4 post 4</code></pre>
-<h3>Validate (harness)</h3><pre><code>cd welvet &amp;&amp; go build ./...
-cd w2a &amp;&amp; go test ./tests/dense -v</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>soft=20.0 class=91.0 avail=80.0 score=1920</code></pre>
+
 </section>
 
 
-<nav class="pager" style="margin-top:2rem"><a href="../toc.html">← Contents</a><a href="02-tree.html">2. Repository map →</a></nav>
+<nav class="pager" style="margin-top:2rem"><a href="37-telemetry.html">← 37. systems/telemetry</a><a href="38-entity.html">38. model/entity — .entity files →</a></nav>
 </article>
 </div></div>
 <script src="../assets/book.js"></script>

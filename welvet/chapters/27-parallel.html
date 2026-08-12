@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>27. layers/parallel — MoE combine — Welvet</title>
+<title>27. layers/parallel — MoE + cameral — Welvet</title>
 <link rel="stylesheet" href="../assets/book.css"/>
 </head>
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.95</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.95.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -56,6 +56,7 @@
 <a href="35-tween.html">35. systems/tween</a>
 <a href="36-tanhi.html">36. systems/tanhi</a>
 <a href="37-telemetry.html">37. systems/telemetry</a>
+<a href="66-lucy.html">66. lucy</a>
 </div>
 <div class="nav-group"><h2>VI · Model IO</h2>
 <a href="38-entity.html">38. model/entity</a>
@@ -102,13 +103,36 @@
 <article class="content" id="main">
 
 <p class="chapter-kicker">Chapter 27</p>
-<h1>layers/parallel — MoE combine</h1>
+<h1>layers/parallel — MoE + cameral</h1>
 <p class="pill-row"><span class="pill">github.com/openfluke/welvet/layers/parallel</span><span class="status ok">✅</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Mixture-of-experts and multi-path cells need concat/add/avg/filter combines over branches.</p>
+<p>Mixture-of-experts and multi-path cells need concat/add/avg/filter combines. Cameral graphs need sibling hemispheres that share input, merge outputs, and optionally train under distinct modes.</p>
 <h2>What it is</h2>
-<p>Dense branches; filter gate mode for soft MoE. Full timed matrix + train grids. Heterogeneous residual graft still open.</p>
+<p>Parallel branches + Stack sandwiches. Hemispheres / Bicameral / Sandwich build nested multi-cameral nets. SetBranchModes + TrainStackMSE let each hemi use a different TrainMode (BP / Tween / TweenChain).</p>
+<figure class="diagram"><pre class="ascii">input x
+   │
+   ▼
+ Dense stem
+   │
+   ├──────────┐
+   ▼          ▼
+ Hemi L     Hemi R     ← own Dense weights
+ StepBP     TweenChain ← BranchModes
+   │          │
+   └──── add ─┘
+         │
+         ▼
+    Dense head → ŷ → MSE</pre><figcaption>Cameral Mix: one TrainMode per hemisphere; one loss on the merge.</figcaption></figure>
+<h2>Cameral API (v0.95.1)</h2>
+<ul>
+<li><code>Hemispheres(n)</code> — n Dense twins, merged by add/avg/concat/filter</li>
+<li><code>Bicameral</code> / <code>Sandwich</code> — stem → Parallel → head Stack</li>
+<li><code>SetBranchModes(...)</code> — stamp per-hemi <code>TrainMode</code></li>
+<li><code>TrainStackMSE</code> — forward → MSE → per-branch update (honours BranchModes)</li>
+</ul>
+<p>Uniform Bi/Tri/Quad still train via Grid <code>training.Step</code> (one mode for the net).
+Mix jobs need the Stack path so each cameral actually uses its own mode.</p>
 
 
 <section class="examples" id="examples">
@@ -122,21 +146,28 @@ import (
 
 	"github.com/openfluke/welvet/core"
 	"github.com/openfluke/welvet/layers/parallel"
+	"github.com/openfluke/welvet/quant"
 )
 
 func main() {
-	l, err := parallel.New(parallel.Config{
-		Dim: 16, Branches: 2, OutFeat: 16, Combine: parallel.CombineConcat,
-	})
+	// Dense stem → 2 hemispheres (add) → Dense head
+	s, err := parallel.Bicameral(8, 16, 1, core.ActivationLeakyReLU,
+		core.DTypeFloat32, quant.FormatNone)
 	if err != nil {
 		panic(err)
 	}
-	x := core.NewTensor[float32](1, 16)
-	_, y, err := parallel.Forward(l, x)
-	fmt.Println(y.Shape, err)
+	// Mix: left hemi StepBP, right hemi StepTweenChain
+	hemi := s.Children[1].(*parallel.Layer)
+	hemi.SetBranchModes(parallel.ModeStepBP, parallel.ModeStepTweenChain)
+
+	x := core.NewTensor[float32](1, 8)
+	t := core.NewTensor[float32](1, 1)
+	t.Data[0] = 0.5
+	loss, err := parallel.TrainStackMSE(s, x, t, parallel.ModeStepBP, 0.01)
+	fmt.Println("loss", loss, "err", err)
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>[1 32] &lt;nil&gt;</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>loss 0.25 err &lt;nil&gt;</code></pre>
 
 </section>
 

@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.95</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.95.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -56,6 +56,7 @@
 <a href="35-tween.html">35. systems/tween</a>
 <a href="36-tanhi.html">36. systems/tanhi</a>
 <a href="37-telemetry.html">37. systems/telemetry</a>
+<a href="66-lucy.html">66. lucy</a>
 </div>
 <div class="nav-group"><h2>VI · Model IO</h2>
 <a href="38-entity.html">38. model/entity</a>
@@ -103,12 +104,12 @@
 
 <p class="chapter-kicker">Chapter 64</p>
 <h1>Scorecard → v1.0</h1>
-<p><span class="status partial">v0.95</span></p>
+<p><span class="status partial">v0.95.1</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Version is earned from a weighted board, not marketing. Apps, stubs, and Accel still leave points on the table.</p>
+<p>Version is earned from a weighted board, not marketing. Apps, stubs, and Accel still leave points on the table. Patch tags (v0.95.1) ship engine deltas without moving the scorecard.</p>
 <h2>What it is</h2>
-<p>version = 0.{round(earned)} until 100 → v1.0. Today <strong>v0.95</strong> (95/100). Biggest remaining: apps/stubs (§9–10) and Accel (§11).</p>
+<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>95/100</strong>; this book tags <strong>v0.95.1</strong>. Biggest remaining: apps/stubs (§9–10) and Accel (§11).</p>
 
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
 <tr><td>1–4</td><td>Foundation + Dense + transformer + CNN/RNN</td><td>50</td><td>50</td></tr>
@@ -118,6 +119,12 @@
 <tr><td>12</td><td>Peak fused / no host ALU</td><td>14</td><td>14</td></tr>
 <tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>95</strong></td></tr>
 </tbody></table>
+<h3>v0.95.1 patch (this release)</h3>
+<ul>
+<li><strong>lucy</strong> — SoftAcc / Availability / AdaptPct / Score harness</li>
+<li><strong>Nested multi-cameral</strong> — Hemispheres + Stack sandwiches</li>
+<li><strong>BranchModes</strong> — distinct TrainMode per hemisphere via TrainStackMSE</li>
+</ul>
 
 
 <section class="examples" id="examples">
@@ -129,12 +136,13 @@
 import "fmt"
 
 func main() {
-	// Recompute when a board row flips ✅/🚧/⬜ in welvet/README.md
+	// Scorecard earned from welvet/README.md; Version cell may be a patch tag.
 	earned := 95.0
-	fmt.Printf("v0.%02.0f\n", earned) // round(95) → v0.95 until earned==100 → v1.0
+	fmt.Println("v0.95.1") // patch tag; scorecard round(earned) → v0.95 until 100 → v1.0
+	_ = earned
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>v0.95</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>v0.95.1</code></pre>
 
 </section>
 

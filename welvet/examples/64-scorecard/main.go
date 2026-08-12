@@ -3,7 +3,8 @@ package main
 import "fmt"
 
 func main() {
-	// Recompute when a board row flips ✅/🚧/⬜ in welvet/README.md
+	// Scorecard earned from welvet/README.md; Version cell may be a patch tag.
 	earned := 95.0
-	fmt.Printf("v0.%02.0f\n", earned) // round(95) → v0.95 until earned==100 → v1.0
+	fmt.Println("v0.95.1") // patch tag; scorecard round(earned) → v0.95 until 100 → v1.0
+	_ = earned
 }

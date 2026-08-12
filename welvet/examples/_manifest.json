@@ -7,9 +7,9 @@
   },
   "02-tree": {
     "exit_code": 0,
-    "stdout": "import github.com/openfluke/welvet/core/\u2026\nimport github.com/openfluke/welvet/weights/\u2026\nimport github.com/openfluke/welvet/quant/\u2026\nimport github.com/openfluke/welvet/simd/\u2026\nimport github.com/openfluke/welvet/webgpu/\u2026\nimport github.com/openfluke/welvet/tiling/\u2026\nimport github.com/openfluke/welvet/architecture/\u2026\nimport github.com/openfluke/welvet/fusedgpu/\u2026\nimport github.com/openfluke/welvet/layers/\u2026\nimport github.com/openfluke/welvet/runtime/\u2026\nimport github.com/openfluke/welvet/systems/\u2026\nimport github.com/openfluke/welvet/model/\u2026\n",
+    "stdout": "import github.com/openfluke/welvet/core/\u2026\nimport github.com/openfluke/welvet/weights/\u2026\nimport github.com/openfluke/welvet/quant/\u2026\nimport github.com/openfluke/welvet/simd/\u2026\nimport github.com/openfluke/welvet/webgpu/\u2026\nimport github.com/openfluke/welvet/tiling/\u2026\nimport github.com/openfluke/welvet/architecture/\u2026\nimport github.com/openfluke/welvet/fusedgpu/\u2026\nimport github.com/openfluke/welvet/layers/\u2026\nimport github.com/openfluke/welvet/runtime/\u2026\nimport github.com/openfluke/welvet/systems/\u2026\nimport github.com/openfluke/welvet/lucy/\u2026\nimport github.com/openfluke/welvet/model/\u2026\n",
     "stderr": "",
-    "combined": "import github.com/openfluke/welvet/core/\u2026\nimport github.com/openfluke/welvet/weights/\u2026\nimport github.com/openfluke/welvet/quant/\u2026\nimport github.com/openfluke/welvet/simd/\u2026\nimport github.com/openfluke/welvet/webgpu/\u2026\nimport github.com/openfluke/welvet/tiling/\u2026\nimport github.com/openfluke/welvet/architecture/\u2026\nimport github.com/openfluke/welvet/fusedgpu/\u2026\nimport github.com/openfluke/welvet/layers/\u2026\nimport github.com/openfluke/welvet/runtime/\u2026\nimport github.com/openfluke/welvet/systems/\u2026\nimport github.com/openfluke/welvet/model/\u2026"
+    "combined": "import github.com/openfluke/welvet/core/\u2026\nimport github.com/openfluke/welvet/weights/\u2026\nimport github.com/openfluke/welvet/quant/\u2026\nimport github.com/openfluke/welvet/simd/\u2026\nimport github.com/openfluke/welvet/webgpu/\u2026\nimport github.com/openfluke/welvet/tiling/\u2026\nimport github.com/openfluke/welvet/architecture/\u2026\nimport github.com/openfluke/welvet/fusedgpu/\u2026\nimport github.com/openfluke/welvet/layers/\u2026\nimport github.com/openfluke/welvet/runtime/\u2026\nimport github.com/openfluke/welvet/systems/\u2026\nimport github.com/openfluke/welvet/lucy/\u2026\nimport github.com/openfluke/welvet/model/\u2026"
   },
   "03-core": {
     "exit_code": 0,
@@ -37,9 +37,9 @@
   },
   "07-webgpu": {
     "exit_code": 0,
-    "stdout": "no adapter: webgpu: RequestDevice: failed to request device\n",
-    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
-    "combined": "no adapter: webgpu: RequestDevice: failed to request device\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
+    "stdout": "[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER\n",
+    "stderr": "",
+    "combined": "[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER"
   },
   "08-tiling": {
     "exit_code": 0,
@@ -157,9 +157,9 @@
   },
   "27-parallel": {
     "exit_code": 0,
-    "stdout": "[1 32] <nil>\n",
+    "stdout": "loss 0.25 err <nil>\n",
     "stderr": "",
-    "combined": "[1 32] <nil>"
+    "combined": "loss 0.25 err <nil>"
   },
   "28-metacognition": {
     "exit_code": 0,
@@ -226,6 +226,12 @@
     "stdout": "{ID:demo TotalLayers:1 TotalParams:0 Layers:[{Z:0 Y:0 X:0 L:0 Type:Dense Activation:ReLU Parameters:0 InputShape:[] OutputShape:[] Branches:[] CombineMode:}]}\n",
     "stderr": "",
     "combined": "{ID:demo TotalLayers:1 TotalParams:0 Layers:[{Z:0 Y:0 X:0 L:0 Type:Dense Activation:ReLU Parameters:0 InputShape:[] OutputShape:[] Branches:[] CombineMode:}]}"
+  },
+  "66-lucy": {
+    "exit_code": 0,
+    "stdout": "soft=20.0 class=91.0 avail=80.0 score=1920\n",
+    "stderr": "",
+    "combined": "soft=20.0 class=91.0 avail=80.0 score=1920"
   },
   "38-entity": {
     "exit_code": 0,
@@ -313,9 +319,9 @@
   },
   "52-stub-clustering": {
     "exit_code": 0,
-    "stdout": "2 [1 0]\n",
+    "stdout": "2 [0 1]\n",
     "stderr": "",
-    "combined": "2 [1 0]"
+    "combined": "2 [0 1]"
   },
   "53-stub-ensemble": {
     "exit_code": 0,
@@ -385,8 +391,8 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v0.95\n",
+    "stdout": "v0.95.1\n",
     "stderr": "",
-    "combined": "v0.95"
+    "combined": "v0.95.1"
   }
 }

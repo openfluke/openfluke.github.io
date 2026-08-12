@@ -54,18 +54,25 @@ read_version() {
 from pathlib import Path
 import re
 text = Path("../README.md").read_text(encoding="utf-8")
+ver = None
+m = re.search(r"\|\s*\*\*Version\*\*\s*\|\s*\*\*(v[\d.]+)\*\*", text)
+if m:
+    ver = m.group(1)
 earned = None
 m = re.search(r"\*\*(\d+(?:\.\d+)?)\s*/\s*100\*\*\s*pts", text)
 if m:
     earned = float(m.group(1))
+if earned is None and ver:
+    if ver == "v1.0":
+        earned = 100.0
+    elif ver.startswith("v0."):
+        earned = float(ver[3:].split(".", 1)[0])
+if ver is None:
+    if earned is None:
+        raise SystemExit("could not parse Welvet version from ../README.md")
+    ver = "v1.0" if earned >= 100 else f"v0.{int(round(earned)):02d}"
 if earned is None:
-    m = re.search(r"\|\s*\*\*Version\*\*\s*\|\s*\*\*(v[\d.]+)\*\*", text)
-    if m:
-        v = m.group(1)
-        earned = 100.0 if v == "v1.0" else float(v[3:]) if v.startswith("v0.") else None
-if earned is None:
-    raise SystemExit("could not parse Welvet version from ../README.md")
-ver = "v1.0" if earned >= 100 else f"v0.{int(round(earned)):02d}"
+    raise SystemExit("could not parse Welvet scorecard points from ../README.md")
 print(f"{ver} {earned}")
 PY
 }
@@ -121,6 +128,11 @@ create_or_update_release() {
 ## Welvet feature book ${tag}
 
 Scorecard: **${earned}/100** → version **${tag}** (from \`welvet/README.md\`).
+
+### What's new in v0.95.1
+- **lucy** — SoftAcc / Availability / AdaptPct / Score measuring harness
+- **Nested multi-cameral** — Hemispheres + Stack sandwiches
+- **BranchModes** — distinct TrainMode per hemisphere (TrainStackMSE)
 
 ### Assets
 - \`$(basename "$pdf")\` — printable feature book (HTML site is on GitHub Pages)

@@ -9,7 +9,7 @@ func main() {
 	// Mental model only — list engine roots you depend on:
 	roots := []string{
 		"core", "weights", "quant", "simd", "webgpu", "tiling",
-		"architecture", "fusedgpu", "layers", "runtime", "systems", "model",
+		"architecture", "fusedgpu", "layers", "runtime", "systems", "lucy", "model",
 	}
 	for _, r := range roots {
 		fmt.Println("import github.com/openfluke/welvet/" + r + "/…")
