@@ -264,8 +264,8 @@ git status --short || true
 if [[ -n "$(git status --porcelain)" ]]; then
   echo "→ committing site source…"
   git add -A
-  # unstage anything that slipped in from dist/ (belt + suspenders)
-  git reset -q -- dist/ 2>/dev/null || true
+  # unstage anything that slipped in from dist/ / bytecode (belt + suspenders)
+  git reset -q -- dist/ __pycache__ 2>/dev/null || true
   git commit -m "$(cat <<EOF
 Release Welvet feature book ${VERSION}
 

@@ -12,3 +12,7 @@ welvet/examples/bin/
 # Local screenshot / headless-chrome scratch
 .chrome-shot/
 .shot-*.png
+
+# Python bytecode
+__pycache__/
+*.pyc
