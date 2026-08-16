@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.95.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -49,6 +49,7 @@
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
 <a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
+<a href="67-train-modes.html">67. TrainMode</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -68,6 +69,7 @@
 <div class="nav-group"><h2>VII · Apps</h2>
 <a href="43-apps.html">43. apps</a>
 <a href="44-octo.html">44. Octo</a>
+<a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
 </div>
 <div class="nav-group"><h2>VIII · Stubs</h2>
 <a href="45-stub-seed.html">45. stub/seed</a>
@@ -104,12 +106,12 @@
 
 <p class="chapter-kicker">Chapter 62</p>
 <h1>w2a — validation harness</h1>
-<p class="pill-row"><span class="pill">github.com/openfluke/w2a</span><span class="status partial">🚧 harness</span></p>
+<p class="pill-row"><span class="pill">github.com/openfluke/w2a</span><span class="status ok">✅ harness</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Engine packages must stay free of tests. w2a owns timed 34×20×3 matrices, gap census, and honesty stamps. See §63 for a live full-suite run.</p>
+<p>Engine packages must stay free of tests. w2a owns timed 34×20×3 matrices, gap census, honesty stamps, and the train-mode permutation smoke (Test49). See §63 for a live full-suite run.</p>
 <h2>What it is</h2>
-<p>Interactive go run ., suites under suites/*, go test ./tests/<layer>. StampBackendNote / AffinePackable prevent fake ✅.</p>
+<p>Interactive go run . ([0] Run ALL). Suites under suites/*. StampBackendNote / AffinePackable prevent fake ✅. Test49: AllNamedTrainModes × 1³/2³/3³ × Parallel/Bicameral/poly, origin-only — included in [0].</p>
 
 
 <section class="examples" id="examples">
@@ -124,19 +126,19 @@ func main() {
 	fmt.Println("w2a is a separate module — engine packages never contain tests.")
 	fmt.Println("")
 	fmt.Println("  cd w2a")
-	fmt.Println("  go run .                    # interactive menu")
-	fmt.Println("  go test ./tests/dense -v    # timed FormatNone matrix")
-	fmt.Println("  go test ./tests/mha -v      # MHA coverage")
+	fmt.Println("  go run .                                      # interactive; [0] = ALL")
+	fmt.Println("  go test ./tests/dense -v")
+	fmt.Println("  go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v")
 }</code></pre>
 <h3>Output</h3>
 <p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>w2a is a separate module — engine packages never contain tests.
 
   cd w2a
-  go run .                    # interactive menu
-  go test ./tests/dense -v    # timed FormatNone matrix
-  go test ./tests/mha -v      # MHA coverage</code></pre>
+  go run .                                      # interactive; [0] = ALL
+  go test ./tests/dense -v
+  go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd w2a &amp;&amp; go run .
-cd w2a &amp;&amp; go test ./tests/dense -v &amp;&amp; go test ./tests/mha -v</code></pre>
+cd w2a &amp;&amp; go test ./tests/dense -v &amp;&amp; go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v</code></pre>
 </section>
 
 

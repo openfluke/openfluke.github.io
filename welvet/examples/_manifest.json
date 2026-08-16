@@ -379,20 +379,32 @@
   },
   "62-w2a": {
     "exit_code": 0,
-    "stdout": "w2a is a separate module \u2014 engine packages never contain tests.\n\n  cd w2a\n  go run .                    # interactive menu\n  go test ./tests/dense -v    # timed FormatNone matrix\n  go test ./tests/mha -v      # MHA coverage\n",
+    "stdout": "w2a is a separate module \u2014 engine packages never contain tests.\n\n  cd w2a\n  go run .                                      # interactive; [0] = ALL\n  go test ./tests/dense -v\n  go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v\n",
     "stderr": "",
-    "combined": "w2a is a separate module \u2014 engine packages never contain tests.\n\n  cd w2a\n  go run .                    # interactive menu\n  go test ./tests/dense -v    # timed FormatNone matrix\n  go test ./tests/mha -v      # MHA coverage"
+    "combined": "w2a is a separate module \u2014 engine packages never contain tests.\n\n  cd w2a\n  go run .                                      # interactive; [0] = ALL\n  go test ./tests/dense -v\n  go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v"
   },
   "63-validation": {
     "exit_code": 0,
-    "stdout": "w2a suite: 228054 cells (OK 227194 GAP 860 FAIL 0)\ncases: 456/456 PASS   result: PASS\n",
+    "stdout": "w2a [0] ALL: 246032 cells  FAIL 0  RESULT PASS\nGAP = declared skip (GDN non-f32, AffinePacked, \u2026) \u2014 not a fail\n",
     "stderr": "",
-    "combined": "w2a suite: 228054 cells (OK 227194 GAP 860 FAIL 0)\ncases: 456/456 PASS   result: PASS"
+    "combined": "w2a [0] ALL: 246032 cells  FAIL 0  RESULT PASS\nGAP = declared skip (GDN non-f32, AffinePacked, \u2026) \u2014 not a fail"
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v0.95.1\n",
+    "stdout": "v1.0\nscorecard 100/100\n",
     "stderr": "",
-    "combined": "v0.95.1"
+    "combined": "v1.0\nscorecard 100/100"
+  },
+  "67-train-modes": {
+    "exit_code": 0,
+    "stdout": "named 23 fastproxy TweenSplitFastProxy <nil>\n",
+    "stderr": "",
+    "combined": "named 23 fastproxy TweenSplitFastProxy <nil>"
+  },
+  "68-cameral": {
+    "exit_code": 0,
+    "stdout": "mix loss 0.25 err <nil>\n",
+    "stderr": "",
+    "combined": "mix loss 0.25 err <nil>"
   }
 }

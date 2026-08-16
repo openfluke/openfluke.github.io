@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.95.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -49,6 +49,7 @@
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
 <a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
+<a href="67-train-modes.html">67. TrainMode</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -68,6 +69,7 @@
 <div class="nav-group"><h2>VII · Apps</h2>
 <a href="43-apps.html">43. apps</a>
 <a href="44-octo.html">44. Octo</a>
+<a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
 </div>
 <div class="nav-group"><h2>VIII · Stubs</h2>
 <a href="45-stub-seed.html">45. stub/seed</a>
@@ -107,9 +109,13 @@
 <p class="pill-row"><span class="pill">github.com/openfluke/welvet/apps/…</span><span class="status partial">🚧</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Products must not pollute engine packages. Octo is the model shell; flux2/mosstts are domain apps.</p>
+<p>Products must not pollute engine packages. Octo is the model shell; flux2/mosstts are domain apps. Lucy <em>races</em> (AAI test41 / test48 / test50) are benches, not Welvet packages.</p>
 <h2>What it is</h2>
-<p>octo (own module): download/convert/chat, see §44. flux2: MMDiT image. mosstts: Speak/SpeakToFile pipeline.</p>
+<p>octo (own module): download/convert/chat, see §44. flux2: MMDiT image. mosstts: Speak/SpeakToFile pipeline. AAI sandwiches race TrainMode on toys — see §68. Off the v1.0 engine board.</p>
+
+<p>The engine never imports apps. AAI is a separate Lucy harness that <code>replace</code>s
+<code>github.com/openfluke/welvet</code>. It is how we talk about cameral Mix and credit modes with numbers
+(hard Acc, SoftAcc, Score) instead of slogans. Public API stays in <code>layers/parallel</code> + <code>lucy</code>.</p>
 
 
 <section class="examples" id="examples">

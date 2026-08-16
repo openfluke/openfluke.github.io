@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.95.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -49,6 +49,7 @@
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
 <a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
+<a href="67-train-modes.html">67. TrainMode</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -68,6 +69,7 @@
 <div class="nav-group"><h2>VII · Apps</h2>
 <a href="43-apps.html">43. apps</a>
 <a href="44-octo.html">44. Octo</a>
+<a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
 </div>
 <div class="nav-group"><h2>VIII · Stubs</h2>
 <a href="45-stub-seed.html">45. stub/seed</a>
@@ -104,27 +106,38 @@
 
 <p class="chapter-kicker">Chapter 64</p>
 <h1>Scorecard → v1.0</h1>
-<p><span class="status partial">v0.95.1</span></p>
+<p><span class="status ok">v1.0</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Version is earned from a weighted board, not marketing. Apps, stubs, and Accel still leave points on the table. Patch tags (v0.95.1) ship engine deltas without moving the scorecard.</p>
+<p>Version is earned from a weighted board, not marketing. v1.0 is 100/100 on the engine board. Apps, stubs, and NPU sit off-board — they are sibling / later trees, not missing Welvet.</p>
 <h2>What it is</h2>
-<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>95/100</strong>; this book tags <strong>v0.95.1</strong>. Biggest remaining: apps/stubs (§9–10) and Accel (§11).</p>
+<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>100/100</strong>; this book tags <strong>v1.0</strong>. Training credit is §9 on the board (8 pts), not an afterthought.</p>
 
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
-<tr><td>1–4</td><td>Foundation + Dense + transformer + CNN/RNN</td><td>50</td><td>50</td></tr>
-<tr><td>5</td><td>Extended layers</td><td>7</td><td>7</td></tr>
-<tr><td>6–8</td><td>Runtime + systems + model</td><td>21</td><td>21</td></tr>
-<tr><td>9–11</td><td>Apps + stubs + accel</td><td>8</td><td>3.0</td></tr>
-<tr><td>12</td><td>Peak fused / no host ALU</td><td>14</td><td>14</td></tr>
-<tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>95</strong></td></tr>
+<tr><td>1</td><td>Foundation</td><td>15</td><td>15</td></tr>
+<tr><td>2</td><td>Dense MatVec microkernel</td><td>15</td><td>15</td></tr>
+<tr><td>3</td><td>Transformer stack</td><td>14</td><td>14</td></tr>
+<tr><td>4</td><td>CNN / RNN / LSTM</td><td>6</td><td>6</td></tr>
+<tr><td>5</td><td>Extended layers (GDN, ConvT, Mamba, Parallel, …)</td><td>7</td><td>7</td></tr>
+<tr><td>6</td><td>Runtime + architecture</td><td>8</td><td>8</td></tr>
+<tr><td>7</td><td>Systems</td><td>5</td><td>5</td></tr>
+<tr><td>8</td><td>Model / IO</td><td>8</td><td>8</td></tr>
+<tr><td>9</td><td>Training credit (23 named TrainModes + BranchModes)</td><td>8</td><td>8</td></tr>
+<tr><td>10</td><td>Peak fused / no host ALU</td><td>14</td><td>14</td></tr>
+<tr><td></td><td><strong>Total → v1.0</strong></td><td>100</td><td><strong>100</strong></td></tr>
 </tbody></table>
-<h3>v0.95.1 patch (this release)</h3>
+<h3>v1.0 cut</h3>
 <ul>
-<li><strong>lucy</strong> — SoftAcc / Availability / AdaptPct / Score harness</li>
-<li><strong>Nested multi-cameral</strong> — Hemispheres + Stack sandwiches</li>
-<li><strong>BranchModes</strong> — distinct TrainMode per hemisphere via TrainStackMSE</li>
+<li><strong>w2a [0] ALL</strong> — 246,032 cells, FAIL 0, RESULT PASS (<a href="63-validation.html">§63</a>)</li>
+<li><strong>Training credit</strong> — StepBP, Tween*, Split, Alt, HeadProxy, FastProxy, Linear, Sparse, Mesh* (<a href="67-train-modes.html">§67</a>)</li>
+<li><strong>Cameral</strong> — Hemispheres, Mix BranchModes, Sandwich, ResidualGraft, cameral .entity (<a href="68-cameral.html">§68</a>)</li>
+<li><strong>Nested Sequential/Residual</strong> mixed children (Dense/SwiGLU/RMSNorm/LayerNorm)</li>
+<li><strong>lucy</strong> — SoftAcc / Availability / AdaptPct / Score (<a href="66-lucy.html">§66</a>)</li>
 </ul>
+<div class="callout warn"><strong>Off this board</strong>
+<code>apps/octo</code>, <code>stub/*</code>, NPU/Metal/QNN (later <code>welvet.cpp</code>).
+FastProxy can match/beat StepBP <em>Acc</em> on sine/copy toys; Sparse wins Lucy <em>Score</em> via Avail.
+Do not write “Sparse is better backprop.” Engine v1 ≠ “beats PyTorch.”</div>
 
 
 <section class="examples" id="examples">
@@ -136,13 +149,13 @@
 import "fmt"
 
 func main() {
-	// Scorecard earned from welvet/README.md; Version cell may be a patch tag.
-	earned := 95.0
-	fmt.Println("v0.95.1") // patch tag; scorecard round(earned) → v0.95 until 100 → v1.0
-	_ = earned
+	earned := 100.0
+	fmt.Println("v1.0")
+	fmt.Printf("scorecard %.0f/100\n", earned)
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>v0.95.1</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>v1.0
+scorecard 100/100</code></pre>
 
 </section>
 

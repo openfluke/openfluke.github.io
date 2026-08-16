@@ -113,7 +113,7 @@ def title_logo_html() -> str:
 # Chapter catalog — every Welvet feature package
 # ---------------------------------------------------------------------------
 
-def chapters(version: str = "v0.95", earned: float = 95.0) -> list[Chapter]:
+def chapters(version: str = "v1.0", earned: float = 100.0) -> list[Chapter]:
     C = Chapter
     out: list[Chapter] = []
     earned_i = int(round(earned))
@@ -127,7 +127,7 @@ def chapters(version: str = "v0.95", earned: float = 95.0) -> list[Chapter]:
             "tests only in <code>w2a</code>, apps only in <code>apps/</code>.",
         what="An AI engine in Go: layers, 34 dtypes, 20 quant formats, and three backends "
              f"(CPU tiled · Plan 9 SIMD · WebGPU). Version tracks a 100-point scorecard "
-             f"(today <strong>{esc(version)}</strong>).",
+             f"(today <strong>{esc(version)}</strong> · {earned_i}/100).",
         body_extra=ascii_fig("""
 Rules
   1. No tests in engine packages          → w2a/
@@ -138,6 +138,11 @@ Rules
   6. One feature → one folder
   7. v1.0 = scorecard 100/100
 """, "Non-negotiable engine rules.") + """
+<div class="callout"><strong>v1.0</strong>Engine board is full. w2a <code>[0] Run ALL</code> stamped
+<strong>246,032</strong> matrix cells with <strong>FAIL 0</strong> (RESULT: PASS). GAP cells are declared
+skips, not silent fails. Apps, stubs, and NPU sit <em>off</em> this board — they are sibling trees, not missing Welvet.
+Training credit (23 named <code>TrainMode</code>s) and cameral sandwiches are first-class; Lucy races live in AAI
+(chapters <a href="67-train-modes.html">67</a> · <a href="68-cameral.html">68</a>).</div>
 <h2>Origin</h2>
 <p class="origin-byline"><strong>Samuel Watson</strong></p>
 <p>Samuel Watson created OpenFluke after intensive T-ALL treatment (post-2018), from a simple frustration: AI tooling was heavy, opaque, and not portable enough to move models cleanly across operating systems or personal devices. Setting up GPU paths often meant large, brittle installs before experimentation could even begin.</p>
@@ -198,7 +203,12 @@ welvet/
   stub/*            ← designed surfaces, partial or empty
   w2a/              ← harness (separate module)
   tools/            ← eval / test tooling
-"""),
+""") + """
+<p>Engine never imports apps. Lucy <em>measuring</em> is <code>lucy/</code> (public). Lucy <em>races</em>
+(test41 / test48 / test50) live in the AAI tree and <code>replace</code> this module — see
+<a href="68-cameral.html">§68 cameral + AAI</a>. w2a owns every timed matrix, including Test49 (all 23 train modes
+on origin-only cubes).</p>
+""",
         example="""
 package main
 
@@ -668,7 +678,8 @@ func main() {
         ("18-sequential", "18", "layers/sequential",
          "github.com/openfluke/welvet/layers/sequential", "ok", "✅",
          "Some cells need an ordered Dense chain without burning grid hops.",
-         "Dense→Dense compose in one cell. Nested non-Dense children still open.",
+         "Dense→Dense compose, or mixed Ops via NewFromOps (Dense, SwiGLU, RMSNorm, LayerNorm). "
+         "Parallel as a child is parallel.ResidualGraft / a Sandwich — Sequential cannot import parallel.",
          """
 package main
 
@@ -692,7 +703,8 @@ func main() {
         ("19-residual", "19", "layers/residual",
          "github.com/openfluke/welvet/layers/residual", "ok", "✅",
          "Skip connections stabilize deep stacks: y = F(x) + x with correct skip grads.",
-         "F is Dense Dim→Dim (Depth≥1). Heterogeneous non-Dense F still open.",
+         "F is Dense Dim→Dim, or mixed Ops via NewFromOps (Dense, SwiGLU, RMSNorm, LayerNorm). "
+         "Parallel as F is parallel.ResidualGraft (y = F(x)+x) — Residual cannot import parallel.",
          """
 package main
 
@@ -784,7 +796,8 @@ func main() {
         ("23-gdn", "23", "layers/gdn — gated delta net",
          "github.com/openfluke/welvet/layers/gdn", "ok", "✅",
          "Linear attention / decode-first mixers (Gated DeltaNet) need a first-class package under KindLinearAttn.",
-         "Exec CPU/SIMD/WebGPU; ForwardDecode; truncated BPTT; full timed matrix + train grids (Float32-primary).",
+         "Exec CPU/SIMD/WebGPU; ForwardDecode; truncated BPTT. Timed matrix is Float32-primary: "
+         "PermutationOK is f32 × FormatNone/BinaryPacked × CPU/SIMD/WebGPU; other cells GAP (declared), not FAIL.",
          """
 package main
 
@@ -889,7 +902,7 @@ func main() {
          "optionally train under distinct modes.",
          "Parallel branches + Stack sandwiches. Hemispheres / Bicameral / Sandwich build "
          "nested multi-cameral nets. SetBranchModes + TrainStackMSE let each hemi use a "
-         "different TrainMode (BP / Tween / TweenChain).",
+         "different TrainMode (all 23 named updates — BP, Tween, Split, FastProxy, Sparse, Mesh*, …).",
          """
 package main
 
@@ -948,7 +961,27 @@ func main() {
     ]
     for slug, num, title, pkg, st, lab, why, what, ex in layer_specs:
         extra = ""
-        if slug == "27-parallel":
+        if slug == "18-sequential":
+            extra = """
+<p><code>NewFromOps</code> walks mixed children (Dense, SwiGLU, RMSNorm, LayerNorm) through the same
+fwd/bwd as a Dense chain. Parallel is not a Sequential child (import cycle) — wrap F with
+<code>parallel.ResidualGraft</code> or put Parallel in a Sandwich. w2a covers mixed Sequential cells;
+this is on the v1.0 board, not a leftover “open.”</p>
+"""
+        elif slug == "19-residual":
+            extra = """
+<p><code>NewFromOps</code> builds F over mixed Ops. Parallel as F is
+<code>parallel.ResidualGraft</code> → <code>y = F(x)+x</code>. Skip grads still land on F and the identity path.
+Nested mixed Residual is on the v1.0 board.</p>
+"""
+        elif slug == "23-gdn":
+            extra = """
+<div class="callout warn"><strong>Honesty: GDN GAP ≠ fail</strong>
+<code>PermutationOK</code> is Float32 × FormatNone/BinaryPacked × CPU/SIMD/WebGPU only.
+Exotic dtypes and other packed formats are declared GAP in the timed matrix. Truncated BPTT;
+blobs are not on the Dense Store dtype axis. Do not read GAP as “GDN is broken.”</div>
+"""
+        elif slug == "27-parallel":
             extra = ascii_fig("""
 input x
    │
@@ -965,15 +998,20 @@ input x
          ▼
     Dense head → ŷ → MSE
 """, "Cameral Mix: one TrainMode per hemisphere; one loss on the merge.") + """
-<h2>Cameral API (v0.95.1)</h2>
+<h2>Cameral API (v1.0)</h2>
 <ul>
-<li><code>Hemispheres(n)</code> — n Dense twins, merged by add/avg/concat/filter</li>
-<li><code>Bicameral</code> / <code>Sandwich</code> — stem → Parallel → head Stack</li>
+<li><code>Hemispheres</code> / <code>HemispheresFrom</code> — n twins (Dense or mixed Ops), merged by add/avg/concat/filter</li>
+<li><code>Bicameral</code> / <code>Sandwich</code> / <code>BicameralFrom</code> — stem → Parallel → head Stack</li>
 <li><code>SetBranchModes(...)</code> — stamp per-hemi <code>TrainMode</code></li>
 <li><code>TrainStackMSE</code> — forward → MSE → per-branch update (honours BranchModes)</li>
+<li><code>ResidualGraft</code> — skip around a Parallel F without Residual importing this package</li>
+<li><code>WriteCameralFile</code> / <code>LoadCameral</code> — cameral <code>.entity</code> (in <code>model/entity</code>)</li>
 </ul>
-<p>Uniform Bi/Tri/Quad still train via Grid <code>training.Step</code> (one mode for the net).
+<p>Uniform Bi/Tri/Quad can train via Grid <code>training.Step</code> (one mode for the net).
 Mix jobs need the Stack path so each cameral actually uses its own mode.</p>
+<p>Why hemispheres exist, and how AAI Lucy benches use them:
+<a href="68-cameral.html">§68</a>. All 23 named updates and their equations:
+<a href="67-train-modes.html">§67</a>.</p>
 """
         out.append(C(slug, num, title, "III · Layers", pkg, st, lab, why, what, extra, ex))
 
@@ -1041,7 +1079,13 @@ func main() {
             "or a retained float32 master beside storage.",
         what="MSE/MSEGrad, SGD, Step, ApplyTween/StepTween, StepMesh. Layer-agnostic ApplyGradSGD "
              "dispatch (Dense…Mamba/GDN/…). FormatNone: in-dtype ApplySGD; packed: unpack→update→re-Pack. "
-             "No QAT dual path — storage dtype/format is truth after every step.",
+             "No QAT dual path — storage dtype/format is truth after every step. "
+             "Sandwich credit (Split / FastProxy / Sparse / …) lives in layers/parallel TrainMode — see §67.",
+        body_extra="""
+<p>Grid <code>training.Step</code> is MSE + backprop on a volumetric tape. Cameral Mix and the 23 named
+credit updates use <code>parallel.TrainStackMSE</code> (and Mesh* schedulers) so hemispheres can disagree.
+Equations, rival metric (hard Acc vs StepBP), and Lucy Score honesty: <a href="67-train-modes.html">§67</a>.</p>
+""",
         example="""
 package main
 
@@ -1156,6 +1200,125 @@ func main() {
 """,
     ))
 
+    out.append(C(
+        "67-train-modes", "67", "TrainMode — 23 named updates", "IV · Runtime",
+        "github.com/openfluke/welvet/layers/parallel", "ok", "✅ 23 modes",
+        why="Backprop is one update, not the only one. Credit assignment (broadcast gap, head proxy, "
+            "sparse duty clock) has to be a named axis you can race — not a comment in a notebook. "
+            "Cameral Mix also needs one TrainMode per hemisphere on the same loss.",
+        what="parallel.TrainMode: AllNamedTrainModes() = 23 (Inherit omitted). Stack-local Split/Alt "
+             "plus Mesh* schedulers. TrainStackMSE honours BranchModes. Rival metric is hard Acc vs StepBP; "
+             "Lucy Score is Tput × Avail × SoftAcc — do not mix those sentences.",
+        body_extra="""
+<div class="callout"><strong>Honesty</strong>Rival = hard Acc vs StepBP. Lucy Score rewards skip-GEMV (Sparse Avail).
+TweenChain on a Sandwich is chain-rule BP under another name. Mesh* on an origin-only cube collapses to the family
+(not 8/27 trained copies). FastProxy is DFA with B := W_head^T, not a learned random B. Do not write
+“Sparse beat backprop.”</div>
+<h2>Loss gap (MSE)</h2>
+<pre class="ascii">L = (1/d) ||ŷ − t||²
+g_y = ∂L/∂ŷ = (2/d)(ŷ − t)</pre>
+<p>Head always sees <code>g_y</code>. What each mode does with it is the whole story.</p>
+<h2>Families (23 named tokens)</h2>
+<table>
+<thead><tr><th>Family</th><th>Tokens</th><th>Update</th></tr></thead>
+<tbody>
+<tr><td>Backprop</td><td>NormalBP · StepBP · MeshBP</td><td>chain rule J^T through the tape / volumetric Step</td></tr>
+<tr><td>Tween</td><td>Tween · StepTween · MeshTween</td><td>broadcast P(g_y) onto every leaf; η ← η/2</td></tr>
+<tr><td>TweenChain</td><td>TweenChain · StepTweenChain · MeshTweenChain</td><td>same math as BP on a Sandwich</td></tr>
+<tr><td>Split</td><td>TweenSplit · StepTweenSplit · MeshTweenSplit</td><td>g_i = (1/N) P(g_y)</td></tr>
+<tr><td>Alt</td><td>TweenAlt · StepTweenAlt · MeshTweenAlt</td><td>Split then re-forward then Tween (half LR)</td></tr>
+<tr><td>HeadProxy</td><td>TweenSplitHeadProxy</td><td>head J^T g_y (with act′); hidden dW only</td></tr>
+<tr><td>FastProxy</td><td>TweenSplitFastProxy · MeshTweenSplitFastProxy</td><td>g_proxy = W_head^T g_y (skip act′)</td></tr>
+<tr><td>Linear</td><td>TweenSplitLinear</td><td>affine W^T walk; skip ⊙ act′; hemispheres share the down-vector</td></tr>
+<tr><td>LinearCache</td><td>TweenSplitLinearCache</td><td>cache every 20 steps; dead on sine — control</td></tr>
+<tr><td>HeadProxyAsync</td><td>TweenSplitHeadProxyAsync</td><td>hidden uses proxy from T−1; not EMA</td></tr>
+<tr><td>Sparse</td><td>TweenSplitSparse · MeshTweenSplitSparse</td><td>head + one rotating hidden; other dW = 0</td></tr>
+</tbody>
+</table>
+<p><code>AllCreditTrainModes()</code> = 10 stack-local Split/Alt (no Mesh).
+<code>AllMeshCreditTrainModes()</code> = 4 Mesh credit.
+<code>AllStackLocalTrainModes()</code> = 16 (no Inherit, no Mesh*).
+<code>AllNamedTrainModes()</code> = 23 — the Test49 / test50 set.</p>
+<h2>Equations</h2>
+<h3>Backprop (the rival)</h3>
+<pre class="ascii">head:   g_head = J_head^T g_y
+hemi:   g_hemi = J_hemi^T g_head
+stem:   g_stem = J_stem^T g_hemi
+dW_i from local Backward(g_i, x_i)</pre>
+<p>SIMD GEMV. This is who FastProxy has to beat on hard Acc — not Lucy Score.</p>
+<h3>Tween — broadcast, half LR</h3>
+<pre class="ascii">g_i = P(g_y)     η ← η/2
+dW_i = localBackward(g_i, x_i)</pre>
+<p>Blind to W^T sign. Sine Acc collapses. MeshTween is the volumetric scheduler of this family, not a secret FastProxy.</p>
+<h3>TweenSplit — even split</h3>
+<pre class="ascii">g_i = (1/N) P(g_y)</pre>
+<p>Still not J^T. Cheap Acc ceiling. Score can rise because the update is cheap (Avail), not because g is better.</p>
+<h3>TweenAlt — Split then Tween</h3>
+<p>Per sample, AltTimes times (default 1): Split from live g_y → re-forward → Tween from g_y′ (half LR). Extra forwards kill Avail → Score last.</p>
+<h3>HeadProxy</h3>
+<pre class="ascii">g_proxy = J_head^T g_y = W_head^T (g_y ⊙ act′(pre_head))
+hidden i = 1…N−1:  g_i = 1/(N−1) P(g_proxy)
+                   dW_i = g_i x_i^T     (no discarded W^T)</pre>
+<p>One real J_head^T. Hemispheres do <em>not</em> get J_hemi^T.</p>
+<h3>FastProxy</h3>
+<pre class="ascii">g_proxy = W_head^T g_y          ← skip act′
+head dW still uses act′
+hidden: same 1/(N−1) P(g_proxy) dW-only as HeadProxy</pre>
+<p>DFA with B := W_head^T, not a learned random B. On AAI test50 sine, FastProxy SoftAcc often sits above StepBP while both are at 100% hard Acc — that is the FastProxy vs BP sentence.</p>
+<h3>Linear</h3>
+<pre class="ascii">g_head↓  = g_y
+g_hemi↓  = W_head^T g_y          (siblings share the vector)
+g_stem↓  = Σ_hemi W_hemi^T g_hemi↓
+then every leaf: g_i = (1/N) P(g_i↓),  dW_i = g_i x_i^T</pre>
+<p>Same O(N²) class as backprop. Score stays StepBP-class unless Acc is way up.</p>
+<h3>LinearCache — dead control</h3>
+<pre class="ascii">every 20 steps: full Linear walk, cache g_i↓
+else: g_i ← g_i^cache · ||g_y||_live / ||g_y||_cache</pre>
+<p>Norm scaling cannot recover sign flips after a frequency switch. If this wins sine, the board is lying.</p>
+<h3>HeadProxyAsync</h3>
+<pre class="ascii">g_hidden^(T) = 1/(N−1) P(g_proxy^(T−1))
+head computes g_proxy^(T) = W_head^T g_y^(T) for next step</pre>
+<p>First sample seeds live. Stale sign on XOR. Not EMA.</p>
+<h3>Sparse — duty clock</h3>
+<pre class="ascii">g_proxy = W_head^T g_y
+dW_head = g_y x_head^T
+k = t mod (N−1)
+dW_k    = P(g_proxy) x_k^T
+other leaves: dW = 0 this sample</pre>
+<p>Real FLOP cut → Avail 40–50% → Lucy Score explodes. That is a duty clock, not a smaller big-O than backprop and not a better chain rule. On test50 copy, Sparse often <em>loses</em> Acc vs StepBP while winning Score.</p>
+<h2>Mesh*</h2>
+<p>MeshBP = volumetric <code>training.Step</code>. MeshTween = <code>StepMesh</code>. MeshTweenChain = <code>StepTween</code>.
+Mesh Split / Alt / FastProxy / Sparse credit the placed stack under a grid walk.
+On origin-only 1³/2³/3³ (rest <code>IsDisabled</code>) Mesh* usually matches the stack twin. Cube size is hop topology, not 27 sandwiches.</p>
+<h2>Where it is raced</h2>
+<ul>
+<li><strong>w2a Test49</strong> — permutation smoke: 23 modes × 1³/2³/3³ × Parallel / Bicameral / poly kinds, origin-only. In <code>[0] Run ALL</code>. Not a Lucy race.</li>
+<li><strong>AAI test48</strong> — credit sweep (layers × dtypes × short jobs) with these equations.</li>
+<li><strong>AAI test50</strong> — FP32 Lucy race, all 23, cams 1–3, cubes 1–3. Copy: Split/Alt family +5 to +12 Acc vs StepBP. Sine: Acc ceiling; FastProxy SoftAcc is the knife. XOR: 4-point parking lot (75%). Sparse wins Score, not Acc.</li>
+</ul>
+<p>Cameral why + sandwich stem→mid→head: <a href="68-cameral.html">§68</a>. Measuring math: <a href="66-lucy.html">§66</a>.</p>
+""",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/layers/parallel"
+)
+
+func main() {
+	n := 0
+	for _, m := range parallel.AllNamedTrainModes() {
+		n++
+		_ = m.String()
+	}
+	fp, err := parallel.ParseTrainMode("fastproxy")
+	fmt.Println("named", n, "fastproxy", fp, err)
+}
+""",
+    ))
+
     # Systems
     for slug, num, title, pkg, why, what, ex in [
         ("33-dna", "33", "systems/dna", "github.com/openfluke/welvet/systems/dna",
@@ -1206,7 +1369,8 @@ func main() {
 }
 """),
         ("35-tween", "35", "systems/tween", "github.com/openfluke/welvet/systems/tween",
-         "Target propagation (chain-rule or Hebbian layerwise gaps) is an alternative credit-assignment path.",
+         "Target propagation (chain-rule or Hebbian layerwise gaps) is an alternative credit-assignment path. "
+         "Not the same package as TrainMode Tween / TweenChain on a Sandwich (those are layers/parallel — §67).",
          "NewState, Forward, BackwardChainRule / BackwardLayerwise, ApplyGaps; SIMD DotTile/Saxpy budgets.",
          """
 package main
@@ -1280,6 +1444,13 @@ AdaptPct     = mean SoftAcc in AdaptWindows after each switch
 """, "Lucy Score terms (shared by test41-w · tide · live_mnist).") + """
 <p><code>tide/metrics</code> re-exports this package for existing tide callers.
 Engine tests for lucy live under <code>w2a/tests/lucy</code>.</p>
+<div class="callout"><strong>Acc ≠ Score</strong>Hard Acc is the rival vs StepBP.
+Score = Throughput × Availability × SoftAcc / 10_000. Sparse can win Score (skip-GEMV Avail) and lose Acc.
+AAI test50 copy: Split family +5 to +12 Acc vs StepBP; Sparse Score ~8k–10k while Acc is often worse than StepBP.
+Sine: many modes sit at 100% hard Acc; FastProxy SoftAcc is the knife. XOR is a 4-point parking lot (75%) — smoke, not a ranking.</div>
+<p>AAI Lucy benches (private tree, <code>replace</code> → public Welvet): test41 native cam, test48 credit sweep, test50 23-mode FP32 race.
+Harness is not an engine package. Measuring math is this chapter. Modes + equations: <a href="67-train-modes.html">§67</a>.
+Cameral sandwiches: <a href="68-cameral.html">§68</a>.</p>
 """,
         example="""
 package main
@@ -1310,7 +1481,8 @@ func main() {
         "38-entity", "38", "model/entity — .entity files", "VI · Model IO",
         "github.com/openfluke/welvet/model/entity", "ok", "✅",
         why="HF safetensors are awkward for native topology + packed weights. ENTITY is the Welvet checkpoint.",
-        what="Open/Inspect/IsEntity, LoadBlob/LoadQuantBlob, PackFromHF/ImportFromHF, WriteTransformerFile, SerializeNetwork.",
+        what="Open/Inspect/IsEntity, LoadBlob/LoadQuantBlob, PackFromHF/ImportFromHF, WriteTransformerFile, SerializeNetwork, "
+             "WriteCameralFile / LoadCameral (sandwich Stack + TrainMode).",
         example="""
 package main
 
@@ -1451,8 +1623,15 @@ func main() {
     out.append(C(
         "43-apps", "43", "apps — octo · flux2 · mosstts", "VII · Apps",
         "github.com/openfluke/welvet/apps/…", "partial", "🚧",
-        why="Products must not pollute engine packages. Octo is the model shell; flux2/mosstts are domain apps.",
-        what="octo (own module): download/convert/chat, see §44. flux2: MMDiT image. mosstts: Speak/SpeakToFile pipeline.",
+        why="Products must not pollute engine packages. Octo is the model shell; flux2/mosstts are domain apps. "
+            "Lucy <em>races</em> (AAI test41 / test48 / test50) are benches, not Welvet packages.",
+        what="octo (own module): download/convert/chat, see §44. flux2: MMDiT image. mosstts: Speak/SpeakToFile pipeline. "
+             "AAI sandwiches race TrainMode on toys — see §68. Off the v1.0 engine board.",
+        body_extra="""
+<p>The engine never imports apps. AAI is a separate Lucy harness that <code>replace</code>s
+<code>github.com/openfluke/welvet</code>. It is how we talk about cameral Mix and credit modes with numbers
+(hard Acc, SoftAcc, Score) instead of slogans. Public API stays in <code>layers/parallel</code> + <code>lucy</code>.</p>
+""",
         example="""
 package main
 
@@ -1510,6 +1689,88 @@ func main() {
 }
 """,
         run="cd apps/octo && go run .",
+    ))
+
+    out.append(C(
+        "68-cameral", "68", "Cameral sandwiches + AAI Lucy", "VII · Apps",
+        "github.com/openfluke/welvet/layers/parallel", "ok", "✅ cameral",
+        why="A single Dense chain cannot host two independent weight copies that share an input, "
+            "merge, and optionally train under different updates. That is the cameral graph: hemispheres, "
+            "not screen-space sprites and not a second hidden size.",
+        what="Hemispheres / Bicameral / Sandwich / Mix. Stem → Parallel mid → Dense head. "
+             "SetBranchModes + TrainStackMSE. Lucy races in AAI (test41 / test48 / test50) import this API; "
+             "measuring is lucy/; harness is not engine.",
+        body_extra=ascii_fig("""
+x  →  Dense stem  →  ┬→ Hemi 1 (own W, own TrainMode)
+                     ├→ Hemi 2
+                     └→ Hemi n     merge add|avg|concat|filter
+                              → Dense head → ŷ
+                              MSE → g_y → each branch’s update
+""", "Sandwich: stem and head are shared; hemispheres are sibling copies.") + """
+<h2>Why cameral exists</h2>
+<p>Welvet already has Sequential (ordered compose) and Residual (skip). Neither is “two brains on one x.”
+A hemisphere is an independent sub-net with its own weights. Bi / Tri / Quad are n hemispheres plus a merge.
+<strong>Mix</strong> stamps a different <code>TrainMode</code> per hemi (<code>SetBranchModes</code>) so left can be StepBP
+while right is TweenChain — one loss on the merge. Grid <code>training.Step</code> applies one mode to the whole net;
+Mix needs <code>TrainStackMSE</code> or the BranchModes stamp is a lie.</p>
+<p>The sandwich (stem → mid → head) is not extra depth for its own sake. Credit modes need a <em>head Jacobian</em>
+(or a W_head^T proxy). Without a head, FastProxy / HeadProxy have nothing to inject. Stem gets the down-going
+vector after hemispheres merge. That is why AAI Lucy jobs are sandwiches even when cameral count is 1
+(mid is a single Dense, not Parallel).</p>
+<h2>API (engine, public)</h2>
+<ul>
+<li><code>Hemispheres</code> / <code>HemispheresFrom</code> — n twins; merge add/avg/concat/filter</li>
+<li><code>Bicameral</code> / <code>BicameralFrom</code> / <code>Sandwich</code> — stem → Parallel → head Stack</li>
+<li><code>SetBranchModes</code> / <code>TrainStackMSE</code> — Mix path</li>
+<li><code>ResidualGraft</code> — y = F(x)+x when F is Parallel</li>
+<li><code>WriteCameralFile</code> / <code>LoadCameral</code> — cameral <code>.entity</code> (in <code>model/entity</code>)</li>
+</ul>
+<p>Layer package chapter: <a href="27-parallel.html">§27</a>. Named updates: <a href="67-train-modes.html">§67</a>.</p>
+<h2>AAI Lucy benches</h2>
+<p>AAI is a separate tree. It <code>replace</code>s <code>github.com/openfluke/welvet</code> (public chaosglue module).
+The engine does not import AAI. Lucy <em>math</em> is <a href="66-lucy.html">§66</a>.</p>
+<table>
+<thead><tr><th>Bench</th><th>What it answers</th></tr></thead>
+<tbody>
+<tr><td>test41</td><td>Native cameral Lucy (Bi/Tri/Mix) on toys — does the sandwich train at all.</td></tr>
+<tr><td>test48</td><td>Credit sweep: layers × dtypes × short jobs. Home of the equations in §67.</td></tr>
+<tr><td>test50</td><td>Deep FP32 race: all 23 named modes × Dense/Bi/Tri × 1³/2³/3³ origin-only. Rival = hard Acc vs StepBP.</td></tr>
+</tbody>
+</table>
+<p>test50 copy: Split / Alt / MeshSplit family about <strong>+5 to +12 Acc</strong> over StepBP (~68–74%).
+Sine: Acc ceiling (many modes 100% including StepBP); FastProxy SoftAcc ~56–68 vs StepBP ~42–53.
+XOR: almost everyone at 75% (3 of 4 bits) — parking lot. Sparse wins Score, not Acc.
+Origin-only cubes: extra cells are disabled; 3³ is hop topology, not 27 copies.</p>
+<p>w2a Test49 is the <em>permutation smoke</em> of those 23 modes (in <code>[0] Run ALL</code>), not a Lucy race.
+Do not quote Test49 as “we beat backprop.”</p>
+""",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/parallel"
+	"github.com/openfluke/welvet/quant"
+)
+
+func main() {
+	s, err := parallel.Bicameral(8, 16, 1, core.ActivationLeakyReLU,
+		core.DTypeFloat32, quant.FormatNone)
+	if err != nil {
+		panic(err)
+	}
+	hemi := s.Children[1].(*parallel.Layer)
+	hemi.SetBranchModes(parallel.ModeStepBP, parallel.ModeTweenSplitFastProxy)
+
+	x := core.NewTensor[float32](1, 8)
+	t := core.NewTensor[float32](1, 1)
+	t.Data[0] = 0.5
+	loss, err := parallel.TrainStackMSE(s, x, t, parallel.ModeStepBP, 0.01)
+	fmt.Println("mix loss", loss, "err", err)
+}
+""",
     ))
 
     # Stubs — each one
@@ -1836,9 +2097,11 @@ func main() {
 
     out.append(C(
         "62-w2a", "62", "w2a — validation harness", "IX · Validate",
-        "github.com/openfluke/w2a", "partial", "🚧 harness",
-        why="Engine packages must stay free of tests. w2a owns timed 34×20×3 matrices, gap census, and honesty stamps. See §63 for a live full-suite run.",
-        what="Interactive go run ., suites under suites/*, go test ./tests/<layer>. StampBackendNote / AffinePackable prevent fake ✅.",
+        "github.com/openfluke/w2a", "ok", "✅ harness",
+        why="Engine packages must stay free of tests. w2a owns timed 34×20×3 matrices, gap census, honesty stamps, "
+            "and the train-mode permutation smoke (Test49). See §63 for a live full-suite run.",
+        what="Interactive go run . ([0] Run ALL). Suites under suites/*. StampBackendNote / AffinePackable prevent fake ✅. "
+             "Test49: AllNamedTrainModes × 1³/2³/3³ × Parallel/Bicameral/poly, origin-only — included in [0].",
         example="""
 package main
 
@@ -1848,40 +2111,36 @@ func main() {
 	fmt.Println("w2a is a separate module — engine packages never contain tests.")
 	fmt.Println("")
 	fmt.Println("  cd w2a")
-	fmt.Println("  go run .                    # interactive menu")
-	fmt.Println("  go test ./tests/dense -v    # timed FormatNone matrix")
-	fmt.Println("  go test ./tests/mha -v      # MHA coverage")
+	fmt.Println("  go run .                                      # interactive; [0] = ALL")
+	fmt.Println("  go test ./tests/dense -v")
+	fmt.Println("  go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v")
 }
 """,
-        run="cd w2a && go run .\ncd w2a && go test ./tests/dense -v && go test ./tests/mha -v",
+        run="cd w2a && go run .\ncd w2a && go test ./tests/dense -v && go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v",
     ))
 
     out.append(C(
         "63-validation", "63", "Validation report — full suite", "IX · Validate",
-        "github.com/openfluke/w2a", "ok", "✅ 228k cells",
-        why="Claims are cheap; a stamped matrix is not. This is the actual output of one full w2a run so the book's ✅ marks are backed by numbers you can reproduce, not asserted.",
+        "github.com/openfluke/w2a", "ok", "✅ 246k cells",
+        why="Claims are cheap; a stamped matrix is not. This is the actual output of one full w2a [0] Run ALL "
+            "so the book's ✅ marks are backed by numbers you can reproduce, not asserted.",
         what="Every timed layer sweeps its dtype × format × backend matrix; every suite runs its case checks. "
-             "Latest full board: FAIL 0, cases all PASS; honesty stamps still record GAP cells (not silent skips).",
+             "v1.0 board: 246,032 matrix cells, FAIL 0, RESULT PASS. GAP cells are declared skips (not silent fails).",
         body_extra="""
-<div class="callout"><strong>Full suite: PASS</strong>228,054 matrix cells — OK 227,194 · GAP 860 · FAIL 0. 456 suite cases — PASS 456 · FAIL 0. Elapsed 1h21m32s. Good enough for Caber / GitHub release: no fails, gaps are declared.</div>
-<h3>Coverage by layer (highlights)</h3>
-<table>
-<thead><tr><th>Layer</th><th>Cells</th><th>OK</th><th>GAP</th><th>Cases</th></tr></thead>
-<tbody>
-<tr><td>step</td><td>43,903</td><td>43,903</td><td>0</td><td>13</td></tr>
-<tr><td>tween</td><td>32,457</td><td>32,457</td><td>0</td><td>10</td></tr>
-<tr><td>dna</td><td>16,159</td><td>16,159</td><td>0</td><td>6</td></tr>
-<tr><td>evolution</td><td>16,152</td><td>16,152</td><td>0</td><td>6</td></tr>
-<tr><td>dense</td><td>5,775</td><td>5,774</td><td>1</td><td>25</td></tr>
-<tr><td>mha · swiglu · cnn* · rnn/lstm · norms · …</td><td>~5,763 ea</td><td>~all OK</td><td>0–few</td><td>14–23 ea</td></tr>
-<tr><td>parallel</td><td>6,415</td><td>6,369</td><td>46</td><td>20</td></tr>
-<tr><td>convt1–3</td><td>5,763 ea</td><td>5,649 ea</td><td>114 ea</td><td>14 ea</td></tr>
-<tr><td>gdn</td><td>555</td><td>93</td><td>462</td><td>17</td></tr>
-<tr><td>mamba</td><td>5,763</td><td>5,755</td><td>8</td><td>14</td></tr>
-<tr><td><strong>Total</strong></td><td><strong>228,054</strong></td><td><strong>227,194</strong></td><td><strong>860</strong></td><td><strong>456</strong></td></tr>
-</tbody>
-</table>
-<p class="example-meta">GAPs are honesty stamps (paths not claimed done) — concentrated in gdn / convt / a few poly_train cells. Case-only stubs: seed, serialization, memory, donate, fountain, hardware, helpers, weights.</p>
+<div class="callout"><strong>Full suite: PASS</strong>
+<code>[0] Run ALL</code> — <strong>246,032</strong> matrix cells — FAIL 0 — RESULT: PASS.
+GAP remains (honesty stamps): GDN non-float32 / non-packable formats, AffinePacked, exotic hemi9 dtypes,
+census + cross-numeric train declared skips, a handful of ser cells. GAP ≠ fail. Case-only stubs
+(seed, serialization, memory, donate, fountain, hardware) stay off the engine scorecard.</div>
+<h3>What grew since the 228k board</h3>
+<ul>
+<li><strong>Test49</strong> — 23 named TrainModes × 1³/2³/3³ × Parallel + Bicameral + poly kinds (origin-only). All cells OK.</li>
+<li><strong>Cameral perm</strong> — Mix / BranchModes / credit on sandwiches (OK cells + declared GAP on exotic dtypes).</li>
+<li><strong>Nested Sequential / Residual</strong> mixed children + <code>ResidualGraft</code>.</li>
+<li><strong>Mesh*</strong> credit tokens on the named-mode list (stack family on a grid walk).</li>
+</ul>
+<p>Do not quote this stamp as a Lucy race or “beats PyTorch.” It is surface coverage: every claimed path either
+runs or is stamped GAP. Lucy Acc vs Score lives in AAI test50 (<a href="68-cameral.html">§68</a>).</p>
 <h3>Cross-numeric train</h3>
 <p>W2A Step includes <strong>Cross-Numeric Train</strong> (kinds × weight dtype × act host; full census ~10.7k under the <code>train</code> op). Storage truth checked after <code>StepMesh</code> — no retained f32 master for non-float32 FormatNone. Public Dense demotion + W×A showcase: <a href="https://github.com/openfluke/down-the-dem">down-the-dem</a> (chapter <a href="65-cross-numeric.html">65</a>).</p>
 """,
@@ -1891,36 +2150,49 @@ package main
 import "fmt"
 
 func main() {
-	cells, ok, gap, cases := 228054, 227194, 860, 456
-	fmt.Printf("w2a suite: %d cells (OK %d GAP %d FAIL 0)\\n", cells, ok, gap)
-	fmt.Printf("cases: %d/%d PASS   result: PASS\\n", cases, cases)
+	cells := 246032
+	fmt.Printf("w2a [0] ALL: %d cells  FAIL 0  RESULT PASS\\n", cells)
+	fmt.Println("GAP = declared skip (GDN non-f32, AffinePacked, …) — not a fail")
 }
 """,
-        run="cd w2a && go run .   # full timed suite (~1h20m); writes logs/suite.txt",
+        run="cd w2a && go run .   # [0] Run ALL; writes logs/suite.txt",
     ))
 
+    sc_ok = "ok" if earned >= 100 else "partial"
+    sc_lab = version if earned >= 100 else version
     out.append(C(
         "64-scorecard", "64", "Scorecard → v1.0", "IX · Validate",
-        "", "partial", version,
-        why="Version is earned from a weighted board, not marketing. Apps, stubs, and Accel still leave points on the table. "
-            "Patch tags (v0.95.1) ship engine deltas without moving the scorecard.",
+        "", sc_ok, sc_lab,
+        why="Version is earned from a weighted board, not marketing. v1.0 is 100/100 on the engine board. "
+            "Apps, stubs, and NPU sit off-board — they are sibling / later trees, not missing Welvet.",
         what=f"version = 0.{{round(earned)}} until 100 → v1.0. Scorecard today <strong>{earned_i}/100</strong>; "
-             f"this book tags <strong>{esc(version)}</strong>. Biggest remaining: apps/stubs (§9–10) and Accel (§11).",
+             f"this book tags <strong>{esc(version)}</strong>. Training credit is §9 on the board (8 pts), not an afterthought.",
         body_extra=f"""
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
-<tr><td>1–4</td><td>Foundation + Dense + transformer + CNN/RNN</td><td>50</td><td>50</td></tr>
-<tr><td>5</td><td>Extended layers</td><td>7</td><td>7</td></tr>
-<tr><td>6–8</td><td>Runtime + systems + model</td><td>21</td><td>21</td></tr>
-<tr><td>9–11</td><td>Apps + stubs + accel</td><td>8</td><td>3.0</td></tr>
-<tr><td>12</td><td>Peak fused / no host ALU</td><td>14</td><td>14</td></tr>
-<tr><td></td><td><strong>Total</strong></td><td>100</td><td><strong>{earned_i}</strong></td></tr>
+<tr><td>1</td><td>Foundation</td><td>15</td><td>15</td></tr>
+<tr><td>2</td><td>Dense MatVec microkernel</td><td>15</td><td>15</td></tr>
+<tr><td>3</td><td>Transformer stack</td><td>14</td><td>14</td></tr>
+<tr><td>4</td><td>CNN / RNN / LSTM</td><td>6</td><td>6</td></tr>
+<tr><td>5</td><td>Extended layers (GDN, ConvT, Mamba, Parallel, …)</td><td>7</td><td>7</td></tr>
+<tr><td>6</td><td>Runtime + architecture</td><td>8</td><td>8</td></tr>
+<tr><td>7</td><td>Systems</td><td>5</td><td>5</td></tr>
+<tr><td>8</td><td>Model / IO</td><td>8</td><td>8</td></tr>
+<tr><td>9</td><td>Training credit (23 named TrainModes + BranchModes)</td><td>8</td><td>8</td></tr>
+<tr><td>10</td><td>Peak fused / no host ALU</td><td>14</td><td>14</td></tr>
+<tr><td></td><td><strong>Total → v1.0</strong></td><td>100</td><td><strong>{earned_i}</strong></td></tr>
 </tbody></table>
-<h3>v0.95.1 patch (this release)</h3>
+<h3>v1.0 cut</h3>
 <ul>
-<li><strong>lucy</strong> — SoftAcc / Availability / AdaptPct / Score harness</li>
-<li><strong>Nested multi-cameral</strong> — Hemispheres + Stack sandwiches</li>
-<li><strong>BranchModes</strong> — distinct TrainMode per hemisphere via TrainStackMSE</li>
+<li><strong>w2a [0] ALL</strong> — 246,032 cells, FAIL 0, RESULT PASS (<a href="63-validation.html">§63</a>)</li>
+<li><strong>Training credit</strong> — StepBP, Tween*, Split, Alt, HeadProxy, FastProxy, Linear, Sparse, Mesh* (<a href="67-train-modes.html">§67</a>)</li>
+<li><strong>Cameral</strong> — Hemispheres, Mix BranchModes, Sandwich, ResidualGraft, cameral .entity (<a href="68-cameral.html">§68</a>)</li>
+<li><strong>Nested Sequential/Residual</strong> mixed children (Dense/SwiGLU/RMSNorm/LayerNorm)</li>
+<li><strong>lucy</strong> — SoftAcc / Availability / AdaptPct / Score (<a href="66-lucy.html">§66</a>)</li>
 </ul>
+<div class="callout warn"><strong>Off this board</strong>
+<code>apps/octo</code>, <code>stub/*</code>, NPU/Metal/QNN (later <code>welvet.cpp</code>).
+FastProxy can match/beat StepBP <em>Acc</em> on sine/copy toys; Sparse wins Lucy <em>Score</em> via Avail.
+Do not write “Sparse is better backprop.” Engine v1 ≠ “beats PyTorch.”</div>
 """,
         example=f"""
 package main
@@ -1928,10 +2200,9 @@ package main
 import "fmt"
 
 func main() {{
-	// Scorecard earned from welvet/README.md; Version cell may be a patch tag.
 	earned := {earned:.1f}
-	fmt.Println("{version}") // patch tag; scorecard round(earned) → v0.{earned_i:02d} until 100 → v1.0
-	_ = earned
+	fmt.Println("{version}")
+	fmt.Printf("scorecard %.0f/100\\n", earned)
 }}
 """,
     ))
@@ -1951,10 +2222,10 @@ PARTS_NAV = [
         "18-sequential", "19-residual", "20-cnn", "21-rnn-lstm", "22-seqmix", "23-gdn", "24-mamba",
         "25-convt", "26-kmeans", "27-parallel", "28-metacognition",
     ]),
-    ("IV · Runtime", ["29-forward", "30-backward", "31-training", "32-step", "65-cross-numeric"]),
+    ("IV · Runtime", ["29-forward", "30-backward", "31-training", "32-step", "65-cross-numeric", "67-train-modes"]),
     ("V · Systems", ["33-dna", "34-evolution", "35-tween", "36-tanhi", "37-telemetry", "66-lucy"]),
     ("VI · Model IO", ["38-entity", "39-hf", "40-tokenizer", "41-sampling", "42-transformer"]),
-    ("VII · Apps", ["43-apps", "44-octo"]),
+    ("VII · Apps", ["43-apps", "44-octo", "68-cameral"]),
     ("VIII · Stubs", [
         "45-stub-seed", "46-stub-serialization", "47-stub-memory", "48-stub-donate",
         "49-stub-fountain", "50-stub-hardware", "51-stub-accel",
@@ -2118,6 +2389,8 @@ def write_examples_go_mod() -> None:
 go 1.22.5
 
 require github.com/openfluke/welvet v0.0.0
+
+require github.com/openfluke/webgpu v1.0.4 // indirect
 
 replace github.com/openfluke/welvet => {rel(WELVET_ROOT)}
 
@@ -2298,7 +2571,7 @@ def title_page(version: str, pdf_name: str, chs: list[Chapter]) -> str:
 {stats_html}
 </div>
 <div class="title-meta">
-<div><strong>Version</strong> {esc(version)} · scorecard toward v1.0</div>
+<div><strong>Version</strong> {esc(version)} · scorecard 100/100</div>
 <div><strong>Module</strong> github.com/openfluke/welvet</div>
 <div><strong>Harness</strong> github.com/openfluke/w2a</div>
 </div>

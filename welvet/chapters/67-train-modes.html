@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>67. TrainMode — 23 named updates — Welvet</title>
+<link rel="stylesheet" href="../assets/book.css"/>
+</head>
+<body>
+<a class="skip" href="#main">Skip</a>
+<div class="shell">
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<div class="nav-group"><h2>I · Orientation</h2>
+<a href="01-welvet.html">1. What Welvet is</a>
+<a href="02-tree.html">2. Repository map</a>
+</div>
+<div class="nav-group"><h2>II · Foundation</h2>
+<a href="03-core.html">3. core</a>
+<a href="04-weights.html">4. weights</a>
+<a href="05-quant.html">5. quant</a>
+<a href="06-simd.html">6. simd</a>
+<a href="07-webgpu.html">7. webgpu</a>
+<a href="08-tiling.html">8. tiling</a>
+<a href="09-architecture.html">9. architecture</a>
+<a href="10-fusedgpu.html">10. fusedgpu</a>
+</div>
+<div class="nav-group"><h2>III · Layers</h2>
+<a href="11-dense.html">11. layers/dense</a>
+<a href="12-mha.html">12. layers/mha</a>
+<a href="13-swiglu.html">13. layers/swiglu</a>
+<a href="14-rmsnorm.html">14. layers/rmsnorm</a>
+<a href="15-layernorm.html">15. layers/layernorm</a>
+<a href="16-embedding.html">16. layers/embedding</a>
+<a href="17-softmax.html">17. layers/softmax</a>
+<a href="18-sequential.html">18. layers/sequential</a>
+<a href="19-residual.html">19. layers/residual</a>
+<a href="20-cnn.html">20. layers/cnn1</a>
+<a href="21-rnn-lstm.html">21. layers/rnn</a>
+<a href="22-seqmix.html">22. layers/seqmix</a>
+<a href="23-gdn.html">23. layers/gdn</a>
+<a href="24-mamba.html">24. layers/mamba</a>
+<a href="25-convt.html">25. layers/convt1</a>
+<a href="26-kmeans.html">26. layers/kmeans</a>
+<a href="27-parallel.html">27. layers/parallel</a>
+<a href="28-metacognition.html">28. layers/metacognition</a>
+</div>
+<div class="nav-group"><h2>IV · Runtime</h2>
+<a href="29-forward.html">29. runtime/forward</a>
+<a href="30-backward.html">30. runtime/backward</a>
+<a href="31-training.html">31. runtime/training</a>
+<a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
+<a href="67-train-modes.html">67. TrainMode</a>
+</div>
+<div class="nav-group"><h2>V · Systems</h2>
+<a href="33-dna.html">33. systems/dna</a>
+<a href="34-evolution.html">34. systems/evolution</a>
+<a href="35-tween.html">35. systems/tween</a>
+<a href="36-tanhi.html">36. systems/tanhi</a>
+<a href="37-telemetry.html">37. systems/telemetry</a>
+<a href="66-lucy.html">66. lucy</a>
+</div>
+<div class="nav-group"><h2>VI · Model IO</h2>
+<a href="38-entity.html">38. model/entity</a>
+<a href="39-hf.html">39. model/hf</a>
+<a href="40-tokenizer.html">40. model/tokenizer</a>
+<a href="41-sampling.html">41. model/sampling</a>
+<a href="42-transformer.html">42. model/transformer</a>
+</div>
+<div class="nav-group"><h2>VII · Apps</h2>
+<a href="43-apps.html">43. apps</a>
+<a href="44-octo.html">44. Octo</a>
+<a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
+</div>
+<div class="nav-group"><h2>VIII · Stubs</h2>
+<a href="45-stub-seed.html">45. stub/seed</a>
+<a href="46-stub-serialization.html">46. stub/serialization</a>
+<a href="47-stub-memory.html">47. stub/memory</a>
+<a href="48-stub-donate.html">48. stub/donate</a>
+<a href="49-stub-fountain.html">49. stub/fountain</a>
+<a href="50-stub-hardware.html">50. stub/hardware</a>
+<a href="51-stub-accel.html">51. stub/accel</a>
+<a href="52-stub-clustering.html">52. stub/clustering</a>
+<a href="53-stub-ensemble.html">53. stub/ensemble</a>
+<a href="54-stub-evaluation.html">54. stub/evaluation</a>
+<a href="55-stub-grafting.html">55. stub/grafting</a>
+<a href="56-stub-grouping.html">56. stub/grouping</a>
+<a href="57-stub-introspection.html">57. stub/introspection</a>
+<a href="58-stub-observer.html">58. stub/observer</a>
+<a href="59-stub-pipeline.html">59. stub/pipeline</a>
+<a href="60-stub-templates.html">60. stub/templates</a>
+<a href="61-stub-universal.html">61. stub/universal</a>
+</div>
+<div class="nav-group"><h2>IX · Validate</h2>
+<a href="62-w2a.html">62. w2a</a>
+<a href="63-validation.html">63. Validation report</a>
+<a href="64-scorecard.html">64. Scorecard → v1.0</a>
+</div>
+</aside>
+<div class="main">
+<div class="topbar">
+<button class="menu-btn" id="menu-btn" type="button">Menu</button>
+<div class="meta">IV · Runtime</div>
+<nav class="pager"><a href="65-cross-numeric.html">← 65. Cross-numeric train + down-the-dem</a><a href="33-dna.html">33. systems/dna →</a></nav>
+</div>
+<article class="content" id="main">
+
+<p class="chapter-kicker">Chapter 67</p>
+<h1>TrainMode — 23 named updates</h1>
+<p class="pill-row"><span class="pill">github.com/openfluke/welvet/layers/parallel</span><span class="status ok">✅ 23 modes</span></p>
+<hr class="rule"/>
+<h2>Why it exists</h2>
+<p>Backprop is one update, not the only one. Credit assignment (broadcast gap, head proxy, sparse duty clock) has to be a named axis you can race — not a comment in a notebook. Cameral Mix also needs one TrainMode per hemisphere on the same loss.</p>
+<h2>What it is</h2>
+<p>parallel.TrainMode: AllNamedTrainModes() = 23 (Inherit omitted). Stack-local Split/Alt plus Mesh* schedulers. TrainStackMSE honours BranchModes. Rival metric is hard Acc vs StepBP; Lucy Score is Tput × Avail × SoftAcc — do not mix those sentences.</p>
+
+<div class="callout"><strong>Honesty</strong>Rival = hard Acc vs StepBP. Lucy Score rewards skip-GEMV (Sparse Avail).
+TweenChain on a Sandwich is chain-rule BP under another name. Mesh* on an origin-only cube collapses to the family
+(not 8/27 trained copies). FastProxy is DFA with B := W_head^T, not a learned random B. Do not write
+“Sparse beat backprop.”</div>
+<h2>Loss gap (MSE)</h2>
+<pre class="ascii">L = (1/d) ||ŷ − t||²
+g_y = ∂L/∂ŷ = (2/d)(ŷ − t)</pre>
+<p>Head always sees <code>g_y</code>. What each mode does with it is the whole story.</p>
+<h2>Families (23 named tokens)</h2>
+<table>
+<thead><tr><th>Family</th><th>Tokens</th><th>Update</th></tr></thead>
+<tbody>
+<tr><td>Backprop</td><td>NormalBP · StepBP · MeshBP</td><td>chain rule J^T through the tape / volumetric Step</td></tr>
+<tr><td>Tween</td><td>Tween · StepTween · MeshTween</td><td>broadcast P(g_y) onto every leaf; η ← η/2</td></tr>
+<tr><td>TweenChain</td><td>TweenChain · StepTweenChain · MeshTweenChain</td><td>same math as BP on a Sandwich</td></tr>
+<tr><td>Split</td><td>TweenSplit · StepTweenSplit · MeshTweenSplit</td><td>g_i = (1/N) P(g_y)</td></tr>
+<tr><td>Alt</td><td>TweenAlt · StepTweenAlt · MeshTweenAlt</td><td>Split then re-forward then Tween (half LR)</td></tr>
+<tr><td>HeadProxy</td><td>TweenSplitHeadProxy</td><td>head J^T g_y (with act′); hidden dW only</td></tr>
+<tr><td>FastProxy</td><td>TweenSplitFastProxy · MeshTweenSplitFastProxy</td><td>g_proxy = W_head^T g_y (skip act′)</td></tr>
+<tr><td>Linear</td><td>TweenSplitLinear</td><td>affine W^T walk; skip ⊙ act′; hemispheres share the down-vector</td></tr>
+<tr><td>LinearCache</td><td>TweenSplitLinearCache</td><td>cache every 20 steps; dead on sine — control</td></tr>
+<tr><td>HeadProxyAsync</td><td>TweenSplitHeadProxyAsync</td><td>hidden uses proxy from T−1; not EMA</td></tr>
+<tr><td>Sparse</td><td>TweenSplitSparse · MeshTweenSplitSparse</td><td>head + one rotating hidden; other dW = 0</td></tr>
+</tbody>
+</table>
+<p><code>AllCreditTrainModes()</code> = 10 stack-local Split/Alt (no Mesh).
+<code>AllMeshCreditTrainModes()</code> = 4 Mesh credit.
+<code>AllStackLocalTrainModes()</code> = 16 (no Inherit, no Mesh*).
+<code>AllNamedTrainModes()</code> = 23 — the Test49 / test50 set.</p>
+<h2>Equations</h2>
+<h3>Backprop (the rival)</h3>
+<pre class="ascii">head:   g_head = J_head^T g_y
+hemi:   g_hemi = J_hemi^T g_head
+stem:   g_stem = J_stem^T g_hemi
+dW_i from local Backward(g_i, x_i)</pre>
+<p>SIMD GEMV. This is who FastProxy has to beat on hard Acc — not Lucy Score.</p>
+<h3>Tween — broadcast, half LR</h3>
+<pre class="ascii">g_i = P(g_y)     η ← η/2
+dW_i = localBackward(g_i, x_i)</pre>
+<p>Blind to W^T sign. Sine Acc collapses. MeshTween is the volumetric scheduler of this family, not a secret FastProxy.</p>
+<h3>TweenSplit — even split</h3>
+<pre class="ascii">g_i = (1/N) P(g_y)</pre>
+<p>Still not J^T. Cheap Acc ceiling. Score can rise because the update is cheap (Avail), not because g is better.</p>
+<h3>TweenAlt — Split then Tween</h3>
+<p>Per sample, AltTimes times (default 1): Split from live g_y → re-forward → Tween from g_y′ (half LR). Extra forwards kill Avail → Score last.</p>
+<h3>HeadProxy</h3>
+<pre class="ascii">g_proxy = J_head^T g_y = W_head^T (g_y ⊙ act′(pre_head))
+hidden i = 1…N−1:  g_i = 1/(N−1) P(g_proxy)
+                   dW_i = g_i x_i^T     (no discarded W^T)</pre>
+<p>One real J_head^T. Hemispheres do <em>not</em> get J_hemi^T.</p>
+<h3>FastProxy</h3>
+<pre class="ascii">g_proxy = W_head^T g_y          ← skip act′
+head dW still uses act′
+hidden: same 1/(N−1) P(g_proxy) dW-only as HeadProxy</pre>
+<p>DFA with B := W_head^T, not a learned random B. On AAI test50 sine, FastProxy SoftAcc often sits above StepBP while both are at 100% hard Acc — that is the FastProxy vs BP sentence.</p>
+<h3>Linear</h3>
+<pre class="ascii">g_head↓  = g_y
+g_hemi↓  = W_head^T g_y          (siblings share the vector)
+g_stem↓  = Σ_hemi W_hemi^T g_hemi↓
+then every leaf: g_i = (1/N) P(g_i↓),  dW_i = g_i x_i^T</pre>
+<p>Same O(N²) class as backprop. Score stays StepBP-class unless Acc is way up.</p>
+<h3>LinearCache — dead control</h3>
+<pre class="ascii">every 20 steps: full Linear walk, cache g_i↓
+else: g_i ← g_i^cache · ||g_y||_live / ||g_y||_cache</pre>
+<p>Norm scaling cannot recover sign flips after a frequency switch. If this wins sine, the board is lying.</p>
+<h3>HeadProxyAsync</h3>
+<pre class="ascii">g_hidden^(T) = 1/(N−1) P(g_proxy^(T−1))
+head computes g_proxy^(T) = W_head^T g_y^(T) for next step</pre>
+<p>First sample seeds live. Stale sign on XOR. Not EMA.</p>
+<h3>Sparse — duty clock</h3>
+<pre class="ascii">g_proxy = W_head^T g_y
+dW_head = g_y x_head^T
+k = t mod (N−1)
+dW_k    = P(g_proxy) x_k^T
+other leaves: dW = 0 this sample</pre>
+<p>Real FLOP cut → Avail 40–50% → Lucy Score explodes. That is a duty clock, not a smaller big-O than backprop and not a better chain rule. On test50 copy, Sparse often <em>loses</em> Acc vs StepBP while winning Score.</p>
+<h2>Mesh*</h2>
+<p>MeshBP = volumetric <code>training.Step</code>. MeshTween = <code>StepMesh</code>. MeshTweenChain = <code>StepTween</code>.
+Mesh Split / Alt / FastProxy / Sparse credit the placed stack under a grid walk.
+On origin-only 1³/2³/3³ (rest <code>IsDisabled</code>) Mesh* usually matches the stack twin. Cube size is hop topology, not 27 sandwiches.</p>
+<h2>Where it is raced</h2>
+<ul>
+<li><strong>w2a Test49</strong> — permutation smoke: 23 modes × 1³/2³/3³ × Parallel / Bicameral / poly kinds, origin-only. In <code>[0] Run ALL</code>. Not a Lucy race.</li>
+<li><strong>AAI test48</strong> — credit sweep (layers × dtypes × short jobs) with these equations.</li>
+<li><strong>AAI test50</strong> — FP32 Lucy race, all 23, cams 1–3, cubes 1–3. Copy: Split/Alt family +5 to +12 Acc vs StepBP. Sine: Acc ceiling; FastProxy SoftAcc is the knife. XOR: 4-point parking lot (75%). Sparse wins Score, not Acc.</li>
+</ul>
+<p>Cameral why + sandwich stem→mid→head: <a href="68-cameral.html">§68</a>. Measuring math: <a href="66-lucy.html">§66</a>.</p>
+
+
+<section class="examples" id="examples">
+<h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/67-train-modes/main.go">examples/67-train-modes/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/67-train-modes &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
+<pre><code>package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/layers/parallel"
+)
+
+func main() {
+	n := 0
+	for _, m := range parallel.AllNamedTrainModes() {
+		n++
+		_ = m.String()
+	}
+	fp, err := parallel.ParseTrainMode("fastproxy")
+	fmt.Println("named", n, "fastproxy", fp, err)
+}</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>named 23 fastproxy TweenSplitFastProxy &lt;nil&gt;</code></pre>
+
+</section>
+
+
+<nav class="pager" style="margin-top:2rem"><a href="65-cross-numeric.html">← 65. Cross-numeric train + down-the-dem</a><a href="33-dna.html">33. systems/dna →</a></nav>
+</article>
+</div></div>
+<script src="../assets/book.js"></script>
+</body></html>

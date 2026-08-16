@@ -1,6 +1,6 @@
 # Welvet book examples
 
-One `main.go` per chapter (66 total).
+One `main.go` per chapter (68 total).
 
 ```bash
 cd welvet/examples/01-welvet

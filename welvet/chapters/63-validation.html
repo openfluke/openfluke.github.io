@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v0.95.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -49,6 +49,7 @@
 <a href="31-training.html">31. runtime/training</a>
 <a href="32-step.html">32. runtime/step</a>
 <a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
+<a href="67-train-modes.html">67. TrainMode</a>
 </div>
 <div class="nav-group"><h2>V · Systems</h2>
 <a href="33-dna.html">33. systems/dna</a>
@@ -68,6 +69,7 @@
 <div class="nav-group"><h2>VII · Apps</h2>
 <a href="43-apps.html">43. apps</a>
 <a href="44-octo.html">44. Octo</a>
+<a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
 </div>
 <div class="nav-group"><h2>VIII · Stubs</h2>
 <a href="45-stub-seed.html">45. stub/seed</a>
@@ -104,32 +106,27 @@
 
 <p class="chapter-kicker">Chapter 63</p>
 <h1>Validation report — full suite</h1>
-<p class="pill-row"><span class="pill">github.com/openfluke/w2a</span><span class="status ok">✅ 228k cells</span></p>
+<p class="pill-row"><span class="pill">github.com/openfluke/w2a</span><span class="status ok">✅ 246k cells</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Claims are cheap; a stamped matrix is not. This is the actual output of one full w2a run so the book's ✅ marks are backed by numbers you can reproduce, not asserted.</p>
+<p>Claims are cheap; a stamped matrix is not. This is the actual output of one full w2a [0] Run ALL so the book's ✅ marks are backed by numbers you can reproduce, not asserted.</p>
 <h2>What it is</h2>
-<p>Every timed layer sweeps its dtype × format × backend matrix; every suite runs its case checks. Latest full board: FAIL 0, cases all PASS; honesty stamps still record GAP cells (not silent skips).</p>
+<p>Every timed layer sweeps its dtype × format × backend matrix; every suite runs its case checks. v1.0 board: 246,032 matrix cells, FAIL 0, RESULT PASS. GAP cells are declared skips (not silent fails).</p>
 
-<div class="callout"><strong>Full suite: PASS</strong>228,054 matrix cells — OK 227,194 · GAP 860 · FAIL 0. 456 suite cases — PASS 456 · FAIL 0. Elapsed 1h21m32s. Good enough for Caber / GitHub release: no fails, gaps are declared.</div>
-<h3>Coverage by layer (highlights)</h3>
-<table>
-<thead><tr><th>Layer</th><th>Cells</th><th>OK</th><th>GAP</th><th>Cases</th></tr></thead>
-<tbody>
-<tr><td>step</td><td>43,903</td><td>43,903</td><td>0</td><td>13</td></tr>
-<tr><td>tween</td><td>32,457</td><td>32,457</td><td>0</td><td>10</td></tr>
-<tr><td>dna</td><td>16,159</td><td>16,159</td><td>0</td><td>6</td></tr>
-<tr><td>evolution</td><td>16,152</td><td>16,152</td><td>0</td><td>6</td></tr>
-<tr><td>dense</td><td>5,775</td><td>5,774</td><td>1</td><td>25</td></tr>
-<tr><td>mha · swiglu · cnn* · rnn/lstm · norms · …</td><td>~5,763 ea</td><td>~all OK</td><td>0–few</td><td>14–23 ea</td></tr>
-<tr><td>parallel</td><td>6,415</td><td>6,369</td><td>46</td><td>20</td></tr>
-<tr><td>convt1–3</td><td>5,763 ea</td><td>5,649 ea</td><td>114 ea</td><td>14 ea</td></tr>
-<tr><td>gdn</td><td>555</td><td>93</td><td>462</td><td>17</td></tr>
-<tr><td>mamba</td><td>5,763</td><td>5,755</td><td>8</td><td>14</td></tr>
-<tr><td><strong>Total</strong></td><td><strong>228,054</strong></td><td><strong>227,194</strong></td><td><strong>860</strong></td><td><strong>456</strong></td></tr>
-</tbody>
-</table>
-<p class="example-meta">GAPs are honesty stamps (paths not claimed done) — concentrated in gdn / convt / a few poly_train cells. Case-only stubs: seed, serialization, memory, donate, fountain, hardware, helpers, weights.</p>
+<div class="callout"><strong>Full suite: PASS</strong>
+<code>[0] Run ALL</code> — <strong>246,032</strong> matrix cells — FAIL 0 — RESULT: PASS.
+GAP remains (honesty stamps): GDN non-float32 / non-packable formats, AffinePacked, exotic hemi9 dtypes,
+census + cross-numeric train declared skips, a handful of ser cells. GAP ≠ fail. Case-only stubs
+(seed, serialization, memory, donate, fountain, hardware) stay off the engine scorecard.</div>
+<h3>What grew since the 228k board</h3>
+<ul>
+<li><strong>Test49</strong> — 23 named TrainModes × 1³/2³/3³ × Parallel + Bicameral + poly kinds (origin-only). All cells OK.</li>
+<li><strong>Cameral perm</strong> — Mix / BranchModes / credit on sandwiches (OK cells + declared GAP on exotic dtypes).</li>
+<li><strong>Nested Sequential / Residual</strong> mixed children + <code>ResidualGraft</code>.</li>
+<li><strong>Mesh*</strong> credit tokens on the named-mode list (stack family on a grid walk).</li>
+</ul>
+<p>Do not quote this stamp as a Lucy race or “beats PyTorch.” It is surface coverage: every claimed path either
+runs or is stamped GAP. Lucy Acc vs Score lives in AAI test50 (<a href="68-cameral.html">§68</a>).</p>
 <h3>Cross-numeric train</h3>
 <p>W2A Step includes <strong>Cross-Numeric Train</strong> (kinds × weight dtype × act host; full census ~10.7k under the <code>train</code> op). Storage truth checked after <code>StepMesh</code> — no retained f32 master for non-float32 FormatNone. Public Dense demotion + W×A showcase: <a href="https://github.com/openfluke/down-the-dem">down-the-dem</a> (chapter <a href="65-cross-numeric.html">65</a>).</p>
 
@@ -143,14 +140,14 @@
 import "fmt"
 
 func main() {
-	cells, ok, gap, cases := 228054, 227194, 860, 456
-	fmt.Printf("w2a suite: %d cells (OK %d GAP %d FAIL 0)\n", cells, ok, gap)
-	fmt.Printf("cases: %d/%d PASS   result: PASS\n", cases, cases)
+	cells := 246032
+	fmt.Printf("w2a [0] ALL: %d cells  FAIL 0  RESULT PASS\n", cells)
+	fmt.Println("GAP = declared skip (GDN non-f32, AffinePacked, …) — not a fail")
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>w2a suite: 228054 cells (OK 227194 GAP 860 FAIL 0)
-cases: 456/456 PASS   result: PASS</code></pre>
-<h3>Validate (harness)</h3><pre><code>cd w2a &amp;&amp; go run .   # full timed suite (~1h20m); writes logs/suite.txt</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>w2a [0] ALL: 246032 cells  FAIL 0  RESULT PASS
+GAP = declared skip (GDN non-f32, AffinePacked, …) — not a fail</code></pre>
+<h3>Validate (harness)</h3><pre><code>cd w2a &amp;&amp; go run .   # [0] Run ALL; writes logs/suite.txt</code></pre>
 </section>
 
 
