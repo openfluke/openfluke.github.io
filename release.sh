@@ -129,10 +129,12 @@ create_or_update_release() {
 
 Scorecard: **${earned}/100** → version **${tag}** (from \`welvet/README.md\`).
 
-### What's new in v0.95.1
-- **lucy** — SoftAcc / Availability / AdaptPct / Score measuring harness
-- **Nested multi-cameral** — Hemispheres + Stack sandwiches
-- **BranchModes** — distinct TrainMode per hemisphere (TrainStackMSE)
+### What's new in v1.0
+- Engine board is full (**100/100**). Apps, stubs, and NPU sit off-board.
+- **w2a [0] Run ALL** — **246,032** matrix cells, FAIL 0, RESULT PASS. GAP = declared skip, not fail.
+- **23 named TrainModes** with equations (BP, Tween, Split, Alt, HeadProxy, FastProxy, Linear, Sparse, Mesh*). Rival = hard Acc vs StepBP; Lucy Score ≠ Acc.
+- **Cameral sandwiches + AAI Lucy** — why hemispheres exist, Mix BranchModes, test41 / test48 / test50.
+- Nested Sequential/Residual mixed children + ResidualGraft. Test49 (all modes × cubes) is in [0] ALL.
 
 ### Assets
 - \`$(basename "$pdf")\` — printable feature book (HTML site is on GitHub Pages)
