@@ -157,9 +157,9 @@
   },
   "27-parallel": {
     "exit_code": 0,
-    "stdout": "loss 0.25 err <nil>\n",
+    "stdout": "loss 0 err <nil>\n",
     "stderr": "",
-    "combined": "loss 0.25 err <nil>"
+    "combined": "loss 0 err <nil>"
   },
   "28-metacognition": {
     "exit_code": 0,
@@ -289,9 +289,9 @@
   },
   "68-cameral": {
     "exit_code": 0,
-    "stdout": "mix loss 0.25 err <nil>\n",
+    "stdout": "mix loss 0 err <nil>\n",
     "stderr": "",
-    "combined": "mix loss 0.25 err <nil>"
+    "combined": "mix loss 0 err <nil>"
   },
   "45-stub-seed": {
     "exit_code": 0,
@@ -409,8 +409,8 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v1.0.1\nscorecard 100/100\n",
+    "stdout": "v1.0.2\nscorecard 100/100\n",
     "stderr": "",
-    "combined": "v1.0.1\nscorecard 100/100"
+    "combined": "v1.0.2\nscorecard 100/100"
   }
 }
