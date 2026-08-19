@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.2</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -107,12 +107,12 @@
 
 <p class="chapter-kicker">Chapter 64</p>
 <h1>Scorecard → v1.0</h1>
-<p><span class="status ok">v1.0.1</span></p>
+<p><span class="status ok">v1.0.2</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
 <p>Version is earned from a weighted board, not marketing. v1.0 is 100/100 on the engine board. Apps, stubs, and NPU sit off-board — they are sibling / later trees, not missing Welvet.</p>
 <h2>What it is</h2>
-<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>100/100</strong>; this book tags <strong>v1.0.1</strong>. Training credit is §9 on the board (8 pts), not an afterthought.</p>
+<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>100/100</strong>; this book tags <strong>v1.0.2</strong>. Training credit is §9 on the board (8 pts), not an afterthought.</p>
 
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
 <tr><td>1</td><td>Foundation</td><td>15</td><td>15</td></tr>
@@ -123,14 +123,14 @@
 <tr><td>6</td><td>Runtime + architecture</td><td>8</td><td>8</td></tr>
 <tr><td>7</td><td>Systems</td><td>5</td><td>5</td></tr>
 <tr><td>8</td><td>Model / IO</td><td>8</td><td>8</td></tr>
-<tr><td>9</td><td>Training credit (23 named TrainModes + BranchModes)</td><td>8</td><td>8</td></tr>
+<tr><td>9</td><td>Training credit (29 named TrainModes + BranchModes)</td><td>8</td><td>8</td></tr>
 <tr><td>10</td><td>Peak fused / no host ALU</td><td>14</td><td>14</td></tr>
 <tr><td></td><td><strong>Total → v1.0</strong></td><td>100</td><td><strong>100</strong></td></tr>
 </tbody></table>
 <h3>v1.0 cut</h3>
 <ul>
 <li><strong>w2a [0] ALL</strong> — 246,032 cells, FAIL 0, RESULT PASS (<a href="63-validation.html">§63</a>)</li>
-<li><strong>Training credit</strong> — StepBP, Tween*, Split, Alt, HeadProxy, FastProxy, Linear, Sparse, Mesh* (<a href="67-train-modes.html">§67</a>)</li>
+<li><strong>Training credit</strong> — StepBP, Tween*, Split, Alt, HeadProxy, FastProxy, Linear, Sparse, Step* pipe twins, Mesh* (<a href="67-train-modes.html">§67</a>)</li>
 <li><strong>Cameral</strong> — Hemispheres, Mix BranchModes, Sandwich, ResidualGraft, cameral .entity (<a href="68-cameral.html">§68</a>)</li>
 <li><strong>Nested Sequential/Residual</strong> mixed children (Dense/SwiGLU/RMSNorm/LayerNorm)</li>
 <li><strong>lucy</strong> — SoftAcc / Availability / Score + <code>BuildLPD</code> density (<a href="66-lucy.html">§66</a> · <a href="69-lucy-density.html">§69</a>)</li>
@@ -151,7 +151,7 @@ import "fmt"
 
 func main() {
 	earned := 100.0
-	fmt.Println("v1.0.1")
+	fmt.Println("v1.0.2")
 	fmt.Printf("scorecard %.0f/100\n", earned)
 }</code></pre>
 <h3>Output</h3>

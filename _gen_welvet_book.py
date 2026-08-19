@@ -141,7 +141,7 @@ Rules
 <div class="callout"><strong>v1.0</strong>Engine board is full. w2a <code>[0] Run ALL</code> stamped
 <strong>246,032</strong> matrix cells with <strong>FAIL 0</strong> (RESULT: PASS). GAP cells are declared
 skips, not silent fails. Apps, stubs, and NPU sit <em>off</em> this board — they are sibling trees, not missing Welvet.
-Training credit (23 named <code>TrainMode</code>s) and cameral sandwiches are first-class; Lucy races live in AAI
+Training credit (29 named <code>TrainMode</code>s) and cameral sandwiches are first-class; Lucy races live in AAI
 (chapters <a href="67-train-modes.html">67</a> · <a href="68-cameral.html">68</a>).</div>
 <h2>Origin</h2>
 <p class="origin-byline"><strong>Samuel Watson</strong></p>
@@ -902,7 +902,7 @@ func main() {
          "optionally train under distinct modes.",
          "Parallel branches + Stack sandwiches. Hemispheres / Bicameral / Sandwich build "
          "nested multi-cameral nets. SetBranchModes + TrainStackMSE let each hemi use a "
-         "different TrainMode (all 23 named updates — BP, Tween, Split, FastProxy, Sparse, Mesh*, …).",
+         "different TrainMode (all 29 named updates — BP, Tween, Split, FastProxy, Sparse, Step*, Mesh*, …).",
          """
 package main
 
@@ -1010,7 +1010,7 @@ input x
 <p>Uniform Bi/Tri/Quad can train via Grid <code>training.Step</code> (one mode for the net).
 Mix jobs need the Stack path so each cameral actually uses its own mode.</p>
 <p>Why hemispheres exist, and how AAI Lucy benches use them:
-<a href="68-cameral.html">§68</a>. All 23 named updates and their equations:
+<a href="68-cameral.html">§68</a>. All 29 named updates and their equations:
 <a href="67-train-modes.html">§67</a>.</p>
 """
         out.append(C(slug, num, title, "III · Layers", pkg, st, lab, why, what, extra, ex))
@@ -1082,7 +1082,7 @@ func main() {
              "No QAT dual path — storage dtype/format is truth after every step. "
              "Sandwich credit (Split / FastProxy / Sparse / …) lives in layers/parallel TrainMode — see §67.",
         body_extra="""
-<p>Grid <code>training.Step</code> is MSE + backprop on a volumetric tape. Cameral Mix and the 23 named
+<p>Grid <code>training.Step</code> is MSE + backprop on a volumetric tape. Cameral Mix and the 29 named
 credit updates use <code>parallel.TrainStackMSE</code> (and Mesh* schedulers) so hemispheres can disagree.
 Equations, rival metric (hard Acc vs StepBP), and Lucy Score honesty: <a href="67-train-modes.html">§67</a>.</p>
 """,
@@ -1117,7 +1117,14 @@ func main() {
             "Cross-numeric train also needs the same mesh with weight DType ⊥ activation Tensor[T].",
         what="State[T], StepForward/StepBackward/StepApplyTween / StepMesh across the grid for all wired Ops × dtype × quant × CPU/SIMD. "
              "W2A Cross-Numeric Train: polyops.AllKinds() × weight dtype × act host "
-             "(smoke ~21×7×5 ≈ 735; full ~21×34×15 ≈ 10.7k) — asserts no retained f32 master after StepMesh.",
+             "(smoke ~21×7×5 ≈ 735; full ~21×34×15 ≈ 10.7k) — asserts no retained f32 master after StepMesh. "
+             "Stack Step* is a different clock: IsLineStep / TrainLine (1D pipe) — see §67.",
+        body_extra="""
+<h2>Two clocks named Step</h2>
+<p><strong>This package</strong> is the volumetric mesh: every grid cell hops from a double buffer. MeshBP / MeshTween / MeshTweenChain call it.</p>
+<p><strong>Stack Step*</strong> (<code>IsLineStep</code>) is a 1D systolic pipe on a Sandwich — not this mesh.
+One sample enters child 0 per <code>TrainStackMSE</code> tick; every in-flight sample advances one layer; the output/train event is the sample that entered <em>depth</em> ticks ago. Fill ticks do not update. Serve stays a full <code>ForwardStack</code>. Mesh* still needs a Grid. Named updates: <a href="67-train-modes.html">§67</a>.</p>
+""",
         example="""
 package main
 
@@ -1201,13 +1208,14 @@ func main() {
     ))
 
     out.append(C(
-        "67-train-modes", "67", "TrainMode — 23 named updates", "IV · Runtime",
-        "github.com/openfluke/welvet/layers/parallel", "ok", "✅ 23 modes",
+        "67-train-modes", "67", "TrainMode — 29 named updates", "IV · Runtime",
+        "github.com/openfluke/welvet/layers/parallel", "ok", "✅ 29 modes",
         why="Backprop is one update, not the only one. Credit assignment (broadcast gap, head proxy, "
             "sparse duty clock) has to be a named axis you can race — not a comment in a notebook. "
             "Cameral Mix also needs one TrainMode per hemisphere on the same loss.",
-        what="parallel.TrainMode: AllNamedTrainModes() = 23 (Inherit omitted). Stack-local Split/Alt "
-             "plus Mesh* schedulers. TrainStackMSE / TrainStackCE honour BranchModes. Rival metric is hard Acc vs StepBP; "
+        what="parallel.TrainMode: AllNamedTrainModes() = 29 (Inherit omitted). Stack-local Split/Alt "
+             "plus Step* 1D pipe twins and Mesh* grid schedulers. TrainStackMSE / TrainStackCE honour BranchModes. "
+             "Display names use Short() / ShortTrainMode. Rival metric is hard Acc vs StepBP; "
              "Lucy Score is Tput × Avail × Acc — do not mix those sentences.",
         body_extra="""
 <div class="callout"><strong>Honesty</strong>Rival = hard Acc vs StepBP. Lucy Score rewards skip-GEMV (Sparse Avail).
@@ -1219,7 +1227,7 @@ TweenChain on a Sandwich is chain-rule BP under another name. Mesh* on an origin
 CE:   L = −mean log softmax(ŷ)_class     g_y = (p − t) / B</pre>
 <p>Head always sees <code>g_y</code>. Classification hosts call <code>TrainStackCE</code> so Acc can leave chance;
 MSE on a one-hot stays uniform. What each mode does with <code>g_y</code> is the whole story.</p>
-<h2>Families (23 named tokens)</h2>
+<h2>Families (29 named tokens)</h2>
 <table>
 <thead><tr><th>Family</th><th>Tokens</th><th>Update</th></tr></thead>
 <tbody>
@@ -1228,18 +1236,20 @@ MSE on a one-hot stays uniform. What each mode does with <code>g_y</code> is the
 <tr><td>TweenChain</td><td>TweenChain · StepTweenChain · MeshTweenChain</td><td>same math as BP on a Sandwich</td></tr>
 <tr><td>Split</td><td>TweenSplit · StepTweenSplit · MeshTweenSplit</td><td>g_i = (1/N) P(g_y)</td></tr>
 <tr><td>Alt</td><td>TweenAlt · StepTweenAlt · MeshTweenAlt</td><td>Split then re-forward then Tween (half LR)</td></tr>
-<tr><td>HeadProxy</td><td>TweenSplitHeadProxy</td><td>head J^T g_y (with act′); hidden dW only</td></tr>
-<tr><td>FastProxy</td><td>TweenSplitFastProxy · MeshTweenSplitFastProxy</td><td>g_proxy = W_head^T g_y (skip act′)</td></tr>
-<tr><td>Linear</td><td>TweenSplitLinear</td><td>affine W^T walk; skip ⊙ act′; hemispheres share the down-vector</td></tr>
-<tr><td>LinearCache</td><td>TweenSplitLinearCache</td><td>cache every 20 steps; dead on sine — control</td></tr>
-<tr><td>HeadProxyAsync</td><td>TweenSplitHeadProxyAsync</td><td>hidden uses proxy from T−1; not EMA</td></tr>
-<tr><td>Sparse</td><td>TweenSplitSparse · MeshTweenSplitSparse</td><td>head + one rotating hidden; other dW = 0</td></tr>
+<tr><td>HeadProxy</td><td>TweenSplitHeadProxy · StepTweenSplitHeadProxy</td><td>head J^T g_y (with act′); hidden dW only</td></tr>
+<tr><td>FastProxy</td><td>TweenSplitFastProxy · StepTweenSplitFastProxy · MeshTweenSplitFastProxy</td><td>g_proxy = W_head^T g_y (skip act′)</td></tr>
+<tr><td>Linear</td><td>TweenSplitLinear · StepTweenSplitLinear</td><td>affine W^T walk; skip ⊙ act′; hemispheres share the down-vector</td></tr>
+<tr><td>LinearCache</td><td>TweenSplitLinearCache · StepTweenSplitLinearCache</td><td>cache every 20 steps; dead on sine — control</td></tr>
+<tr><td>HeadProxyAsync</td><td>TweenSplitHeadProxyAsync · StepTweenSplitHeadProxyAsync</td><td>hidden uses proxy from T−1; not EMA</td></tr>
+<tr><td>Sparse</td><td>TweenSplitSparse · StepTweenSplitSparse · MeshTweenSplitSparse</td><td>head + one rotating hidden; other dW = 0</td></tr>
 </tbody>
 </table>
-<p><code>AllCreditTrainModes()</code> = 10 stack-local Split/Alt (no Mesh).
-<code>AllMeshCreditTrainModes()</code> = 4 Mesh credit.
-<code>AllStackLocalTrainModes()</code> = 16 (no Inherit, no Mesh*).
-<code>AllNamedTrainModes()</code> = 23 — the Test49 / test50 set.</p>
+<p><code>AllCreditTrainModes()</code> = 16 stack-local Split/Alt plus Step* credit twins (no Mesh).
+<code>AllMeshCreditTrainModes()</code> = 4 Mesh credit (no HeadProxy / Linear / LinearCache / HeadProxyAsync Mesh twins).
+<code>AllStackLocalTrainModes()</code> = 22 (no Inherit, no Mesh*).
+<code>AllNamedTrainModes()</code> = 29 — the Test49 / test50 set.
+<code>IsLineStep()</code> = 11 (StepBP, StepTween, StepTweenChain, StepTweenSplit, StepTweenAlt, plus the six Step* credit twins).</p>
+<p>Tables and logs use <code>Short()</code> / <code>ShortTrainMode</code> (legend: <code>[T]=Tween  [S]=Split  [FP]=FastProxy  [L]=Linear  [HP]=HeadProxy</code>). Persistence and <code>ParseTrainMode</code> still use the full <code>String()</code> token. New Step* iota values were appended so old uint8 numbers stay stable.</p>
 <h2>Equations</h2>
 <h3>Backprop (the rival)</h3>
 <pre class="ascii">head:   g_head = J_head^T g_y
@@ -1287,15 +1297,19 @@ k = t mod (N−1)
 dW_k    = P(g_proxy) x_k^T
 other leaves: dW = 0 this sample</pre>
 <p>Real FLOP cut → Avail 40–50% → Lucy Score explodes. That is a duty clock, not a smaller big-O than backprop and not a better chain rule. On test50 copy, Sparse often <em>loses</em> Acc vs StepBP while winning Score.</p>
+<h2>Step* — 1D systolic pipe</h2>
+<p>The Step prefix on a stack mode is a <em>schedule</em>, not a second leftover-forward pass and not Mesh*.
+<code>IsLineStep</code> → <code>TrainLine</code> / <code>trainStackLine</code>: one sample enters child 0 per tick; every in-flight sample advances one layer; the output (and the train event) is the sample that entered <em>D</em> ticks ago. Fill ticks do not update. Serve stays a full <code>ForwardStack</code>.</p>
+<p>Same family update on the Sandwich whether Step or not — HeadProxy / Linear / FastProxy / Sparse / Async credit walk <code>trainTweenSplitLeaves</code> on both twins. Mesh* still requires a Grid (<code>RequiresGrid</code>). There is no Mesh HeadProxy / Linear / LinearCache / HeadProxyAsync.</p>
 <h2>Mesh*</h2>
 <p>MeshBP = volumetric <code>training.Step</code>. MeshTween = <code>StepMesh</code>. MeshTweenChain = <code>StepTween</code>.
 Mesh Split / Alt / FastProxy / Sparse credit the placed stack under a grid walk.
 On origin-only 1³/2³/3³ (rest <code>IsDisabled</code>) Mesh* usually matches the stack twin. Cube size is hop topology, not 27 sandwiches.</p>
 <h2>Where it is raced</h2>
 <ul>
-<li><strong>w2a Test49</strong> — permutation smoke: 23 modes × 1³/2³/3³ × Parallel / Bicameral / poly kinds, origin-only. In <code>[0] Run ALL</code>. Not a Lucy race.</li>
+<li><strong>w2a Test49</strong> — permutation smoke: 29 modes × 1³/2³/3³ × Parallel / Bicameral / poly kinds, origin-only. In <code>[0] Run ALL</code>. Not a Lucy race.</li>
 <li><strong>AAI test48</strong> — credit sweep (layers × dtypes × short jobs) with these equations.</li>
-<li><strong>AAI test50</strong> — FP32 Lucy race, all 23, cams 1–3, cubes 1–3. Copy: Split/Alt family +5 to +12 Acc vs StepBP. Sine: Acc ceiling; FastProxy SoftAcc is the knife. XOR: 4-point parking lot (75%). Sparse wins Score, not Acc.</li>
+<li><strong>AAI test50</strong> — FP32 Lucy race, all 29, cams 1–3, cubes 1–3. Copy: Split/Alt family +5 to +12 Acc vs StepBP. Sine: Acc ceiling; FastProxy SoftAcc is the knife. XOR: 4-point parking lot (75%). Sparse wins Score, not Acc.</li>
 </ul>
 <p>Cameral why + sandwich stem→mid→head: <a href="68-cameral.html">§68</a>. Measuring math: <a href="66-lucy.html">§66</a>.</p>
 """,
@@ -1309,13 +1323,17 @@ import (
 )
 
 func main() {
-	n := 0
-	for _, m := range parallel.AllNamedTrainModes() {
-		n++
-		_ = m.String()
+	named := parallel.AllNamedTrainModes()
+	line := 0
+	for _, m := range named {
+		if m.IsLineStep() {
+			line++
+		}
 	}
-	fp, err := parallel.ParseTrainMode("fastproxy")
-	fmt.Println("named", n, "fastproxy", fp, err)
+	fp, err := parallel.ParseTrainMode("stepfastproxy")
+	fmt.Println("named", len(named), "linestep", line)
+	fmt.Println("stepfastproxy", fp.Short(), err)
+	fmt.Println(parallel.ShortTrainModeLegend)
 }
 """,
     ))
@@ -1847,14 +1865,14 @@ The engine does not import AAI. Lucy <em>math</em> is <a href="66-lucy.html">§6
 <tbody>
 <tr><td>test41</td><td>Native cameral Lucy (Bi/Tri/Mix) on toys — does the sandwich train at all.</td></tr>
 <tr><td>test48</td><td>Credit sweep: layers × dtypes × short jobs. Home of the equations in §67.</td></tr>
-<tr><td>test50</td><td>Deep FP32 race: all 23 named modes × Dense/Bi/Tri × 1³/2³/3³ origin-only. Rival = hard Acc vs StepBP.</td></tr>
+<tr><td>test50</td><td>Deep FP32 race: all 29 named modes × Dense/Bi/Tri × 1³/2³/3³ origin-only. Rival = hard Acc vs StepBP.</td></tr>
 </tbody>
 </table>
 <p>test50 copy: Split / Alt / MeshSplit family about <strong>+5 to +12 Acc</strong> over StepBP (~68–74%).
 Sine: Acc ceiling (many modes 100% including StepBP); FastProxy SoftAcc ~56–68 vs StepBP ~42–53.
 XOR: almost everyone at 75% (3 of 4 bits) — parking lot. Sparse wins Score, not Acc.
 Origin-only cubes: extra cells are disabled; 3³ is hop topology, not 27 copies.</p>
-<p>w2a Test49 is the <em>permutation smoke</em> of those 23 modes (in <code>[0] Run ALL</code>), not a Lucy race.
+<p>w2a Test49 is the <em>permutation smoke</em> of those 29 modes (in <code>[0] Run ALL</code>), not a Lucy race.
 Do not quote Test49 as “we beat backprop.”</p>
 """,
         example="""
@@ -2247,7 +2265,7 @@ census + cross-numeric train declared skips, a handful of ser cells. GAP ≠ fai
 (seed, serialization, memory, donate, fountain, hardware) stay off the engine scorecard.</div>
 <h3>What grew since the 228k board</h3>
 <ul>
-<li><strong>Test49</strong> — 23 named TrainModes × 1³/2³/3³ × Parallel + Bicameral + poly kinds (origin-only). All cells OK.</li>
+<li><strong>Test49</strong> — 29 named TrainModes × 1³/2³/3³ × Parallel + Bicameral + poly kinds (origin-only). All cells OK.</li>
 <li><strong>Cameral perm</strong> — Mix / BranchModes / credit on sandwiches (OK cells + declared GAP on exotic dtypes).</li>
 <li><strong>Nested Sequential / Residual</strong> mixed children + <code>ResidualGraft</code>.</li>
 <li><strong>Mesh*</strong> credit tokens on the named-mode list (stack family on a grid walk).</li>
@@ -2290,14 +2308,14 @@ func main() {
 <tr><td>6</td><td>Runtime + architecture</td><td>8</td><td>8</td></tr>
 <tr><td>7</td><td>Systems</td><td>5</td><td>5</td></tr>
 <tr><td>8</td><td>Model / IO</td><td>8</td><td>8</td></tr>
-<tr><td>9</td><td>Training credit (23 named TrainModes + BranchModes)</td><td>8</td><td>8</td></tr>
+<tr><td>9</td><td>Training credit (29 named TrainModes + BranchModes)</td><td>8</td><td>8</td></tr>
 <tr><td>10</td><td>Peak fused / no host ALU</td><td>14</td><td>14</td></tr>
 <tr><td></td><td><strong>Total → v1.0</strong></td><td>100</td><td><strong>{earned_i}</strong></td></tr>
 </tbody></table>
 <h3>v1.0 cut</h3>
 <ul>
 <li><strong>w2a [0] ALL</strong> — 246,032 cells, FAIL 0, RESULT PASS (<a href="63-validation.html">§63</a>)</li>
-<li><strong>Training credit</strong> — StepBP, Tween*, Split, Alt, HeadProxy, FastProxy, Linear, Sparse, Mesh* (<a href="67-train-modes.html">§67</a>)</li>
+<li><strong>Training credit</strong> — StepBP, Tween*, Split, Alt, HeadProxy, FastProxy, Linear, Sparse, Step* pipe twins, Mesh* (<a href="67-train-modes.html">§67</a>)</li>
 <li><strong>Cameral</strong> — Hemispheres, Mix BranchModes, Sandwich, ResidualGraft, cameral .entity (<a href="68-cameral.html">§68</a>)</li>
 <li><strong>Nested Sequential/Residual</strong> mixed children (Dense/SwiGLU/RMSNorm/LayerNorm)</li>
 <li><strong>lucy</strong> — SoftAcc / Availability / Score + <code>BuildLPD</code> density (<a href="66-lucy.html">§66</a> · <a href="69-lucy-density.html">§69</a>)</li>

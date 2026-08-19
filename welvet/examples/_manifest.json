@@ -199,9 +199,9 @@
   },
   "67-train-modes": {
     "exit_code": 0,
-    "stdout": "named 23 fastproxy TweenSplitFastProxy <nil>\n",
+    "stdout": "named 29 linestep 11\nstepfastproxy Step[T][S][FP] <nil>\n[T]=Tween  [S]=Split  [FP]=FastProxy  [L]=Linear  [HP]=HeadProxy\n",
     "stderr": "",
-    "combined": "named 23 fastproxy TweenSplitFastProxy <nil>"
+    "combined": "named 29 linestep 11\nstepfastproxy Step[T][S][FP] <nil>\n[T]=Tween  [S]=Split  [FP]=FastProxy  [L]=Linear  [HP]=HeadProxy"
   },
   "33-dna": {
     "exit_code": 0,

@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.2</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -114,7 +114,7 @@
 <h2>What it is</h2>
 <p>MSE/MSEGrad, SGD, Step, ApplyTween/StepTween, StepMesh. Layer-agnostic ApplyGradSGD dispatch (Dense…Mamba/GDN/…). FormatNone: in-dtype ApplySGD; packed: unpack→update→re-Pack. No QAT dual path — storage dtype/format is truth after every step. Sandwich credit (Split / FastProxy / Sparse / …) lives in layers/parallel TrainMode — see §67.</p>
 
-<p>Grid <code>training.Step</code> is MSE + backprop on a volumetric tape. Cameral Mix and the 23 named
+<p>Grid <code>training.Step</code> is MSE + backprop on a volumetric tape. Cameral Mix and the 29 named
 credit updates use <code>parallel.TrainStackMSE</code> (and Mesh* schedulers) so hemispheres can disagree.
 Equations, rival metric (hard Acc vs StepBP), and Lucy Score honesty: <a href="67-train-modes.html">§67</a>.</p>
 

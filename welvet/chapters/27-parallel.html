@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.2</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -112,7 +112,7 @@
 <h2>Why it exists</h2>
 <p>Mixture-of-experts and multi-path cells need concat/add/avg/filter combines. Cameral graphs need sibling hemispheres that share input, merge outputs, and optionally train under distinct modes.</p>
 <h2>What it is</h2>
-<p>Parallel branches + Stack sandwiches. Hemispheres / Bicameral / Sandwich build nested multi-cameral nets. SetBranchModes + TrainStackMSE let each hemi use a different TrainMode (all 23 named updates — BP, Tween, Split, FastProxy, Sparse, Mesh*, …).</p>
+<p>Parallel branches + Stack sandwiches. Hemispheres / Bicameral / Sandwich build nested multi-cameral nets. SetBranchModes + TrainStackMSE let each hemi use a different TrainMode (all 29 named updates — BP, Tween, Split, FastProxy, Sparse, Step*, Mesh*, …).</p>
 <figure class="diagram"><pre class="ascii">input x
    │
    ▼
@@ -139,7 +139,7 @@
 <p>Uniform Bi/Tri/Quad can train via Grid <code>training.Step</code> (one mode for the net).
 Mix jobs need the Stack path so each cameral actually uses its own mode.</p>
 <p>Why hemispheres exist, and how AAI Lucy benches use them:
-<a href="68-cameral.html">§68</a>. All 23 named updates and their equations:
+<a href="68-cameral.html">§68</a>. All 29 named updates and their equations:
 <a href="67-train-modes.html">§67</a>.</p>
 
 

@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.2</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -112,7 +112,7 @@
 <h2>Why it exists</h2>
 <p>Loom’s flat <code>poly/</code> package hit import-cycle and honesty walls (QAT morph, silent fallbacks, god-layer). Welvet is the rewrite: one feature per folder, storage-truth dtypes/quants, Dense as the shared MatVec microkernel, tests only in <code>w2a</code>, apps only in <code>apps/</code>.</p>
 <h2>What it is</h2>
-<p>An AI engine in Go: layers, 34 dtypes, 20 quant formats, and three backends (CPU tiled · Plan 9 SIMD · WebGPU). Version tracks a 100-point scorecard (today <strong>v1.0.1</strong> · 100/100).</p>
+<p>An AI engine in Go: layers, 34 dtypes, 20 quant formats, and three backends (CPU tiled · Plan 9 SIMD · WebGPU). Version tracks a 100-point scorecard (today <strong>v1.0.2</strong> · 100/100).</p>
 <figure class="diagram"><pre class="ascii">Rules
   1. No tests in engine packages          → w2a/
   2. No silent fallbacks                  → hard error
@@ -124,7 +124,7 @@
 <div class="callout"><strong>v1.0</strong>Engine board is full. w2a <code>[0] Run ALL</code> stamped
 <strong>246,032</strong> matrix cells with <strong>FAIL 0</strong> (RESULT: PASS). GAP cells are declared
 skips, not silent fails. Apps, stubs, and NPU sit <em>off</em> this board — they are sibling trees, not missing Welvet.
-Training credit (23 named <code>TrainMode</code>s) and cameral sandwiches are first-class; Lucy races live in AAI
+Training credit (29 named <code>TrainMode</code>s) and cameral sandwiches are first-class; Lucy races live in AAI
 (chapters <a href="67-train-modes.html">67</a> · <a href="68-cameral.html">68</a>).</div>
 <h2>Origin</h2>
 <p class="origin-byline"><strong>Samuel Watson</strong></p>
