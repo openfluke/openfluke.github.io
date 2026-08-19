@@ -10,6 +10,7 @@ func main() {
 	a := lucy.SoftAccOne(0.72, 0.80) // sine scale 0.10
 	p := lucy.SoftAccProb(0.91, 1.0) // class scale 1.0
 	var snap lucy.Snapshot
+	snap.AvgAccuracy = 80
 	snap.SoftAcc = a
 	snap.InferMs = 8
 	snap.TrainMs = 2

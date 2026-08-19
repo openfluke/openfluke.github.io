@@ -63,7 +63,7 @@ m = re.search(r"\*\*(\d+(?:\.\d+)?)\s*/\s*100\*\*\s*pts", text)
 if m:
     earned = float(m.group(1))
 if earned is None and ver:
-    if ver == "v1.0":
+    if ver == "v1.0" or ver.startswith("v1.0."):
         earned = 100.0
     elif ver.startswith("v0."):
         earned = float(ver[3:].split(".", 1)[0])

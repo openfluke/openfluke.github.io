@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>69. Lucy density — synthetic organism — Welvet</title>
+<link rel="stylesheet" href="../assets/book.css"/>
+</head>
+<body>
+<a class="skip" href="#main">Skip</a>
+<div class="shell">
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<div class="nav-group"><h2>I · Orientation</h2>
+<a href="01-welvet.html">1. What Welvet is</a>
+<a href="02-tree.html">2. Repository map</a>
+</div>
+<div class="nav-group"><h2>II · Foundation</h2>
+<a href="03-core.html">3. core</a>
+<a href="04-weights.html">4. weights</a>
+<a href="05-quant.html">5. quant</a>
+<a href="06-simd.html">6. simd</a>
+<a href="07-webgpu.html">7. webgpu</a>
+<a href="08-tiling.html">8. tiling</a>
+<a href="09-architecture.html">9. architecture</a>
+<a href="10-fusedgpu.html">10. fusedgpu</a>
+</div>
+<div class="nav-group"><h2>III · Layers</h2>
+<a href="11-dense.html">11. layers/dense</a>
+<a href="12-mha.html">12. layers/mha</a>
+<a href="13-swiglu.html">13. layers/swiglu</a>
+<a href="14-rmsnorm.html">14. layers/rmsnorm</a>
+<a href="15-layernorm.html">15. layers/layernorm</a>
+<a href="16-embedding.html">16. layers/embedding</a>
+<a href="17-softmax.html">17. layers/softmax</a>
+<a href="18-sequential.html">18. layers/sequential</a>
+<a href="19-residual.html">19. layers/residual</a>
+<a href="20-cnn.html">20. layers/cnn1</a>
+<a href="21-rnn-lstm.html">21. layers/rnn</a>
+<a href="22-seqmix.html">22. layers/seqmix</a>
+<a href="23-gdn.html">23. layers/gdn</a>
+<a href="24-mamba.html">24. layers/mamba</a>
+<a href="25-convt.html">25. layers/convt1</a>
+<a href="26-kmeans.html">26. layers/kmeans</a>
+<a href="27-parallel.html">27. layers/parallel</a>
+<a href="28-metacognition.html">28. layers/metacognition</a>
+</div>
+<div class="nav-group"><h2>IV · Runtime</h2>
+<a href="29-forward.html">29. runtime/forward</a>
+<a href="30-backward.html">30. runtime/backward</a>
+<a href="31-training.html">31. runtime/training</a>
+<a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
+<a href="67-train-modes.html">67. TrainMode</a>
+</div>
+<div class="nav-group"><h2>V · Systems</h2>
+<a href="33-dna.html">33. systems/dna</a>
+<a href="34-evolution.html">34. systems/evolution</a>
+<a href="35-tween.html">35. systems/tween</a>
+<a href="36-tanhi.html">36. systems/tanhi</a>
+<a href="37-telemetry.html">37. systems/telemetry</a>
+<a href="66-lucy.html">66. lucy</a>
+<a href="69-lucy-density.html">69. Lucy density</a>
+</div>
+<div class="nav-group"><h2>VI · Model IO</h2>
+<a href="38-entity.html">38. model/entity</a>
+<a href="39-hf.html">39. model/hf</a>
+<a href="40-tokenizer.html">40. model/tokenizer</a>
+<a href="41-sampling.html">41. model/sampling</a>
+<a href="42-transformer.html">42. model/transformer</a>
+</div>
+<div class="nav-group"><h2>VII · Apps</h2>
+<a href="43-apps.html">43. apps</a>
+<a href="44-octo.html">44. Octo</a>
+<a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
+</div>
+<div class="nav-group"><h2>VIII · Stubs</h2>
+<a href="45-stub-seed.html">45. stub/seed</a>
+<a href="46-stub-serialization.html">46. stub/serialization</a>
+<a href="47-stub-memory.html">47. stub/memory</a>
+<a href="48-stub-donate.html">48. stub/donate</a>
+<a href="49-stub-fountain.html">49. stub/fountain</a>
+<a href="50-stub-hardware.html">50. stub/hardware</a>
+<a href="51-stub-accel.html">51. stub/accel</a>
+<a href="52-stub-clustering.html">52. stub/clustering</a>
+<a href="53-stub-ensemble.html">53. stub/ensemble</a>
+<a href="54-stub-evaluation.html">54. stub/evaluation</a>
+<a href="55-stub-grafting.html">55. stub/grafting</a>
+<a href="56-stub-grouping.html">56. stub/grouping</a>
+<a href="57-stub-introspection.html">57. stub/introspection</a>
+<a href="58-stub-observer.html">58. stub/observer</a>
+<a href="59-stub-pipeline.html">59. stub/pipeline</a>
+<a href="60-stub-templates.html">60. stub/templates</a>
+<a href="61-stub-universal.html">61. stub/universal</a>
+</div>
+<div class="nav-group"><h2>IX · Validate</h2>
+<a href="62-w2a.html">62. w2a</a>
+<a href="63-validation.html">63. Validation report</a>
+<a href="64-scorecard.html">64. Scorecard → v1.0</a>
+</div>
+</aside>
+<div class="main">
+<div class="topbar">
+<button class="menu-btn" id="menu-btn" type="button">Menu</button>
+<div class="meta">V · Systems</div>
+<nav class="pager"><a href="66-lucy.html">← 66. lucy — SoftAcc / Score measuring</a><a href="38-entity.html">38. model/entity — .entity files →</a></nav>
+</div>
+<article class="content" id="main">
+
+<p class="chapter-kicker">Chapter 69</p>
+<h1>Lucy density — synthetic organism</h1>
+<p class="pill-row"><span class="pill">github.com/openfluke/welvet/lucy</span><span class="status ok">✅ BuildLPD</span></p>
+<hr class="rule"/>
+<h2>Why it exists</h2>
+<p>A new host (char LM, MNIST, a layer sprint) should not copy tide's goldilocks math. The question is always the same: can the net <em>run and train at the same time</em> in a small box, then how far that live-fit condenses without becoming a trap. That ruler belongs in the engine.</p>
+<h2>What it is</h2>
+<p>lucy.BuildLPD ranks Samples for consciousness (Acc / Throughput / Availability keep vs learner peaks) then Lucy density (Q × shrink vs Acc-champ RAM). Gold / near / keep / trap bands, consciousness radar, and memory-density radar are computed here. Tide dash and Lucy PDF only draw the board.</p>
+<figure class="diagram"><pre class="ascii">WHY
+  Industry ships dead calculators: INT8 inference, no on-device train.
+  Synthetic organism = serve while learning, then shrink without falling
+  into chance-Acc "tiny &amp; fast" traps.
+
+PILLARS (consciousness)
+  Acc    = argmax %          (did it learn?)
+  Thru   = outputs / second  (can it act while live?)
+  Avail  = InferMs / busy    (can you still talk to it while it trains?)
+  Score  = T × Avail × Acc / 10_000     live-fit
+  SoftAcc is serve-confidence — not a pillar.
+
+DENSITY (memory intelligence)
+  Acc champ = RAM reference (best learner, not the Score champ)
+  Learner   = RelAcc ≥ 70% of Acc champ   (traps do not set Thru/Avail peaks)
+  Q         = geomean(RelAcc, RelThru, RelAvail)
+  shrink    = AccChampRAM / thisRAM   (capped ×32)
+  LPD       = Q × shrink    if RelAcc ≥ 70% else 0
+
+BANDS
+  gold  all 3 pillars ≥80% and RAM ≤20% of Acc champ
+  near  Acc + (Thru or Avail) ≥80% at ≤50% RAM
+  trap  RAM ≤20% and Acc keep &lt;70%     (binary looking dense)
+  Score/MiB is the trap metric — do not use it for goldilocks.
+
+RADARS (for PDF / dash — math here, drawing in tide)
+  Consciousness  = (RelAcc, RelThru, RelAvail)
+  Memory density = (RelAcc, RelThru, RelAvail) × shrink   traps at origin</pre><figcaption>One ruler. Any host feeds Samples; tide is just the display.</figcaption></figure>
+<h2>Why we measure this</h2>
+<p>The goal is not a better chatbot and not a paper for a faculty board. It is a
+<strong>synthetic organism</strong>: a net that owns time — continuous serve, continuous train,
+no turn-based halt, no phone-home. Lucy Score asks the thermodynamic question
+tide was built for: <em>does SGD that blocks inference die, and do proxy / Split / Sparse
+paths keep the live loop while still learning?</em></p>
+<p>Hard Acc is whether it learned. Availability is whether it still breathes.
+Throughput is how many actions it took while both were happening. Multiply them
+and you get live-fit. SoftAcc is how confident the serve looked — useful, not the Acc term.</p>
+<p>Memory density asks the second question: once you have a learner, how far can
+dtype / quant / cameral width <em>condense</em> that live-fit versus the Acc champ's RAM
+without collapsing to chance Acc. A binary cell that is 30× smaller and 4× faster
+with 12% Acc is a <strong>trap</strong> (LPD = 0). An int8 that keeps ≥70% of Acc-champ Acc
+at a fifth the RAM is goldilocks.</p>
+<h2>Formulas</h2>
+<table>
+<thead><tr><th>Symbol</th><th>Formula</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>Availability</td><td><code>InferMs / (InferMs + TrainMs) × 100</code></td><td>Duty cycle. SGD that blocks serve dies here.</td></tr>
+<tr><td>Throughput T</td><td><code>TotalOutputs / duration_s</code></td><td>Actions per second while the sweep is live.</td></tr>
+<tr><td>Acc</td><td>argmax % (<code>AvgAccuracy</code>)</td><td>Learning. Acc champ is the RAM reference.</td></tr>
+<tr><td>Lucy Score</td><td><code>T × Avail × Acc / 10_000</code></td><td>Live-fit. SoftAcc is not this term.</td></tr>
+<tr><td>Realtime</td><td><code>T × Avail / 100</code></td><td>Duty-cycle speed without Acc.</td></tr>
+<tr><td>ZeroDowntime</td><td><code>Acc × Avail / 100</code></td><td>Still serving while learning.</td></tr>
+<tr><td>RelAcc / RelThru / RelAvail</td><td>value / learner peak, clamped [0,1]</td><td>Keep vs cells that actually learn.</td></tr>
+<tr><td>Q</td><td>geomean of the three Rel*</td><td>Consciousness mix. Traps do not set Thru/Avail peaks.</td></tr>
+<tr><td>shrink</td><td><code>min(AccChampRAM / thisRAM, 32)</code></td><td>How much smaller than the Acc champ.</td></tr>
+<tr><td>LPD</td><td><code>Q × shrink</code> if RelAcc ≥ 0.70 else 0</td><td>Lucy density. Weeds Score/MiB traps.</td></tr>
+<tr><td>Gold</td><td>all 3 Rel* ≥ 0.80 and RAM ≤ 20% Acc champ</td><td>Trifecta in a small box.</td></tr>
+<tr><td>Gold-std</td><td>Acc ≥ 80% plus Thru or Avail, then smallest then fastest</td><td>Two-or-more of the trifecta.</td></tr>
+<tr><td>Trap</td><td>RAM ≤ 20% Acc champ and RelAcc &lt; 0.70</td><td>Tiny and fast with chance Acc.</td></tr>
+<tr><td>MobileScore</td><td><code>Score / WeightMiB</code></td><td>The binary trap. Use LPD instead.</td></tr>
+</tbody></table>
+<h2>What tide still owns</h2>
+<p>Tide is the <em>race</em>: serve+train pulses, permute matrix, dashboard, Lucy PDF
+(including drawing the two radars). <code>tide/report.BuildLPD</code> pretty-prints cell IDs
+then calls <code>lucy.BuildLPD</code>. A new thing that only needs the ruler:</p>
+<pre><code>import "github.com/openfluke/welvet/lucy"
+board := lucy.BuildLPD(samples)
+_ = board.Top[0].Consciousness()  // Acc, Thru, Avail keep
+_ = board.Top[0].MemoryDensity()  // same × shrink; traps at 0</code></pre>
+<p>Classification hosts should train with <code>TrainStackCE</code> so the Acc pillar can leave chance;
+MSE on a one-hot stays uniform. That is a loss gap in <code>layers/parallel</code>, not a Lucy formula.</p>
+<p>Pulse math: <a href="66-lucy.html">§66</a>. Train modes: <a href="67-train-modes.html">§67</a>.</p>
+
+
+<section class="examples" id="examples">
+<h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/69-lucy-density/main.go">examples/69-lucy-density/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/69-lucy-density &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
+<pre><code>package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/lucy"
+)
+
+func main() {
+	board := lucy.BuildLPD([]lucy.Sample{
+		{ID: "f32", Mode: "sgd", Acc: 90, Thru: 200, Avail: 40, Score: 100, RAMKiB: 1000},
+		{ID: "int8", Mode: "sgd", Acc: 82, Thru: 180, Avail: 38, Score: 85, RAMKiB: 180},
+		{ID: "bin", Mode: "sgd", Acc: 12, Thru: 400, Avail: 50, Score: 40, RAMKiB: 40},
+	})
+	top := board.Top[0]
+	fmt.Printf("lead=%s band=%s LPD=%.2f trap=%s\n",
+		top.ID, top.Band, top.LPD, board.Trap[0].ID)
+}</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>lead=int8 band=gold LPD=5.11 trap=bin</code></pre>
+
+</section>
+
+
+<nav class="pager" style="margin-top:2rem"><a href="66-lucy.html">← 66. lucy — SoftAcc / Score measuring</a><a href="38-entity.html">38. model/entity — .entity files →</a></nav>
+</article>
+</div></div>
+<script src="../assets/book.js"></script>
+</body></html>

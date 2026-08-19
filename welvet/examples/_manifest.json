@@ -229,9 +229,9 @@
   },
   "66-lucy": {
     "exit_code": 0,
-    "stdout": "soft=20.0 class=91.0 avail=80.0 score=1920\n",
+    "stdout": "soft=20.0 class=91.0 avail=80.0 score=7680\n",
     "stderr": "",
-    "combined": "soft=20.0 class=91.0 avail=80.0 score=1920"
+    "combined": "soft=20.0 class=91.0 avail=80.0 score=7680"
   },
   "38-entity": {
     "exit_code": 0,
@@ -406,5 +406,11 @@
     "stdout": "mix loss 0.25 err <nil>\n",
     "stderr": "",
     "combined": "mix loss 0.25 err <nil>"
+  },
+  "69-lucy-density": {
+    "exit_code": 0,
+    "stdout": "lead=int8 band=gold LPD=5.11 trap=bin\n",
+    "stderr": "",
+    "combined": "lead=int8 band=gold LPD=5.11 trap=bin"
   }
 }

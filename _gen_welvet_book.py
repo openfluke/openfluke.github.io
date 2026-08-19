@@ -75,7 +75,7 @@ def read_welvet_version() -> tuple[str, float]:
     if m:
         earned = float(m.group(1))
     if earned is None and ver:
-        if ver == "v1.0":
+        if ver == "v1.0" or ver.startswith("v1.0."):
             earned = 100.0
         elif ver.startswith("v0."):
             earned = float(ver[3:].split(".", 1)[0])
@@ -197,7 +197,7 @@ welvet/
   layers/*          ← one folder per op (parallel = MoE + cameral)
   runtime/{forward,backward,training,step}
   systems/{dna,evolution,tween,tanhi,telemetry}
-  lucy/             ← SoftAcc / Score measuring (shared by benches)
+  lucy/             ← Score / Finalize / BuildLPD density (shared by hosts)
   model/{entity,hf,tokenizer,sampling,transformer}
   apps/{octo,flux2,mosstts}
   stub/*            ← designed surfaces, partial or empty
@@ -1207,17 +1207,18 @@ func main() {
             "sparse duty clock) has to be a named axis you can race — not a comment in a notebook. "
             "Cameral Mix also needs one TrainMode per hemisphere on the same loss.",
         what="parallel.TrainMode: AllNamedTrainModes() = 23 (Inherit omitted). Stack-local Split/Alt "
-             "plus Mesh* schedulers. TrainStackMSE honours BranchModes. Rival metric is hard Acc vs StepBP; "
-             "Lucy Score is Tput × Avail × SoftAcc — do not mix those sentences.",
+             "plus Mesh* schedulers. TrainStackMSE / TrainStackCE honour BranchModes. Rival metric is hard Acc vs StepBP; "
+             "Lucy Score is Tput × Avail × Acc — do not mix those sentences.",
         body_extra="""
 <div class="callout"><strong>Honesty</strong>Rival = hard Acc vs StepBP. Lucy Score rewards skip-GEMV (Sparse Avail).
 TweenChain on a Sandwich is chain-rule BP under another name. Mesh* on an origin-only cube collapses to the family
 (not 8/27 trained copies). FastProxy is DFA with B := W_head^T, not a learned random B. Do not write
 “Sparse beat backprop.”</div>
-<h2>Loss gap (MSE)</h2>
-<pre class="ascii">L = (1/d) ||ŷ − t||²
-g_y = ∂L/∂ŷ = (2/d)(ŷ − t)</pre>
-<p>Head always sees <code>g_y</code>. What each mode does with it is the whole story.</p>
+<h2>Loss gap (MSE or CE)</h2>
+<pre class="ascii">MSE:  L = (1/d) ||ŷ − t||²     g_y = (2/d)(ŷ − t)
+CE:   L = −mean log softmax(ŷ)_class     g_y = (p − t) / B</pre>
+<p>Head always sees <code>g_y</code>. Classification hosts call <code>TrainStackCE</code> so Acc can leave chance;
+MSE on a one-hot stays uniform. What each mode does with <code>g_y</code> is the whole story.</p>
 <h2>Families (23 named tokens)</h2>
 <table>
 <thead><tr><th>Family</th><th>Tokens</th><th>Update</th></tr></thead>
@@ -1432,25 +1433,28 @@ func main() {
     out.append(C(
         "66-lucy", "66", "lucy — SoftAcc / Score measuring", "V · Systems",
         "github.com/openfluke/welvet/lucy", "ok", "✅",
-        why="Adaptation benches (test41-w, tide, live_mnist) need one shared measuring math — "
+        why="Adaptation benches (test41-w, tide, live_gpt) need one shared measuring math — "
             "SoftAcc, Availability, AdaptPct, Score — not three copies of the formulas.",
         what="Pure measuring package: SoftAcc / SoftAccProb, Window + Snapshot, Finalize. "
-             "No datasets, no train loops. Sine scale 0.10; classification SoftAccProb scale 1.0.",
+             "No datasets, no train loops. Sine scale 0.10; classification SoftAccProb scale 1.0. "
+             "Density / synthetic-organism board is <a href=\"69-lucy-density.html\">§69</a>.",
         body_extra=ascii_fig("""
 SoftAcc      = 100 × (1 − |pred−target| / scale)   clamped [0,100]
 Availability = InferMs / (InferMs + TrainMs) × 100
-Score        = Throughput × Availability × SoftAcc / 10_000
+Score        = Throughput × Availability × Acc / 10_000
+Acc          = hard argmax % (AvgAccuracy) — the Acc pillar
 AdaptPct     = mean SoftAcc in AdaptWindows after each switch
-""", "Lucy Score terms (shared by test41-w · tide · live_mnist).") + """
+""", "Lucy Score terms. Acc is argmax. SoftAcc is serve-confidence, not Score.") + """
 <p><code>tide/metrics</code> re-exports this package for existing tide callers.
 Engine tests for lucy live under <code>w2a/tests/lucy</code>.</p>
 <div class="callout"><strong>Acc ≠ Score</strong>Hard Acc is the rival vs StepBP.
-Score = Throughput × Availability × SoftAcc / 10_000. Sparse can win Score (skip-GEMV Avail) and lose Acc.
+Score = Throughput × Availability × <em>Acc</em> / 10_000. Sparse can win Score (skip-GEMV Avail) and lose Acc.
 AAI test50 copy: Split family +5 to +12 Acc vs StepBP; Sparse Score ~8k–10k while Acc is often worse than StepBP.
-Sine: many modes sit at 100% hard Acc; FastProxy SoftAcc is the knife. XOR is a 4-point parking lot (75%) — smoke, not a ranking.</div>
+Sine: many modes sit at 100% hard Acc; FastProxy SoftAcc is the knife. XOR is a 4-point parking lot (75%) — smoke, not a ranking.
+Consciousness / density: <a href="69-lucy-density.html">§69</a>.</div>
 <p>AAI Lucy benches (private tree, <code>replace</code> → public Welvet): test41 native cam, test48 credit sweep, test50 23-mode FP32 race.
-Harness is not an engine package. Measuring math is this chapter. Modes + equations: <a href="67-train-modes.html">§67</a>.
-Cameral sandwiches: <a href="68-cameral.html">§68</a>.</p>
+Harness is not an engine package. Pulse math is this chapter. Density board: <a href="69-lucy-density.html">§69</a>.
+Modes + equations: <a href="67-train-modes.html">§67</a>. Cameral sandwiches: <a href="68-cameral.html">§68</a>.</p>
 """,
         example="""
 package main
@@ -1465,6 +1469,7 @@ func main() {
 	a := lucy.SoftAccOne(0.72, 0.80) // sine scale 0.10
 	p := lucy.SoftAccProb(0.91, 1.0) // class scale 1.0
 	var snap lucy.Snapshot
+	snap.AvgAccuracy = 80
 	snap.SoftAcc = a
 	snap.InferMs = 8
 	snap.TrainMs = 2
@@ -1472,6 +1477,114 @@ func main() {
 	lucy.Finalize(&snap, lucy.Options{AdaptWindows: 10})
 	fmt.Printf("soft=%.1f class=%.1f avail=%.1f score=%.0f\\n",
 		a, p, snap.Availability, snap.Score)
+}
+""",
+    ))
+
+    out.append(C(
+        "69-lucy-density", "69", "Lucy density — synthetic organism", "V · Systems",
+        "github.com/openfluke/welvet/lucy", "ok", "✅ BuildLPD",
+        why="A new host (char LM, MNIST, a layer sprint) should not copy tide's goldilocks math. "
+            "The question is always the same: can the net <em>run and train at the same time</em> "
+            "in a small box, then how far that live-fit condenses without becoming a trap. "
+            "That ruler belongs in the engine.",
+        what="lucy.BuildLPD ranks Samples for consciousness (Acc / Throughput / Availability keep vs "
+             "learner peaks) then Lucy density (Q × shrink vs Acc-champ RAM). Gold / near / keep / trap "
+             "bands, consciousness radar, and memory-density radar are computed here. Tide dash and Lucy PDF "
+             "only draw the board.",
+        body_extra=ascii_fig("""
+WHY
+  Industry ships dead calculators: INT8 inference, no on-device train.
+  Synthetic organism = serve while learning, then shrink without falling
+  into chance-Acc "tiny & fast" traps.
+
+PILLARS (consciousness)
+  Acc    = argmax %          (did it learn?)
+  Thru   = outputs / second  (can it act while live?)
+  Avail  = InferMs / busy    (can you still talk to it while it trains?)
+  Score  = T × Avail × Acc / 10_000     live-fit
+  SoftAcc is serve-confidence — not a pillar.
+
+DENSITY (memory intelligence)
+  Acc champ = RAM reference (best learner, not the Score champ)
+  Learner   = RelAcc ≥ 70% of Acc champ   (traps do not set Thru/Avail peaks)
+  Q         = geomean(RelAcc, RelThru, RelAvail)
+  shrink    = AccChampRAM / thisRAM   (capped ×32)
+  LPD       = Q × shrink    if RelAcc ≥ 70% else 0
+
+BANDS
+  gold  all 3 pillars ≥80% and RAM ≤20% of Acc champ
+  near  Acc + (Thru or Avail) ≥80% at ≤50% RAM
+  trap  RAM ≤20% and Acc keep <70%     (binary looking dense)
+  Score/MiB is the trap metric — do not use it for goldilocks.
+
+RADARS (for PDF / dash — math here, drawing in tide)
+  Consciousness  = (RelAcc, RelThru, RelAvail)
+  Memory density = (RelAcc, RelThru, RelAvail) × shrink   traps at origin
+""", "One ruler. Any host feeds Samples; tide is just the display.") + """
+<h2>Why we measure this</h2>
+<p>The goal is not a better chatbot and not a paper for a faculty board. It is a
+<strong>synthetic organism</strong>: a net that owns time — continuous serve, continuous train,
+no turn-based halt, no phone-home. Lucy Score asks the thermodynamic question
+tide was built for: <em>does SGD that blocks inference die, and do proxy / Split / Sparse
+paths keep the live loop while still learning?</em></p>
+<p>Hard Acc is whether it learned. Availability is whether it still breathes.
+Throughput is how many actions it took while both were happening. Multiply them
+and you get live-fit. SoftAcc is how confident the serve looked — useful, not the Acc term.</p>
+<p>Memory density asks the second question: once you have a learner, how far can
+dtype / quant / cameral width <em>condense</em> that live-fit versus the Acc champ's RAM
+without collapsing to chance Acc. A binary cell that is 30× smaller and 4× faster
+with 12% Acc is a <strong>trap</strong> (LPD = 0). An int8 that keeps ≥70% of Acc-champ Acc
+at a fifth the RAM is goldilocks.</p>
+<h2>Formulas</h2>
+<table>
+<thead><tr><th>Symbol</th><th>Formula</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>Availability</td><td><code>InferMs / (InferMs + TrainMs) × 100</code></td><td>Duty cycle. SGD that blocks serve dies here.</td></tr>
+<tr><td>Throughput T</td><td><code>TotalOutputs / duration_s</code></td><td>Actions per second while the sweep is live.</td></tr>
+<tr><td>Acc</td><td>argmax % (<code>AvgAccuracy</code>)</td><td>Learning. Acc champ is the RAM reference.</td></tr>
+<tr><td>Lucy Score</td><td><code>T × Avail × Acc / 10_000</code></td><td>Live-fit. SoftAcc is not this term.</td></tr>
+<tr><td>Realtime</td><td><code>T × Avail / 100</code></td><td>Duty-cycle speed without Acc.</td></tr>
+<tr><td>ZeroDowntime</td><td><code>Acc × Avail / 100</code></td><td>Still serving while learning.</td></tr>
+<tr><td>RelAcc / RelThru / RelAvail</td><td>value / learner peak, clamped [0,1]</td><td>Keep vs cells that actually learn.</td></tr>
+<tr><td>Q</td><td>geomean of the three Rel*</td><td>Consciousness mix. Traps do not set Thru/Avail peaks.</td></tr>
+<tr><td>shrink</td><td><code>min(AccChampRAM / thisRAM, 32)</code></td><td>How much smaller than the Acc champ.</td></tr>
+<tr><td>LPD</td><td><code>Q × shrink</code> if RelAcc ≥ 0.70 else 0</td><td>Lucy density. Weeds Score/MiB traps.</td></tr>
+<tr><td>Gold</td><td>all 3 Rel* ≥ 0.80 and RAM ≤ 20% Acc champ</td><td>Trifecta in a small box.</td></tr>
+<tr><td>Gold-std</td><td>Acc ≥ 80% plus Thru or Avail, then smallest then fastest</td><td>Two-or-more of the trifecta.</td></tr>
+<tr><td>Trap</td><td>RAM ≤ 20% Acc champ and RelAcc &lt; 0.70</td><td>Tiny and fast with chance Acc.</td></tr>
+<tr><td>MobileScore</td><td><code>Score / WeightMiB</code></td><td>The binary trap. Use LPD instead.</td></tr>
+</tbody></table>
+<h2>What tide still owns</h2>
+<p>Tide is the <em>race</em>: serve+train pulses, permute matrix, dashboard, Lucy PDF
+(including drawing the two radars). <code>tide/report.BuildLPD</code> pretty-prints cell IDs
+then calls <code>lucy.BuildLPD</code>. A new thing that only needs the ruler:</p>
+<pre><code>import "github.com/openfluke/welvet/lucy"
+board := lucy.BuildLPD(samples)
+_ = board.Top[0].Consciousness()  // Acc, Thru, Avail keep
+_ = board.Top[0].MemoryDensity()  // same × shrink; traps at 0</code></pre>
+<p>Classification hosts should train with <code>TrainStackCE</code> so the Acc pillar can leave chance;
+MSE on a one-hot stays uniform. That is a loss gap in <code>layers/parallel</code>, not a Lucy formula.</p>
+<p>Pulse math: <a href="66-lucy.html">§66</a>. Train modes: <a href="67-train-modes.html">§67</a>.</p>
+""",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/lucy"
+)
+
+func main() {
+	board := lucy.BuildLPD([]lucy.Sample{
+		{ID: "f32", Mode: "sgd", Acc: 90, Thru: 200, Avail: 40, Score: 100, RAMKiB: 1000},
+		{ID: "int8", Mode: "sgd", Acc: 82, Thru: 180, Avail: 38, Score: 85, RAMKiB: 180},
+		{ID: "bin", Mode: "sgd", Acc: 12, Thru: 400, Avail: 50, Score: 40, RAMKiB: 40},
+	})
+	top := board.Top[0]
+	fmt.Printf("lead=%s band=%s LPD=%.2f trap=%s\\n",
+		top.ID, top.Band, top.LPD, board.Trap[0].ID)
 }
 """,
     ))
@@ -2187,7 +2300,7 @@ func main() {
 <li><strong>Training credit</strong> — StepBP, Tween*, Split, Alt, HeadProxy, FastProxy, Linear, Sparse, Mesh* (<a href="67-train-modes.html">§67</a>)</li>
 <li><strong>Cameral</strong> — Hemispheres, Mix BranchModes, Sandwich, ResidualGraft, cameral .entity (<a href="68-cameral.html">§68</a>)</li>
 <li><strong>Nested Sequential/Residual</strong> mixed children (Dense/SwiGLU/RMSNorm/LayerNorm)</li>
-<li><strong>lucy</strong> — SoftAcc / Availability / AdaptPct / Score (<a href="66-lucy.html">§66</a>)</li>
+<li><strong>lucy</strong> — SoftAcc / Availability / Score + <code>BuildLPD</code> density (<a href="66-lucy.html">§66</a> · <a href="69-lucy-density.html">§69</a>)</li>
 </ul>
 <div class="callout warn"><strong>Off this board</strong>
 <code>apps/octo</code>, <code>stub/*</code>, NPU/Metal/QNN (later <code>welvet.cpp</code>).
@@ -2223,7 +2336,7 @@ PARTS_NAV = [
         "25-convt", "26-kmeans", "27-parallel", "28-metacognition",
     ]),
     ("IV · Runtime", ["29-forward", "30-backward", "31-training", "32-step", "65-cross-numeric", "67-train-modes"]),
-    ("V · Systems", ["33-dna", "34-evolution", "35-tween", "36-tanhi", "37-telemetry", "66-lucy"]),
+    ("V · Systems", ["33-dna", "34-evolution", "35-tween", "36-tanhi", "37-telemetry", "66-lucy", "69-lucy-density"]),
     ("VI · Model IO", ["38-entity", "39-hf", "40-tokenizer", "41-sampling", "42-transformer"]),
     ("VII · Apps", ["43-apps", "44-octo", "68-cameral"]),
     ("VIII · Stubs", [
