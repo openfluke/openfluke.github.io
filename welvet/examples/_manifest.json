@@ -337,9 +337,9 @@
   },
   "52-stub-clustering": {
     "exit_code": 0,
-    "stdout": "2 [1 0]\n",
+    "stdout": "2 [0 1]\n",
     "stderr": "",
-    "combined": "2 [1 0]"
+    "combined": "2 [0 1]"
   },
   "53-stub-ensemble": {
     "exit_code": 0,
@@ -409,8 +409,8 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v1.0.2\nscorecard 100/100\n",
+    "stdout": "v1.0.3\nscorecard 100/100\n",
     "stderr": "",
-    "combined": "v1.0.2\nscorecard 100/100"
+    "combined": "v1.0.3\nscorecard 100/100"
   }
 }
