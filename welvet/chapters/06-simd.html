@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.2</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.0.3</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -112,7 +112,17 @@
 <h2>Why it exists</h2>
 <p>CPU peak needs hand-written AVX2/NEON without a silent Go fallback that pretends SIMD ran.</p>
 <h2>What it is</h2>
-<p>amd64/arm64 .s kernels: DotTile, DotI8/U8, DotQ4_0, Saxpy, BitNet helpers, packed f16/bf16/fp8/fp4 dots; Go fused DotKRow / DotIQRow / DotAffineRow for k/IQ/Affine. SimdEnabled() false → BackendSIMD hard-errors.</p>
+<p>amd64/arm64 .s kernels: DotTile, DotI8/U8, DotQ4_0, Saxpy, BitNet helpers, packed f16/bf16/fp8/fp4 dots; amd64 AVX2 DotTileF64 (WireF64); Go fused DotKRow / DotIQRow / DotAffineRow for k/IQ/Affine. SimdEnabled() false → BackendSIMD hard-errors.</p>
+
+<p><strong>v1.0.3:</strong> Dense FormatNone forward finished the remaining Plan 9 wires —
+<code>DotTileF64</code> (amd64), BF16 convert, expand-once → <code>DotTile</code>. Backward still uses
+saxpy/DecodeRow paths. Universal sizes (any in/out/batch).</p>
+<table><thead><tr><th>dtype family</th><th>x86 AVX2</th><th>arm64 NEON</th></tr></thead><tbody>
+<tr><td>float32 DotTile · int8/narrow DotI8 · uint* expand · lowp · nf4/fp6</td><td>✓</td><td>✓</td></tr>
+<tr><td>float64 / int16·32·64 / int / complex* (<code>DotTileF64</code>)</td><td>✓</td><td>✗ scalar</td></tr>
+</tbody></table>
+<p>Arm still runs every FormatNone dtype through the right Dense strategy; the f64 wire is scalar
+until a NEON <code>DotTileF64</code> lands. Hot traffic (f32 / i8) already has NEON.</p>
 
 
 <section class="examples" id="examples">

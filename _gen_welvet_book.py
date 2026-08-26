@@ -340,8 +340,20 @@ func main() {
         why="CPU peak needs hand-written AVX2/NEON without a silent Go fallback that "
             "pretends SIMD ran.",
         what="amd64/arm64 .s kernels: DotTile, DotI8/U8, DotQ4_0, Saxpy, BitNet helpers, "
-             "packed f16/bf16/fp8/fp4 dots; Go fused DotKRow / DotIQRow / DotAffineRow for k/IQ/Affine. "
+             "packed f16/bf16/fp8/fp4 dots; amd64 AVX2 DotTileF64 (WireF64); "
+             "Go fused DotKRow / DotIQRow / DotAffineRow for k/IQ/Affine. "
              "SimdEnabled() false → BackendSIMD hard-errors.",
+        body_extra="""
+<p><strong>v1.0.3:</strong> Dense FormatNone forward finished the remaining Plan 9 wires —
+<code>DotTileF64</code> (amd64), BF16 convert, expand-once → <code>DotTile</code>. Backward still uses
+saxpy/DecodeRow paths. Universal sizes (any in/out/batch).</p>
+<table><thead><tr><th>dtype family</th><th>x86 AVX2</th><th>arm64 NEON</th></tr></thead><tbody>
+<tr><td>float32 DotTile · int8/narrow DotI8 · uint* expand · lowp · nf4/fp6</td><td>✓</td><td>✓</td></tr>
+<tr><td>float64 / int16·32·64 / int / complex* (<code>DotTileF64</code>)</td><td>✓</td><td>✗ scalar</td></tr>
+</tbody></table>
+<p>Arm still runs every FormatNone dtype through the right Dense strategy; the f64 wire is scalar
+until a NEON <code>DotTileF64</code> lands. Hot traffic (f32 / i8) already has NEON.</p>
+""",
         example="""
 package main
 
@@ -494,8 +506,10 @@ func main() {
          "so every composite proj shares one correctness surface — including native in-dtype SGD.",
          "New / NewConfigured[T], Forward/Backward (dispatch on Exec.Backend), Place, ApplyGradSGD "
          "(→ weights.ApplySGD on the store). "
-         "SIMD: fused Dot* for classic Q*, k/IQ (group scales), AffinePacked code-dot — no F32 inflate. "
-         "Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM) reuse Dense children and the same SGD path.",
+         "SIMD forward (v1.0.3): dtype switch by MatVec strategy — DotTile / DotI8 / lowp packed / "
+         "expand-once→DotTile / WireF64+DotTileF64; fused Dot* for classic Q*, k/IQ, AffinePacked. "
+         "Composites (MHA, SwiGLU, CNN im2col, RNN/LSTM/Mamba, residual·sequential·parallel) reuse Dense "
+         "children via syncProjExec. BackwardSIMD still DecodeRow/saxpy (not the new expand wires).",
          """
 package main
 
@@ -961,7 +975,43 @@ func main() {
     ]
     for slug, num, title, pkg, st, lab, why, what, ex in layer_specs:
         extra = ""
-        if slug == "18-sequential":
+        if slug == "11-dense":
+            extra = """
+<div class="callout"><strong>v1.0.3 — FormatNone SIMD forward</strong>
+Deep profile (batch=8, 8×256→256, SIMD-only, 34 dtypes): Go vs tiny C++/Rust ports, bit-identical hashes.
+Go refreshed kernels → suite ~<strong>4.3×</strong> geo-mean vs prior Go; wins flipped <strong>2→24</strong>
+(C++ 9, Rust 1). Forward only. Source numbers:
+<a href="https://github.com/openfluke/welvet-to-rust_n_cpp">welvet-to-rust_n_cpp</a>.</div>
+
+<h3>forwardSIMDByWire (strategy groups)</h3>
+<table><thead><tr><th>case</th><th>dtypes</th><th>kernel</th></tr></thead><tbody>
+<tr><td>narrow i8</td><td>int4, int2, ternary, binary</td><td>expand → DotI8Tile</td></tr>
+<tr><td>uint affine</td><td>uint4/2/3/5/6, uint16…uintptr</td><td>expand once → DotTile</td></tr>
+<tr><td>lowp packed</td><td>f16, bf16, fp8, fp4</td><td>convert tiles → DotTile</td></tr>
+<tr><td>expand f32</td><td>nf4, fp6, int3/5/6</td><td>expand once → DotTile (exact)</td></tr>
+<tr><td>stream f64</td><td>float64, int16/32/64, int, complex*</td><td>WireF64 → DotTileF64</td></tr>
+<tr><td>SelectWire</td><td>float32, int8, uint8, …</td><td>DotTile / DotI8 / affine u8</td></tr>
+</tbody></table>
+
+<h3>Before → after (µs/op, Go Δ)</h3>
+<p>Full Go/C++/Rust columns: before wins <strong>Go 2 / C++ 31 / Rust 1</strong>; after
+<strong>Go 24 / C++ 9 / Rust 1</strong>. Highlight Go speedups (before→after):</p>
+<table><thead><tr><th>dtype</th><th>Go before</th><th>Go after</th><th>Go Δ</th><th>best after</th></tr></thead><tbody>
+<tr><td>float32</td><td>1023.1</td><td><strong>929.5</strong></td><td>1.10×</td><td>go</td></tr>
+<tr><td>float64</td><td>9565.4</td><td><strong>1017.4</strong></td><td>9.40×</td><td>go</td></tr>
+<tr><td>bfloat16</td><td>12538.9</td><td>5045.3</td><td>2.49×</td><td>cpp</td></tr>
+<tr><td>int8</td><td>708.1</td><td>659.3</td><td>1.07×</td><td>cpp</td></tr>
+<tr><td>int64</td><td>22271.0</td><td><strong>1059.9</strong></td><td>21×</td><td>go</td></tr>
+<tr><td>int32</td><td>22495.4</td><td><strong>964.1</strong></td><td>23×</td><td>go</td></tr>
+<tr><td>int16</td><td>22147.5</td><td><strong>953.5</strong></td><td>23×</td><td>go</td></tr>
+<tr><td>int / complex*</td><td>~30k</td><td>~1.0k</td><td>~29–31×</td><td>go</td></tr>
+<tr><td>uint* / nf4 / fp6 / int3–6</td><td>~20–77k</td><td>~3.7–10.6k</td><td>~5–7×</td><td>go</td></tr>
+<tr><td>uint8</td><td>4322.3</td><td>7575.0</td><td>0.57×</td><td>cpp</td></tr>
+</tbody></table>
+<p>C++ still owns int8/narrow, uint8, bf16/fp8. float32 DotTile remains Go’s race
+(<strong>929.5</strong> vs C++ 1162 / Rust 1335). uint8 affine is a known Go follow-up.</p>
+"""
+        elif slug == "18-sequential":
             extra = """
 <p><code>NewFromOps</code> walks mixed children (Dense, SwiGLU, RMSNorm, LayerNorm) through the same
 fwd/bwd as a Dense chain. Parallel is not a Sequential child (import cycle) — wrap F with
@@ -2319,6 +2369,9 @@ func main() {
 <li><strong>Cameral</strong> — Hemispheres, Mix BranchModes, Sandwich, ResidualGraft, cameral .entity (<a href="68-cameral.html">§68</a>)</li>
 <li><strong>Nested Sequential/Residual</strong> mixed children (Dense/SwiGLU/RMSNorm/LayerNorm)</li>
 <li><strong>lucy</strong> — SoftAcc / Availability / Score + <code>BuildLPD</code> density (<a href="66-lucy.html">§66</a> · <a href="69-lucy-density.html">§69</a>)</li>
+<li><strong>v1.0.3</strong> — Dense FormatNone SIMD <em>forward</em>: WireF64/<code>DotTileF64</code>, expand-once,
+BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed projs inherit
+(<a href="06-simd.html">§6</a> · <a href="11-dense.html">§11</a>)</li>
 </ul>
 <div class="callout warn"><strong>Off this board</strong>
 <code>apps/octo</code>, <code>stub/*</code>, NPU/Metal/QNN (later <code>welvet.cpp</code>).
