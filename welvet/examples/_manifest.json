@@ -409,9 +409,9 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v1.0.3\nscorecard 100/100\n",
+    "stdout": "v1.1.0\nscorecard 100/100\n",
     "stderr": "",
-    "combined": "v1.0.3\nscorecard 100/100"
+    "combined": "v1.1.0\nscorecard 100/100\n"
   },
   "70-cam-sync": {
     "exit_code": 0,

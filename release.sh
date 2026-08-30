@@ -63,7 +63,7 @@ m = re.search(r"\*\*(\d+(?:\.\d+)?)\s*/\s*100\*\*\s*pts", text)
 if m:
     earned = float(m.group(1))
 if earned is None and ver:
-    if ver == "v1.0" or ver.startswith("v1.0."):
+    if ver.startswith("v1."):
         earned = 100.0
     elif ver.startswith("v0."):
         earned = float(ver[3:].split(".", 1)[0])
@@ -135,6 +135,10 @@ Scorecard: **${earned}/100** → version **${tag}** (from \`welvet/README.md\`).
 - **29 named TrainModes** with equations (BP, Tween, Split, Alt, HeadProxy, FastProxy, Linear, Sparse, Step* pipe twins, Mesh*). Rival = hard Acc vs StepBP; Lucy Score ≠ Acc.
 - **Cameral sandwiches + AAI Lucy** — why hemispheres exist, Mix BranchModes, test41 / test48 / test50.
 - Nested Sequential/Residual mixed children + ResidualGraft. Test49 (all modes × cubes) is in [0] ALL.
+
+### What's new in v1.1.0
+- **§70 CamSync** — inter-cameral / cross-mesh same-shape weight blend (α, Groups, Cross).
+- **training_modes.md** + Lucy **Lean** density chapter notes; 70 total book chapters.
 
 ### Assets
 - \`$(basename "$pdf")\` — printable feature book (HTML site is on GitHub Pages)

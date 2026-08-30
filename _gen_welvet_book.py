@@ -75,7 +75,7 @@ def read_welvet_version() -> tuple[str, float]:
     if m:
         earned = float(m.group(1))
     if earned is None and ver:
-        if ver == "v1.0" or ver.startswith("v1.0."):
+        if ver.startswith("v1."):
             earned = 100.0
         elif ver.startswith("v0."):
             earned = float(ver[3:].split(".", 1)[0])
@@ -2449,10 +2449,10 @@ func main() {
     sc_ok = "ok" if earned >= 100 else "partial"
     sc_lab = version if earned >= 100 else version
     out.append(C(
-        "64-scorecard", "64", "Scorecard → v1.0", "IX · Validate",
+        "64-scorecard", "64", "Scorecard → v1.0 / minors", "IX · Validate",
         "", sc_ok, sc_lab,
         why="Version is earned from a weighted board, not marketing. v1.0 is 100/100 on the engine board. "
-            "Apps, stubs, and NPU sit off-board — they are sibling / later trees, not missing Welvet.",
+            "Minor tags (v1.1.0, …) pack features without a new board. Apps, stubs, and NPU sit off-board.",
         what=f"version = 0.{{round(earned)}} until 100 → v1.0. Scorecard today <strong>{earned_i}/100</strong>; "
              f"this book tags <strong>{esc(version)}</strong>. Training credit is §9 on the board (8 pts), not an afterthought.",
         body_extra=f"""
@@ -2467,7 +2467,7 @@ func main() {
 <tr><td>8</td><td>Model / IO</td><td>8</td><td>8</td></tr>
 <tr><td>9</td><td>Training credit (29 named TrainModes + BranchModes)</td><td>8</td><td>8</td></tr>
 <tr><td>10</td><td>Peak fused / no host ALU</td><td>14</td><td>14</td></tr>
-<tr><td></td><td><strong>Total → v1.0</strong></td><td>100</td><td><strong>{earned_i}</strong></td></tr>
+<tr><td></td><td><strong>Total → v1.0 board</strong></td><td>100</td><td><strong>{earned_i}</strong></td></tr>
 </tbody></table>
 <h3>v1.0 cut</h3>
 <ul>
@@ -2480,6 +2480,8 @@ func main() {
 <li><strong>v1.0.3</strong> — Dense FormatNone SIMD <em>forward</em>: WireF64/<code>DotTileF64</code>, expand-once,
 BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed projs inherit
 (<a href="06-simd.html">§6</a> · <a href="11-dense.html">§11</a>)</li>
+<li><strong>v1.1.0</strong> — CamSync + <code>training_modes.md</code> + Lucy Lean density + book §70
+(<a href="70-cam-sync.html">§70</a> · <a href="69-lucy-density.html">§69</a>)</li>
 </ul>
 <div class="callout warn"><strong>Off this board</strong>
 <code>apps/octo</code>, <code>stub/*</code>, NPU/Metal/QNN (later <code>welvet.cpp</code>).
