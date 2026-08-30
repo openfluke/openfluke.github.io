@@ -71,6 +71,7 @@
 <a href="43-apps.html">43. apps</a>
 <a href="44-octo.html">44. Octo</a>
 <a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
+<a href="70-cam-sync.html">70. CamSync</a>
 </div>
 <div class="nav-group"><h2>VIII · Stubs</h2>
 <a href="45-stub-seed.html">45. stub/seed</a>
@@ -135,11 +136,13 @@
 <li><code>TrainStackMSE</code> — forward → MSE → per-branch update (honours BranchModes)</li>
 <li><code>ResidualGraft</code> — skip around a Parallel F without Residual importing this package</li>
 <li><code>WriteCameralFile</code> / <code>LoadCameral</code> — cameral <code>.entity</code> (in <code>model/entity</code>)</li>
+<li><code>CamSyncConfig</code> / <code>SetCamSync</code> / <code>SyncNow</code> — soft/hard inter-cameral weight blend + cross-layer same-shape pairs → <a href="70-cam-sync.html">§70</a></li>
 </ul>
 <p>Uniform Bi/Tri/Quad can train via Grid <code>training.Step</code> (one mode for the net).
 Mix jobs need the Stack path so each cameral actually uses its own mode.</p>
 <p>Why hemispheres exist, and how AAI Lucy benches use them:
-<a href="68-cameral.html">§68</a>. All 29 named updates and their equations:
+<a href="68-cameral.html">§68</a>. Inter-cameral weight sync (crazy cross-mesh same-shape blends):
+<a href="70-cam-sync.html">§70</a>. All 29 named updates and their equations:
 <a href="67-train-modes.html">§67</a>.</p>
 
 

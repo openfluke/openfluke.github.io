@@ -7,9 +7,9 @@
   },
   "02-tree": {
     "exit_code": 0,
-    "stdout": "import github.com/openfluke/welvet/core/\u2026\nimport github.com/openfluke/welvet/weights/\u2026\nimport github.com/openfluke/welvet/quant/\u2026\nimport github.com/openfluke/welvet/simd/\u2026\nimport github.com/openfluke/welvet/webgpu/\u2026\nimport github.com/openfluke/welvet/tiling/\u2026\nimport github.com/openfluke/welvet/architecture/\u2026\nimport github.com/openfluke/welvet/fusedgpu/\u2026\nimport github.com/openfluke/welvet/layers/\u2026\nimport github.com/openfluke/welvet/runtime/\u2026\nimport github.com/openfluke/welvet/systems/\u2026\nimport github.com/openfluke/welvet/lucy/\u2026\nimport github.com/openfluke/welvet/model/\u2026\n",
+    "stdout": "import github.com/openfluke/welvet/core/…\nimport github.com/openfluke/welvet/weights/…\nimport github.com/openfluke/welvet/quant/…\nimport github.com/openfluke/welvet/simd/…\nimport github.com/openfluke/welvet/webgpu/…\nimport github.com/openfluke/welvet/tiling/…\nimport github.com/openfluke/welvet/architecture/…\nimport github.com/openfluke/welvet/fusedgpu/…\nimport github.com/openfluke/welvet/layers/…\nimport github.com/openfluke/welvet/runtime/…\nimport github.com/openfluke/welvet/systems/…\nimport github.com/openfluke/welvet/lucy/…\nimport github.com/openfluke/welvet/model/…\n",
     "stderr": "",
-    "combined": "import github.com/openfluke/welvet/core/\u2026\nimport github.com/openfluke/welvet/weights/\u2026\nimport github.com/openfluke/welvet/quant/\u2026\nimport github.com/openfluke/welvet/simd/\u2026\nimport github.com/openfluke/welvet/webgpu/\u2026\nimport github.com/openfluke/welvet/tiling/\u2026\nimport github.com/openfluke/welvet/architecture/\u2026\nimport github.com/openfluke/welvet/fusedgpu/\u2026\nimport github.com/openfluke/welvet/layers/\u2026\nimport github.com/openfluke/welvet/runtime/\u2026\nimport github.com/openfluke/welvet/systems/\u2026\nimport github.com/openfluke/welvet/lucy/\u2026\nimport github.com/openfluke/welvet/model/\u2026"
+    "combined": "import github.com/openfluke/welvet/core/…\nimport github.com/openfluke/welvet/weights/…\nimport github.com/openfluke/welvet/quant/…\nimport github.com/openfluke/welvet/simd/…\nimport github.com/openfluke/welvet/webgpu/…\nimport github.com/openfluke/welvet/tiling/…\nimport github.com/openfluke/welvet/architecture/…\nimport github.com/openfluke/welvet/fusedgpu/…\nimport github.com/openfluke/welvet/layers/…\nimport github.com/openfluke/welvet/runtime/…\nimport github.com/openfluke/welvet/systems/…\nimport github.com/openfluke/welvet/lucy/…\nimport github.com/openfluke/welvet/model/…"
   },
   "03-core": {
     "exit_code": 0,
@@ -37,9 +37,9 @@
   },
   "07-webgpu": {
     "exit_code": 0,
-    "stdout": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"610.57.04\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"Intel(R) UHD Graphics 630 (CML GT2)\" vendor=\"Intel open-source Mesa driver\" arch=\"\" driver=\"Mesa 26.1.6\" backend=vulkan type=integrated-gpu | maxBuf=2147483647 maxSSBO=2147483644 maxSSBO/stage=103 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.1.6 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter default: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"610.57.04\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"NVIDIA GeForce GTX 1650 SUPER\" backend=vulkan maxSSBO=2147483644 maxBuf=1099511627776\n[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER\n",
+    "stdout": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"610.57.04\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  → selected high-perf\n  adapter low-power: name=\"Intel(R) UHD Graphics 630 (CML GT2)\" vendor=\"Intel open-source Mesa driver\" arch=\"\" driver=\"Mesa 26.1.6\" backend=vulkan type=integrated-gpu | maxBuf=2147483647 maxSSBO=2147483644 maxSSBO/stage=103 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.1.6 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter default: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"610.57.04\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"NVIDIA GeForce GTX 1650 SUPER\" backend=vulkan maxSSBO=2147483644 maxBuf=1099511627776\n[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER\n",
     "stderr": "",
-    "combined": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"610.57.04\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"Intel(R) UHD Graphics 630 (CML GT2)\" vendor=\"Intel open-source Mesa driver\" arch=\"\" driver=\"Mesa 26.1.6\" backend=vulkan type=integrated-gpu | maxBuf=2147483647 maxSSBO=2147483644 maxSSBO/stage=103 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.1.6 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter default: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"610.57.04\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"NVIDIA GeForce GTX 1650 SUPER\" backend=vulkan maxSSBO=2147483644 maxBuf=1099511627776\n[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER"
+    "combined": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"610.57.04\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  → selected high-perf\n  adapter low-power: name=\"Intel(R) UHD Graphics 630 (CML GT2)\" vendor=\"Intel open-source Mesa driver\" arch=\"\" driver=\"Mesa 26.1.6\" backend=vulkan type=integrated-gpu | maxBuf=2147483647 maxSSBO=2147483644 maxSSBO/stage=103 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.1.6 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter default: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"610.57.04\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"NVIDIA GeForce GTX 1650 SUPER\" backend=vulkan maxSSBO=2147483644 maxBuf=1099511627776\n[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER"
   },
   "08-tiling": {
     "exit_code": 0,
@@ -277,15 +277,15 @@
   },
   "43-apps": {
     "exit_code": 0,
-    "stdout": "Apps import the engine \u2014 the engine never imports apps.\n  cd apps/octo && go run .\n  cd apps/flux2 && go run .\n  cd apps/mosstts && go run .\n",
+    "stdout": "Apps import the engine — the engine never imports apps.\n  cd apps/octo && go run .\n  cd apps/flux2 && go run .\n  cd apps/mosstts && go run .\n",
     "stderr": "",
-    "combined": "Apps import the engine \u2014 the engine never imports apps.\n  cd apps/octo && go run .\n  cd apps/flux2 && go run .\n  cd apps/mosstts && go run ."
+    "combined": "Apps import the engine — the engine never imports apps.\n  cd apps/octo && go run .\n  cd apps/flux2 && go run .\n  cd apps/mosstts && go run ."
   },
   "44-octo": {
     "exit_code": 0,
-    "stdout": "Octo is its own module \u2014 the engine never imports it.\n  cd apps/octo && go run .\n  download -> convert -> .entity -> chat / serve / bench\n",
+    "stdout": "Octo is its own module — the engine never imports it.\n  cd apps/octo && go run .\n  download -> convert -> .entity -> chat / serve / bench\n",
     "stderr": "",
-    "combined": "Octo is its own module \u2014 the engine never imports it.\n  cd apps/octo && go run .\n  download -> convert -> .entity -> chat / serve / bench"
+    "combined": "Octo is its own module — the engine never imports it.\n  cd apps/octo && go run .\n  download -> convert -> .entity -> chat / serve / bench"
   },
   "68-cameral": {
     "exit_code": 0,
@@ -397,20 +397,26 @@
   },
   "62-w2a": {
     "exit_code": 0,
-    "stdout": "w2a is a separate module \u2014 engine packages never contain tests.\n\n  cd w2a\n  go run .                                      # interactive; [0] = ALL\n  go test ./tests/dense -v\n  go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v\n",
+    "stdout": "w2a is a separate module — engine packages never contain tests.\n\n  cd w2a\n  go run .                                      # interactive; [0] = ALL\n  go test ./tests/dense -v\n  go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v\n",
     "stderr": "",
-    "combined": "w2a is a separate module \u2014 engine packages never contain tests.\n\n  cd w2a\n  go run .                                      # interactive; [0] = ALL\n  go test ./tests/dense -v\n  go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v"
+    "combined": "w2a is a separate module — engine packages never contain tests.\n\n  cd w2a\n  go run .                                      # interactive; [0] = ALL\n  go test ./tests/dense -v\n  go test ./tests/parallel -run Test49AllTrainModesCubes -count=1 -v"
   },
   "63-validation": {
     "exit_code": 0,
-    "stdout": "w2a [0] ALL: 246032 cells  FAIL 0  RESULT PASS\nGAP = declared skip (GDN non-f32, AffinePacked, \u2026) \u2014 not a fail\n",
+    "stdout": "w2a [0] ALL: 246032 cells  FAIL 0  RESULT PASS\nGAP = declared skip (GDN non-f32, AffinePacked, …) — not a fail\n",
     "stderr": "",
-    "combined": "w2a [0] ALL: 246032 cells  FAIL 0  RESULT PASS\nGAP = declared skip (GDN non-f32, AffinePacked, \u2026) \u2014 not a fail"
+    "combined": "w2a [0] ALL: 246032 cells  FAIL 0  RESULT PASS\nGAP = declared skip (GDN non-f32, AffinePacked, …) — not a fail"
   },
   "64-scorecard": {
     "exit_code": 0,
     "stdout": "v1.0.3\nscorecard 100/100\n",
     "stderr": "",
     "combined": "v1.0.3\nscorecard 100/100"
+  },
+  "70-cam-sync": {
+    "exit_code": 0,
+    "stdout": "cosine before=-0.0697 after=1.0000\n",
+    "stderr": "",
+    "combined": "cosine before=-0.0697 after=1.0000\n"
   }
 }

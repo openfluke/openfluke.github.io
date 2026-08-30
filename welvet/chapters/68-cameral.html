@@ -71,6 +71,7 @@
 <a href="43-apps.html">43. apps</a>
 <a href="44-octo.html">44. Octo</a>
 <a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
+<a href="70-cam-sync.html">70. CamSync</a>
 </div>
 <div class="nav-group"><h2>VIII · Stubs</h2>
 <a href="45-stub-seed.html">45. stub/seed</a>
@@ -101,7 +102,7 @@
 <div class="topbar">
 <button class="menu-btn" id="menu-btn" type="button">Menu</button>
 <div class="meta">VII · Apps</div>
-<nav class="pager"><a href="44-octo.html">← 44. Octo — model shell</a><a href="45-stub-seed.html">45. stub/seed →</a></nav>
+<nav class="pager"><a href="44-octo.html">← 44. Octo — model shell</a><a href="70-cam-sync.html">70. CamSync — inter-cameral / cross-mesh wei →</a></nav>
 </div>
 <article class="content" id="main">
 
@@ -135,8 +136,10 @@ vector after hemispheres merge. That is why AAI Lucy jobs are sandwiches even wh
 <li><code>SetBranchModes</code> / <code>TrainStackMSE</code> — Mix path</li>
 <li><code>ResidualGraft</code> — y = F(x)+x when F is Parallel</li>
 <li><code>WriteCameralFile</code> / <code>LoadCameral</code> — cameral <code>.entity</code> (in <code>model/entity</code>)</li>
+<li><code>CamSync</code> — optional weight averaging across cams / layers → <a href="70-cam-sync.html">§70</a></li>
 </ul>
-<p>Layer package chapter: <a href="27-parallel.html">§27</a>. Named updates: <a href="67-train-modes.html">§67</a>.</p>
+<p>Layer package chapter: <a href="27-parallel.html">§27</a>. Named updates: <a href="67-train-modes.html">§67</a>.
+Weight sync across cams (and across mesh layouts when shapes match): <a href="70-cam-sync.html">§70</a>.</p>
 <h2>AAI Lucy benches</h2>
 <p>AAI is a separate tree. It <code>replace</code>s <code>github.com/openfluke/welvet</code> (public chaosglue module).
 The engine does not import AAI. Lucy <em>math</em> is <a href="66-lucy.html">§66</a>.</p>
@@ -191,7 +194,7 @@ func main() {
 </section>
 
 
-<nav class="pager" style="margin-top:2rem"><a href="44-octo.html">← 44. Octo — model shell</a><a href="45-stub-seed.html">45. stub/seed →</a></nav>
+<nav class="pager" style="margin-top:2rem"><a href="44-octo.html">← 44. Octo — model shell</a><a href="70-cam-sync.html">70. CamSync — inter-cameral / cross-mesh wei →</a></nav>
 </article>
 </div></div>
 <script src="../assets/book.js"></script>

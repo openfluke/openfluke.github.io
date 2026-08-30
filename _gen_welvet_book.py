@@ -142,7 +142,7 @@ Rules
 <strong>246,032</strong> matrix cells with <strong>FAIL 0</strong> (RESULT: PASS). GAP cells are declared
 skips, not silent fails. Apps, stubs, and NPU sit <em>off</em> this board — they are sibling trees, not missing Welvet.
 Training credit (29 named <code>TrainMode</code>s) and cameral sandwiches are first-class; Lucy races live in AAI
-(chapters <a href="67-train-modes.html">67</a> · <a href="68-cameral.html">68</a>).</div>
+(chapters <a href="67-train-modes.html">67</a> · <a href="68-cameral.html">68</a> · <a href="70-cam-sync.html">70</a>).</div>
 <h2>Origin</h2>
 <p class="origin-byline"><strong>Samuel Watson</strong></p>
 <p>Samuel Watson created OpenFluke after intensive T-ALL treatment (post-2018), from a simple frustration: AI tooling was heavy, opaque, and not portable enough to move models cleanly across operating systems or personal devices. Setting up GPU paths often meant large, brittle installs before experimentation could even begin.</p>
@@ -1056,11 +1056,13 @@ input x
 <li><code>TrainStackMSE</code> — forward → MSE → per-branch update (honours BranchModes)</li>
 <li><code>ResidualGraft</code> — skip around a Parallel F without Residual importing this package</li>
 <li><code>WriteCameralFile</code> / <code>LoadCameral</code> — cameral <code>.entity</code> (in <code>model/entity</code>)</li>
+<li><code>CamSyncConfig</code> / <code>SetCamSync</code> / <code>SyncNow</code> — soft/hard inter-cameral weight blend + cross-layer same-shape pairs → <a href="70-cam-sync.html">§70</a></li>
 </ul>
 <p>Uniform Bi/Tri/Quad can train via Grid <code>training.Step</code> (one mode for the net).
 Mix jobs need the Stack path so each cameral actually uses its own mode.</p>
 <p>Why hemispheres exist, and how AAI Lucy benches use them:
-<a href="68-cameral.html">§68</a>. All 29 named updates and their equations:
+<a href="68-cameral.html">§68</a>. Inter-cameral weight sync (crazy cross-mesh same-shape blends):
+<a href="70-cam-sync.html">§70</a>. All 29 named updates and their equations:
 <a href="67-train-modes.html">§67</a>.</p>
 """
         out.append(C(slug, num, title, "III · Layers", pkg, st, lab, why, what, extra, ex))
@@ -1905,8 +1907,10 @@ vector after hemispheres merge. That is why AAI Lucy jobs are sandwiches even wh
 <li><code>SetBranchModes</code> / <code>TrainStackMSE</code> — Mix path</li>
 <li><code>ResidualGraft</code> — y = F(x)+x when F is Parallel</li>
 <li><code>WriteCameralFile</code> / <code>LoadCameral</code> — cameral <code>.entity</code> (in <code>model/entity</code>)</li>
+<li><code>CamSync</code> — optional weight averaging across cams / layers → <a href="70-cam-sync.html">§70</a></li>
 </ul>
-<p>Layer package chapter: <a href="27-parallel.html">§27</a>. Named updates: <a href="67-train-modes.html">§67</a>.</p>
+<p>Layer package chapter: <a href="27-parallel.html">§27</a>. Named updates: <a href="67-train-modes.html">§67</a>.
+Weight sync across cams (and across mesh layouts when shapes match): <a href="70-cam-sync.html">§70</a>.</p>
 <h2>AAI Lucy benches</h2>
 <p>AAI is a separate tree. It <code>replace</code>s <code>github.com/openfluke/welvet</code> (public chaosglue module).
 The engine does not import AAI. Lucy <em>math</em> is <a href="66-lucy.html">§66</a>.</p>
@@ -1950,6 +1954,109 @@ func main() {
 	t.Data[0] = 0.5
 	loss, err := parallel.TrainStackMSE(s, x, t, parallel.ModeStepBP, 0.01)
 	fmt.Println("mix loss", loss, "err", err)
+}
+""",
+    ))
+
+    out.append(C(
+        "70-cam-sync", "70", "CamSync — inter-cameral / cross-mesh weight blend", "VII · Apps",
+        "github.com/openfluke/welvet/layers/parallel", "ok", "✅ CamSync",
+        why="Mix BranchModes and different inits let cams diverge on purpose. Sometimes you want them "
+            "to share — gently (1% pull) or hard (full average) — within a Parallel, across Stack "
+            "children, or even between same-shaped stores sitting on wildly different mesh layouts "
+            "(1×2×1 ↔ 2×4×5). That is CamSync: couple weights without collapsing the graph into one Dense.",
+        what="CamSyncConfig{Alpha, When, Groups, Cross}. BlendStores pulls every store in a clique toward "
+             "the mean. Empty Groups = all cams; Cross wires SyncEndpoint pairs across layers/cams. "
+             "Shape rule: Rows×Cols must match. Bidirectional today; one-way teacher→student not yet.",
+        body_extra=ascii_fig("""
+  Parallel mid (n cams)                 Stack / mesh (any DxHxW)
+  ┌─ cam0 W ─┐                          cell A 1×2×1     cell B 2×4×5
+  │  cam1 W  │  Groups / all-cams       layer-1 Dense    cam3 layer-1 Dense
+  │  cam2 W  │  α·mean blend     OR     [128×64]  ←──Cross──→  [128×64]
+  └─ cam3 W ─┘                          (mesh size irrelevant — shape is)
+         │
+    SyncAfterSample | Step | Pulse | Manual SyncNow
+""", "Same-shaped stores sync. Mesh topology is host wiring via Groups + Cross.") + """
+<div class="callout"><strong>The insane bit</strong>
+CamSync does not care that one Parallel lives on a <code>1×2×1</code> cell and another store sits on
+cam 3 of a <code>2×4×5</code>. Name both endpoints; if <code>Rows×Cols</code> match, they blend.
+Volumetric layout is configuration — not a built-in grid type inside CamSync.</div>
+
+<h2>Knobs</h2>
+<table>
+<thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Enabled</code> / <code>Alpha</code></td>
+<td>Soft pull <code>w ← (1−α)·w + α·mean</code>. <code>0.01</code> = 1%, <code>1.0</code> = hard sync.
+Default α is 1 when Enabled and Alpha ≤ 0.</td></tr>
+<tr><td><code>When</code></td>
+<td><code>SyncManual</code> · <code>SyncAfterSample</code> · <code>SyncAfterStep</code> · <code>SyncAfterPulse</code>.
+Hooks fire from <code>TrainStackMSE</code>/<code>CE</code> and <code>Pulse()</code>.</td></tr>
+<tr><td><code>Groups</code></td>
+<td>Within one Parallel: cam-index cliques. Empty ⇒ one group of every branch.
+Example: <code>{{0,1},{2,3}}</code> syncs pairs only.</td></tr>
+<tr><td><code>Cross</code></td>
+<td><code>[]SyncPair</code> of <code>SyncEndpoint{StackIdx, Branch, Store}</code> —
+same layer across cams, Dense stem ↔ matching cam Dense, or any same-shaped pair the Stack can resolve.</td></tr>
+</tbody>
+</table>
+
+<h2>What works / what does not (yet)</h2>
+<ul>
+<li>✅ All cams together, selective groups, soft or hard α</li>
+<li>✅ Cross-layer / cross-cam pairs inside one Stack</li>
+<li>✅ “Same layer on a different mesh” when weight shapes match</li>
+<li>❌ One-directional (teacher → student) — pairs are mutual mean-blend</li>
+<li>❌ Mismatched <code>Rows×Cols</code> — rejected or skipped</li>
+<li>❌ Auto sync across <em>two separate Stack instances</em> — host calls <code>weights.BlendStores</code> on the two stores</li>
+</ul>
+
+<h2>API</h2>
+<ul>
+<li><code>parallel.CamSyncConfig</code> · <code>DefaultCamSync()</code> · <code>SetCamSync</code> on Layer or Stack</li>
+<li><code>SyncNow</code> / <code>Pulse</code> / <code>MaybeSync</code></li>
+<li><code>weights.BlendStores</code> · <code>weights.StoreCosine</code> (diagnostics)</li>
+</ul>
+<p>Cameral sandwiches: <a href="68-cameral.html">§68</a>. Parallel package: <a href="27-parallel.html">§27</a>.
+Host probe: <code>ok/cam_sync</code> (MNIST sample α×cams matrix).</p>
+""",
+        example="""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/layers/parallel"
+	"github.com/openfluke/welvet/quant"
+	"github.com/openfluke/welvet/stub/seed"
+	"github.com/openfluke/welvet/weights"
+)
+
+func main() {
+	s, err := parallel.Bicameral(8, 16, 1, core.ActivationLeakyReLU,
+		core.DTypeFloat32, quant.FormatNone)
+	if err != nil {
+		panic(err)
+	}
+	hemi := s.Children[1].(*parallel.Layer)
+	left := hemi.Branches[0].(*dense.Layer).Weights
+	right := hemi.Branches[1].(*dense.Layer).Weights
+	_ = seed.InitStoreHe(left, 16, seed.From("cam0"))
+	_ = seed.InitStoreHe(right, 16, seed.From("cam1"))
+
+	hemi.SetCamSync(parallel.CamSyncConfig{
+		Enabled: true,
+		Alpha:   1.0,
+		When:    parallel.SyncManual,
+	})
+	before, _ := weights.StoreCosine(left, right)
+	if err := hemi.SyncNow(); err != nil {
+		panic(err)
+	}
+	after, _ := weights.StoreCosine(left, right)
+	fmt.Printf("cosine before=%.4f after=%.4f\\n", before, after)
 }
 """,
     ))
@@ -2367,6 +2474,7 @@ func main() {
 <li><strong>w2a [0] ALL</strong> — 246,032 cells, FAIL 0, RESULT PASS (<a href="63-validation.html">§63</a>)</li>
 <li><strong>Training credit</strong> — StepBP, Tween*, Split, Alt, HeadProxy, FastProxy, Linear, Sparse, Step* pipe twins, Mesh* (<a href="67-train-modes.html">§67</a>)</li>
 <li><strong>Cameral</strong> — Hemispheres, Mix BranchModes, Sandwich, ResidualGraft, cameral .entity (<a href="68-cameral.html">§68</a>)</li>
+<li><strong>CamSync</strong> — soft/hard inter-cameral + cross-layer same-shape weight blend (<a href="70-cam-sync.html">§70</a>)</li>
 <li><strong>Nested Sequential/Residual</strong> mixed children (Dense/SwiGLU/RMSNorm/LayerNorm)</li>
 <li><strong>lucy</strong> — SoftAcc / Availability / Score + <code>BuildLPD</code> density (<a href="66-lucy.html">§66</a> · <a href="69-lucy-density.html">§69</a>)</li>
 <li><strong>v1.0.3</strong> — Dense FormatNone SIMD <em>forward</em>: WireF64/<code>DotTileF64</code>, expand-once,
@@ -2409,7 +2517,7 @@ PARTS_NAV = [
     ("IV · Runtime", ["29-forward", "30-backward", "31-training", "32-step", "65-cross-numeric", "67-train-modes"]),
     ("V · Systems", ["33-dna", "34-evolution", "35-tween", "36-tanhi", "37-telemetry", "66-lucy", "69-lucy-density"]),
     ("VI · Model IO", ["38-entity", "39-hf", "40-tokenizer", "41-sampling", "42-transformer"]),
-    ("VII · Apps", ["43-apps", "44-octo", "68-cameral"]),
+    ("VII · Apps", ["43-apps", "44-octo", "68-cameral", "70-cam-sync"]),
     ("VIII · Stubs", [
         "45-stub-seed", "46-stub-serialization", "47-stub-memory", "48-stub-donate",
         "49-stub-fountain", "50-stub-hardware", "51-stub-accel",
