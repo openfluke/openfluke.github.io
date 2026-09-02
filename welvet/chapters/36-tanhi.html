@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>36. systems/tanhi — UDP HUD — Welvet</title>
+<title>36. systems/tanhi — TANHI · UDP HUD — Welvet</title>
 <link rel="stylesheet" href="../assets/book.css"/>
 </head>
 <body>
@@ -107,13 +107,13 @@
 <article class="content" id="main">
 
 <p class="chapter-kicker">Chapter 36</p>
-<h1>systems/tanhi — UDP HUD</h1>
+<h1>systems/tanhi — TANHI · UDP HUD</h1>
 <p class="pill-row"><span class="pill">github.com/openfluke/welvet/systems/tanhi</span><span class="status ok">✅</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
 <p>Training visualization must never block the engine — best-effort UDP JSON-lines to a HUD.</p>
 <h2>What it is</h2>
-<p>ConfigFromGrid, Emit/EmitSweep, DefaultUDPPort. SoulGlitch-style consumers.</p>
+<p><strong>TANHI</strong> = <em>Tensor Activation Network Holographic Interface</em>. Sparse non-blocking JSON-line UDP events for per-layer forward/backward HUD visualization (timing, dtypes, shapes, routing links). ConfigFromGrid, Emit/EmitSweep, DefaultUDPPort (17481). SoulGlitch-style consumers.</p>
 
 
 <section class="examples" id="examples">
@@ -133,7 +133,7 @@ func main() {
 	tanhi.EmitSweep(cfg, "epoch-0") // non-blocking best-effort
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>(no output)</code></pre>
+<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
 
 </section>
 

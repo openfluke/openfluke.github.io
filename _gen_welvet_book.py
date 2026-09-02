@@ -1461,9 +1461,12 @@ func main() {
 	fmt.Println(err)
 }
 """),
-        ("36-tanhi", "36", "systems/tanhi — UDP HUD", "github.com/openfluke/welvet/systems/tanhi",
+        ("36-tanhi", "36", "systems/tanhi — TANHI · UDP HUD", "github.com/openfluke/welvet/systems/tanhi",
          "Training visualization must never block the engine — best-effort UDP JSON-lines to a HUD.",
-         "ConfigFromGrid, Emit/EmitSweep, DefaultUDPPort. SoulGlitch-style consumers.",
+         "<strong>TANHI</strong> = <em>Tensor Activation Network Holographic Interface</em>. "
+         "Sparse non-blocking JSON-line UDP events for per-layer forward/backward HUD visualization "
+         "(timing, dtypes, shapes, routing links). ConfigFromGrid, Emit/EmitSweep, DefaultUDPPort (17481). "
+         "SoulGlitch-style consumers.",
          """
 package main
 
@@ -1479,7 +1482,7 @@ func main() {
 }
 """),
         ("37-telemetry", "37", "systems/telemetry", "github.com/openfluke/welvet/systems/telemetry",
-         "Static structural blueprints (sizes, op kinds) differ from live tanhi events.",
+         "Static structural blueprints (sizes, op kinds) differ from live TANHI events.",
          "ExtractNetworkBlueprint, ExtractLayerTelemetry for introspection/UIs.",
          """
 package main

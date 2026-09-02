@@ -142,15 +142,7 @@ func main() {
 	fmt.Println(y, err, webgpu.AdapterName())
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=""
-  adapter high-perf: name="NVIDIA GeForce GTX 1650 SUPER" vendor="NVIDIA" arch="" driver="610.57.04" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-  → selected high-perf
-  adapter low-power: name="Intel(R) UHD Graphics 630 (CML GT2)" vendor="Intel open-source Mesa driver" arch="" driver="Mesa 26.1.8" backend=vulkan type=integrated-gpu | maxBuf=2147483647 maxSSBO=2147483644 maxSSBO/stage=103 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-  adapter force-fallback: name="llvmpipe (LLVM 22.1.8, 256 bits)" vendor="llvmpipe" arch="" driver="Mesa 26.1.8 (LLVM 22.1.8)" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-  adapter default: name="NVIDIA GeForce GTX 1650 SUPER" vendor="NVIDIA" arch="" driver="610.57.04" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-RESULT: OK via=inflated adapter="NVIDIA GeForce GTX 1650 SUPER" backend=vulkan maxSSBO=2147483644 maxBuf=1099511627776
-[1.5 2.5] &lt;nil&gt; NVIDIA GeForce GTX 1650 SUPER</code></pre>
+<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
 
 </section>
 
