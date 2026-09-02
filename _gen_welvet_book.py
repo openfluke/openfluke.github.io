@@ -2006,6 +2006,7 @@ same layer across cams, Dense stem ↔ matching cam Dense, or any same-shaped pa
 <li>✅ All cams together, selective groups, soft or hard α</li>
 <li>✅ Cross-layer / cross-cam pairs inside one Stack</li>
 <li>✅ “Same layer on a different mesh” when weight shapes match</li>
+<li>✅ <strong>v1.1.1</strong> — cam adjusting on <strong>all layer types</strong> (Dense, CNN, Parallel, Stack-resolved stores)</li>
 <li>❌ One-directional (teacher → student) — pairs are mutual mean-blend</li>
 <li>❌ Mismatched <code>Rows×Cols</code> — rejected or skipped</li>
 <li>❌ Auto sync across <em>two separate Stack instances</em> — host calls <code>weights.BlendStores</code> on the two stores</li>
@@ -2452,7 +2453,7 @@ func main() {
         "64-scorecard", "64", "Scorecard → v1.0 / minors", "IX · Validate",
         "", sc_ok, sc_lab,
         why="Version is earned from a weighted board, not marketing. v1.0 is 100/100 on the engine board. "
-            "Minor tags (v1.1.0, …) pack features without a new board. Apps, stubs, and NPU sit off-board.",
+            "Minor/patch tags (v1.1.0, v1.1.1, …) pack features without a new board. Apps, stubs, and NPU sit off-board.",
         what=f"version = 0.{{round(earned)}} until 100 → v1.0. Scorecard today <strong>{earned_i}/100</strong>; "
              f"this book tags <strong>{esc(version)}</strong>. Training credit is §9 on the board (8 pts), not an afterthought.",
         body_extra=f"""
@@ -2480,6 +2481,8 @@ func main() {
 <li><strong>v1.0.3</strong> — Dense FormatNone SIMD <em>forward</em>: WireF64/<code>DotTileF64</code>, expand-once,
 BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed projs inherit
 (<a href="06-simd.html">§6</a> · <a href="11-dense.html">§11</a>)</li>
+<li><strong>v1.1.1</strong> — Cam adjusting fixed: CamSync on <strong>all layers</strong>
+(<a href="70-cam-sync.html">§70</a>)</li>
 <li><strong>v1.1.0</strong> — CamSync + <code>training_modes.md</code> + Lucy Lean density + book §70
 (<a href="70-cam-sync.html">§70</a> · <a href="69-lucy-density.html">§69</a>)</li>
 </ul>

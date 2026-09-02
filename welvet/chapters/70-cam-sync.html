@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.1.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.1.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -150,6 +150,7 @@ same layer across cams, Dense stem ↔ matching cam Dense, or any same-shaped pa
 <li>✅ All cams together, selective groups, soft or hard α</li>
 <li>✅ Cross-layer / cross-cam pairs inside one Stack</li>
 <li>✅ “Same layer on a different mesh” when weight shapes match</li>
+<li>✅ <strong>v1.1.1</strong> — cam adjusting on <strong>all layer types</strong> (Dense, CNN, Parallel, Stack-resolved stores)</li>
 <li>❌ One-directional (teacher → student) — pairs are mutual mean-blend</li>
 <li>❌ Mismatched <code>Rows×Cols</code> — rejected or skipped</li>
 <li>❌ Auto sync across <em>two separate Stack instances</em> — host calls <code>weights.BlendStores</code> on the two stores</li>

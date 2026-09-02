@@ -136,6 +136,9 @@ Scorecard: **${earned}/100** → version **${tag}** (from \`welvet/README.md\`).
 - **Cameral sandwiches + AAI Lucy** — why hemispheres exist, Mix BranchModes, test41 / test48 / test50.
 - Nested Sequential/Residual mixed children + ResidualGraft. Test49 (all modes × cubes) is in [0] ALL.
 
+### What's new in v1.1.1
+- **Cam adjusting fixed** — CamSync works on **all layers** (Dense, CNN, Parallel, Stack children), not just selected paths
+
 ### What's new in v1.1.0
 - **§70 CamSync** — inter-cameral / cross-mesh same-shape weight blend (α, Groups, Cross).
 - **training_modes.md** + Lucy **Lean** density chapter notes; 70 total book chapters.
