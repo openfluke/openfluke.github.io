@@ -199,9 +199,9 @@
   },
   "67-train-modes": {
     "exit_code": 0,
-    "stdout": "named 29 linestep 11\nstepfastproxy Step[T][S][FP] <nil>\n[T]=Tween  [S]=Split  [FP]=FastProxy  [L]=Linear  [HP]=HeadProxy\n",
+    "stdout": "named 31 linestep 11\nstepfastproxy Step[T][S][FP] <nil>\n[T]=Tween  [S]=Split  [FP]=FastProxy  [L]=Linear  [HP]=HeadProxy  [F]=Freeze  [Sh]=Shadow  [A]=Adv  [M]=Memory\n",
     "stderr": "",
-    "combined": "named 29 linestep 11\nstepfastproxy Step[T][S][FP] <nil>\n[T]=Tween  [S]=Split  [FP]=FastProxy  [L]=Linear  [HP]=HeadProxy"
+    "combined": "named 31 linestep 11\nstepfastproxy Step[T][S][FP] <nil>\n[T]=Tween  [S]=Split  [FP]=FastProxy  [L]=Linear  [HP]=HeadProxy  [F]=Freeze  [Sh]=Shadow  [A]=Adv  [M]=Memory"
   },
   "33-dna": {
     "exit_code": 0,
@@ -415,8 +415,8 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v1.1.0\nscorecard 100/100\n",
+    "stdout": "v1.1.1\nscorecard 100/100\n",
     "stderr": "",
-    "combined": "v1.1.0\nscorecard 100/100"
+    "combined": "v1.1.1\nscorecard 100/100"
   }
 }
