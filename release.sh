@@ -13,6 +13,7 @@
 #   ./release.sh --dry-run       # build only, no commit/push/release
 #   ./release.sh --skip-run      # skip go-run examples (use existing manifest)
 #   ./release.sh --no-push       # commit + local release notes, don't push
+#   ./release.sh --retag         # move existing tag to HEAD + re-upload PDF
 #
 # Needs: python3, google-chrome/chromium, git, and either:
 #   - gh (GitHub CLI) authenticated, OR
@@ -29,12 +30,14 @@ API="https://api.github.com/repos/${REPO_SLUG}"
 DRY_RUN=0
 SKIP_RUN=0
 NO_PUSH=0
+RETAG=0
 
 for arg in "$@"; do
   case "$arg" in
     --dry-run) DRY_RUN=1 ;;
     --skip-run) SKIP_RUN=1 ;;
     --no-push) NO_PUSH=1 ;;
+    --retag) RETAG=1 ;;
     -h|--help)
       sed -n '2,20p' "$0"
       exit 0
@@ -138,6 +141,7 @@ Scorecard: **${earned}/100** → version **${tag}** (from \`welvet/README.md\`).
 
 ### What's new in v1.1.1
 - **Cam adjusting fixed** — CamSync works on **all layers** (Dense, CNN, Parallel, Stack children), not just selected paths
+- **TANHI** — **Tensor Activation Network Holographic Interface** (§36): UDP HUD telemetry on grid/cameral/step; \`ConfigureGrid\`, cam branch/combine wire events
 
 ### What's new in v1.1.0
 - **§70 CamSync** — inter-cameral / cross-mesh same-shape weight blend (α, Groups, Cross).
@@ -290,7 +294,8 @@ fi
 if [[ "$NO_PUSH" -eq 1 ]]; then
   echo "→ --no-push: skipping push + GitHub release"
   echo "  local PDF: $PDF_PATH"
-  echo "  tag when ready: gh release create ${VERSION} ${PDF_PATH}"
+  echo "  upload when ready:"
+  echo "    gh release upload ${VERSION} ${PDF_PATH} --repo ${REPO_SLUG} --clobber"
   exit 0
 fi
 
@@ -301,13 +306,20 @@ git push origin HEAD
 
 # 4) Tag + release with PDF
 echo "→ publishing GitHub Release ${VERSION}…"
-# ensure annotated tag exists on remote tip
 if git rev-parse "$VERSION" >/dev/null 2>&1; then
-  echo "  tag ${VERSION} already exists locally"
+  if [[ "$RETAG" -eq 1 ]]; then
+    echo "  --retag: moving tag ${VERSION} → HEAD"
+    git tag -d "$VERSION"
+    git tag -a "$VERSION" -m "Welvet feature book ${VERSION} (${EARNED}/100)"
+    git push origin "refs/tags/${VERSION}" --force
+  else
+    echo "  tag ${VERSION} already exists locally (pass --retag to move it to HEAD)"
+    git push origin "$VERSION" 2>/dev/null || git push origin "refs/tags/${VERSION}" || true
+  fi
 else
   git tag -a "$VERSION" -m "Welvet feature book ${VERSION} (${EARNED}/100)"
+  git push origin "$VERSION" 2>/dev/null || git push origin "refs/tags/${VERSION}"
 fi
-git push origin "$VERSION" 2>/dev/null || git push origin "refs/tags/${VERSION}"
 
 create_or_update_release "$VERSION" "$PDF_PATH" "$EARNED"
 

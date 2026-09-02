@@ -1465,7 +1465,10 @@ func main() {
          "Training visualization must never block the engine — best-effort UDP JSON-lines to a HUD.",
          "<strong>TANHI</strong> = <em>Tensor Activation Network Holographic Interface</em>. "
          "Sparse non-blocking JSON-line UDP events for per-layer forward/backward HUD visualization "
-         "(timing, dtypes, shapes, routing links). ConfigFromGrid, Emit/EmitSweep, DefaultUDPPort (17481). "
+         "(timing, dtypes, shapes, routing links, parallel branches/combine). "
+         "<strong>v1.1.1:</strong> grid BP, cameral stack/parallel train (all mode families), step mesh; "
+         "<code>ConfigureGrid</code>, <code>SetTanhi</code>, topology bridge. "
+         "<code>ConfigFromGrid</code>, <code>Emit</code>/<code>EmitSweep</code>, <code>DefaultUDPPort</code> (17481). "
          "SoulGlitch-style consumers.",
          """
 package main
