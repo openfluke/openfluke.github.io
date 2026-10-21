@@ -259,7 +259,17 @@ func must(err error) {
 	}
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>stack NormalBP loss 3.9041736651040533
+stack Tween loss 3.9041736651040533
+stack TweenChain loss 3.9041736651040533
+stack TweenSplit loss 3.9041736651040533
+stack TweenAlt loss 3.5210903517464196
+stack Freeze loss 3.9041736651040533
+parallel Tween loss 0.5521819071927838
+parallel Adversarial loss 0.5521819071927838
+grid MeshBP loss 0.3168250438054419
+line StepTween loss 0.10267065279439665
+native-trainmodes done</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/78-native-trainmodes &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 
