@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>77. NativeCPU — TrainNativeMSE per layer — Welvet</title>
+<link rel="stylesheet" href="../assets/book.css"/>
+</head>
+<body>
+<a class="skip" href="#main">Skip</a>
+<div class="shell">
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.1.7</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<div class="nav-group"><h2>I · Orientation</h2>
+<a href="01-welvet.html">1. What Welvet is</a>
+<a href="02-tree.html">2. Repository map</a>
+</div>
+<div class="nav-group"><h2>II · Foundation</h2>
+<a href="03-core.html">3. core</a>
+<a href="04-weights.html">4. weights</a>
+<a href="05-quant.html">5. quant</a>
+<a href="06-simd.html">6. simd</a>
+<a href="07-webgpu.html">7. webgpu</a>
+<a href="08-tiling.html">8. tiling</a>
+<a href="09-architecture.html">9. architecture</a>
+<a href="10-fusedgpu.html">10. fusedgpu</a>
+</div>
+<div class="nav-group"><h2>III · Layers</h2>
+<a href="11-dense.html">11. layers/dense</a>
+<a href="12-mha.html">12. layers/mha</a>
+<a href="13-swiglu.html">13. layers/swiglu</a>
+<a href="14-rmsnorm.html">14. layers/rmsnorm</a>
+<a href="15-layernorm.html">15. layers/layernorm</a>
+<a href="16-embedding.html">16. layers/embedding</a>
+<a href="17-softmax.html">17. layers/softmax</a>
+<a href="18-sequential.html">18. layers/sequential</a>
+<a href="19-residual.html">19. layers/residual</a>
+<a href="20-cnn.html">20. layers/cnn1</a>
+<a href="21-rnn-lstm.html">21. layers/rnn</a>
+<a href="22-seqmix.html">22. layers/seqmix</a>
+<a href="23-gdn.html">23. layers/gdn</a>
+<a href="24-mamba.html">24. layers/mamba</a>
+<a href="25-convt.html">25. layers/convt1</a>
+<a href="26-kmeans.html">26. layers/kmeans</a>
+<a href="27-parallel.html">27. layers/parallel</a>
+<a href="28-metacognition.html">28. layers/metacognition</a>
+</div>
+<div class="nav-group"><h2>IV · Runtime</h2>
+<a href="29-forward.html">29. runtime/forward</a>
+<a href="30-backward.html">30. runtime/backward</a>
+<a href="31-training.html">31. runtime/training</a>
+<a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
+<a href="67-train-modes.html">67. TrainMode</a>
+</div>
+<div class="nav-group"><h2>V · Systems</h2>
+<a href="33-dna.html">33. systems/dna</a>
+<a href="34-evolution.html">34. systems/evolution</a>
+<a href="35-tween.html">35. systems/tween</a>
+<a href="36-tanhi.html">36. systems/tanhi</a>
+<a href="37-telemetry.html">37. systems/telemetry</a>
+<a href="66-lucy.html">66. lucy</a>
+<a href="69-lucy-density.html">69. Lucy density</a>
+</div>
+<div class="nav-group"><h2>VI · Model IO</h2>
+<a href="38-entity.html">38. model/entity</a>
+<a href="39-hf.html">39. model/hf</a>
+<a href="40-tokenizer.html">40. model/tokenizer</a>
+<a href="41-sampling.html">41. model/sampling</a>
+<a href="42-transformer.html">42. model/transformer</a>
+</div>
+<div class="nav-group"><h2>VII · Apps</h2>
+<a href="43-apps.html">43. apps</a>
+<a href="44-octo.html">44. Octo</a>
+<a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
+<a href="70-cam-sync.html">70. CamSync</a>
+</div>
+<div class="nav-group"><h2>VIII · Stubs</h2>
+<a href="45-stub-seed.html">45. stub/seed</a>
+<a href="46-stub-serialization.html">46. stub/serialization</a>
+<a href="47-stub-memory.html">47. stub/memory</a>
+<a href="48-stub-donate.html">48. stub/donate</a>
+<a href="49-stub-fountain.html">49. stub/fountain</a>
+<a href="50-stub-hardware.html">50. stub/hardware</a>
+<a href="51-stub-accel.html">51. stub/accel</a>
+<a href="52-stub-clustering.html">52. stub/clustering</a>
+<a href="53-stub-ensemble.html">53. stub/ensemble</a>
+<a href="54-stub-evaluation.html">54. stub/evaluation</a>
+<a href="55-stub-grafting.html">55. stub/grafting</a>
+<a href="56-stub-grouping.html">56. stub/grouping</a>
+<a href="57-stub-introspection.html">57. stub/introspection</a>
+<a href="58-stub-observer.html">58. stub/observer</a>
+<a href="59-stub-pipeline.html">59. stub/pipeline</a>
+<a href="60-stub-templates.html">60. stub/templates</a>
+<a href="61-stub-universal.html">61. stub/universal</a>
+</div>
+<div class="nav-group"><h2>IX · Validate</h2>
+<a href="62-w2a.html">62. w2a</a>
+<a href="63-validation.html">63. Validation report</a>
+<a href="64-scorecard.html">64. Scorecard → v1.0 / minors</a>
+</div>
+<div class="nav-group"><h2>X · NativeCPU (welvet.cpp)</h2>
+<a href="76-nativecpu.html">76. NativeCPU</a>
+<a href="77-native-layers.html">77. NativeCPU</a>
+<a href="78-native-trainmodes.html">78. NativeCPU</a>
+</div>
+</aside>
+<div class="main">
+<div class="topbar">
+<button class="menu-btn" id="menu-btn" type="button">Menu</button>
+<div class="meta">X · NativeCPU (welvet.cpp)</div>
+<nav class="pager"><a href="76-nativecpu.html">← 76. NativeCPU — opt-in welvet.cpp C ABI</a><a href="78-native-trainmodes.html">78. NativeCPU — TrainMode stack / parallel / →</a></nav>
+</div>
+<article class="content" id="main">
+
+<p class="chapter-kicker">Chapter 77</p>
+<h1>NativeCPU — TrainNativeMSE per layer</h1>
+<p class="pill-row"><span class="pill">github.com/openfluke/welvet/layers</span><span class="status ok">✅ signed kinds</span></p>
+<hr class="rule"/>
+<h2>Why it exists</h2>
+<p>Each signed layer has a packed C ABI NormalBP path. One smoke walks Dense → CNN/ConvT → norms → RNN/LSTM → Sequential/Residual → Parallel → Embedding → Softmax → KMeans → MHA/SwiGLU → Mamba/GDN/Metacognition with Capture + Sync.</p>
+<h2>What it is</h2>
+<p>Set <code>Exec.Backend = BackendNativeCPU</code>, call package <code>TrainNativeMSE</code>, then <code>SyncWeightsFromNative</code> when Go Stores must match C++ (entity export).</p>
+
+<p>Opt-in / Sync semantics: <a href="76-nativecpu.html">§76</a>.
+Mode-aware stack/parallel/mesh/line: <a href="78-native-trainmodes.html">§78</a>.
+Example tree: <code>example/welvet/77-native-layers</code>.</p>
+
+
+<section class="examples" id="examples">
+<h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/77-native-layers/main.go">examples/77-native-layers/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/77-native-layers &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
+<pre><code>package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/cnn1"
+	"github.com/openfluke/welvet/layers/cnn2"
+	"github.com/openfluke/welvet/layers/cnn3"
+	"github.com/openfluke/welvet/layers/convt1"
+	"github.com/openfluke/welvet/layers/convt2"
+	"github.com/openfluke/welvet/layers/convt3"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/layers/embedding"
+	"github.com/openfluke/welvet/layers/gdn"
+	"github.com/openfluke/welvet/layers/kmeans"
+	"github.com/openfluke/welvet/layers/layernorm"
+	"github.com/openfluke/welvet/layers/lstm"
+	"github.com/openfluke/welvet/layers/mamba"
+	"github.com/openfluke/welvet/layers/metacognition"
+	"github.com/openfluke/welvet/layers/mha"
+	"github.com/openfluke/welvet/layers/parallel"
+	"github.com/openfluke/welvet/layers/residual"
+	"github.com/openfluke/welvet/layers/rmsnorm"
+	"github.com/openfluke/welvet/layers/rnn"
+	"github.com/openfluke/welvet/layers/sequential"
+	"github.com/openfluke/welvet/layers/softmax"
+	"github.com/openfluke/welvet/layers/swiglu"
+	"github.com/openfluke/welvet/nativecpp"
+	"github.com/openfluke/welvet/quant"
+)
+
+func main() {
+	if !nativecpp.NativeCPUAvailable() {
+		fmt.Println("SKIP: need linux/amd64 libwelvet")
+		return
+	}
+	demos := []struct {
+		name string
+		fn   func() error
+	}{
+		{"dense", demoDense},
+		{"rmsnorm", demoRMS},
+		{"layernorm", demoLN},
+		{"swiglu", demoSwiGLU},
+		{"mha", demoMHA},
+		{"softmax", demoSoftmax},
+		{"embedding", demoEmbed},
+		{"cnn1", demoCNN1},
+		{"cnn2", demoCNN2},
+		{"cnn3", demoCNN3},
+		{"convt1", demoConvT1},
+		{"convt2", demoConvT2},
+		{"convt3", demoConvT3},
+		{"rnn", demoRNN},
+		{"lstm", demoLSTM},
+		{"sequential", demoSeq},
+		{"residual", demoRes},
+		{"parallel", demoPara},
+		{"kmeans", demoKMeans},
+		{"mamba", demoMamba},
+		{"gdn", demoGDN},
+		{"metacognition", demoMeta},
+	}
+	ok := 0
+	for _, d := range demos {
+		if err := d.fn(); err != nil {
+			fmt.Println("FAIL", d.name, err)
+			continue
+		}
+		fmt.Println("OK  ", d.name)
+		ok++
+	}
+	fmt.Printf("native-layers ok=%d/%d\n", ok, len(demos))
+	if ok != len(demos) {
+		panic("native-layers: some demos failed")
+	}
+}
+
+func fill(shape ...int) *core.Tensor[float32] {
+	t := core.NewTensor[float32](shape...)
+	for i := range t.Data {
+		t.Data[i] = 0.1 + float32(i%7)*0.03
+	}
+	return t
+}
+
+func tgtLike(x *core.Tensor[float32]) *core.Tensor[float32] {
+	t := core.NewTensor[float32](x.Shape...)
+	for i := range t.Data {
+		t.Data[i] = 0.15
+	}
+	return t
+}
+
+func demoDense() error {
+	l, err := dense.New(4, 4, core.ActivationLinear, core.DTypeFloat32)
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(2, 4)
+	_, err = dense.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoRMS() error {
+	l, err := rmsnorm.New(rmsnorm.Config{Dim: 4})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(2, 4)
+	_, err = rmsnorm.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoLN() error {
+	l, err := layernorm.New(layernorm.Config{Dim: 4})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(2, 4)
+	_, err = layernorm.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoSwiGLU() error {
+	l, err := swiglu.New(swiglu.Config{InputDim: 4, IntermediateDim: 8})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 4)
+	_, err = swiglu.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoMHA() error {
+	l, err := mha.New(mha.Config{DModel: 8, NumHeads: 2, NumKVHeads: 2, HeadDim: 4, MaxSeqLen: 8})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 2, 8)
+	_, err = mha.TrainNativeMSE(l, x, tgtLike(x), 0.02)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoSoftmax() error {
+	l, err := softmax.New(softmax.Config{Dim: 4})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(2, 4)
+	_, err = softmax.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	return err
+}
+
+func demoEmbed() error {
+	l, err := embedding.New(embedding.Config{VocabSize: 8, EmbeddingDim: 4, SeqLen: 2})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 2)
+	x.Data[0], x.Data[1] = 1, 2
+	t := fill(1, 2, 4)
+	_, err = embedding.TrainNativeMSE(l, x, t, 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoCNN1() error {
+	l, err := cnn1.New(cnn1.Config{InChannels: 1, Filters: 2, SeqLen: 8, Kernel: 3})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 1, 8)
+	_, post, err := cnn1.Forward(l, x)
+	if err != nil {
+		return err
+	}
+	_, err = cnn1.TrainNativeMSE(l, x, tgtLike(post), 0.02)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoCNN2() error {
+	l, err := cnn2.New(cnn2.Config{InChannels: 1, Filters: 2, Height: 4, Width: 4, Kernel: 3})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 1, 4, 4)
+	_, post, err := cnn2.Forward(l, x)
+	if err != nil {
+		return err
+	}
+	_, err = cnn2.TrainNativeMSE(l, x, tgtLike(post), 0.02)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoCNN3() error {
+	l, err := cnn3.New(cnn3.Config{InChannels: 1, Filters: 2, Depth: 2, Height: 2, Width: 2, Kernel: 2})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 1, 2, 2, 2)
+	_, post, err := cnn3.Forward(l, x)
+	if err != nil {
+		return err
+	}
+	_, err = cnn3.TrainNativeMSE(l, x, tgtLike(post), 0.02)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoConvT1() error {
+	l, err := convt1.New(convt1.Config{InChannels: 1, Filters: 2, SeqLen: 4, Kernel: 3})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 1, 4)
+	_, post, err := convt1.Forward(l, x)
+	if err != nil {
+		return err
+	}
+	_, err = convt1.TrainNativeMSE(l, x, tgtLike(post), 0.02)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoConvT2() error {
+	l, err := convt2.New(convt2.Config{InChannels: 1, Filters: 2, Height: 2, Width: 2, Kernel: 2})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 1, 2, 2)
+	_, post, err := convt2.Forward(l, x)
+	if err != nil {
+		return err
+	}
+	_, err = convt2.TrainNativeMSE(l, x, tgtLike(post), 0.02)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoConvT3() error {
+	l, err := convt3.New(convt3.Config{InChannels: 1, Filters: 2, Depth: 2, Height: 2, Width: 2, Kernel: 2})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 1, 2, 2, 2)
+	_, post, err := convt3.Forward(l, x)
+	if err != nil {
+		return err
+	}
+	_, err = convt3.TrainNativeMSE(l, x, tgtLike(post), 0.02)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoRNN() error {
+	l, err := rnn.New(rnn.Config{InputSize: 4, HiddenSize: 4, SeqLen: 2})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 2, 4)
+	_, err = rnn.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoLSTM() error {
+	l, err := lstm.New(lstm.Config{InputSize: 4, HiddenSize: 4, SeqLen: 2})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 2, 4)
+	_, err = lstm.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoSeq() error {
+	l, err := sequential.New(sequential.Config{Dim: 4, Depth: 2})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(2, 4)
+	_, err = sequential.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoRes() error {
+	l, err := residual.New(residual.Config{Dim: 4, Depth: 1})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(2, 4)
+	_, err = residual.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoPara() error {
+	init := make([]float32, 2*4*4)
+	for i := range init {
+		init[i] = 0.03 * float32(i+1)
+	}
+	l, err := parallel.NewConfigured(parallel.Config{Dim: 4, OutFeat: 4, Branches: 2, Combine: parallel.CombineAdd},
+		core.DTypeFloat32, quant.FormatNone, init, nil)
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	l.SyncBranchExec()
+	x := fill(2, 4)
+	_, err = parallel.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoKMeans() error {
+	l, err := kmeans.New(kmeans.Config{NumClusters: 3, FeatureDim: 4})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(2, 4)
+	_, post, err := kmeans.Forward(l, x)
+	if err != nil {
+		return err
+	}
+	_, err = kmeans.TrainNativeMSE(l, x, tgtLike(post), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoMamba() error {
+	l, err := mamba.New(mamba.Config{DModel: 4, DState: 2, SeqLen: 2})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 2, 4)
+	_, err = mamba.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoGDN() error {
+	l, err := gdn.New(gdn.Config{HiddenSize: 4, NumKeyHeads: 1, NumValueHeads: 1, KeyHeadDim: 2, ValueHeadDim: 2, ConvKernel: 2})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(1, 2, 4)
+	_, err = gdn.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}
+
+func demoMeta() error {
+	l, err := metacognition.New(metacognition.Config{Dim: 4})
+	if err != nil {
+		return err
+	}
+	l.Exec.Backend = core.BackendNativeCPU
+	x := fill(2, 4)
+	_, err = metacognition.TrainNativeMSE(l, x, tgtLike(x), 0.05)
+	if err != nil {
+		return err
+	}
+	return l.SyncWeightsFromNative()
+}</code></pre>
+<h3>Output</h3>
+<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
+<h3>Validate (harness)</h3><pre><code>cd welvet/examples/77-native-layers &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
+</section>
+
+
+<nav class="pager" style="margin-top:2rem"><a href="76-nativecpu.html">← 76. NativeCPU — opt-in welvet.cpp C ABI</a><a href="78-native-trainmodes.html">78. NativeCPU — TrainMode stack / parallel / →</a></nav>
+</article>
+</div></div>
+<script src="../assets/book.js"></script>
+</body></html>

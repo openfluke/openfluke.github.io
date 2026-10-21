@@ -23,7 +23,13 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT"
 
-WELVET_README="$(cd "$ROOT/.." && pwd)/README.md"
+# Prefer sibling ../welvet/README.md (gs/welvet); fall back to parent README.
+if [[ -f "$(cd "$ROOT/.." && pwd)/welvet/README.md" ]]; then
+  WELVET_README="$(cd "$ROOT/.." && pwd)/welvet/README.md"
+else
+  WELVET_README="$(cd "$ROOT/.." && pwd)/README.md"
+fi
+export WELVET_README
 REPO_SLUG="openfluke/openfluke.github.io"
 API="https://api.github.com/repos/${REPO_SLUG}"
 
@@ -56,7 +62,17 @@ read_version() {
   python3 - <<'PY'
 from pathlib import Path
 import re
-text = Path("../README.md").read_text(encoding="utf-8")
+from pathlib import Path
+import re, os
+root = Path(os.environ.get("WELVET_README", "../welvet/README.md"))
+cands = [root, Path("../welvet/README.md"), Path("../README.md")]
+text = None
+for p in cands:
+    if p.is_file():
+        text = p.read_text(encoding="utf-8")
+        break
+if text is None:
+    raise SystemExit("could not find welvet README.md")
 ver = None
 m = re.search(r"\|\s*\*\*Version\*\*\s*\|\s*\*\*(v[\d.]+)\*\*", text)
 if m:
@@ -72,10 +88,10 @@ if earned is None and ver:
         earned = float(ver[3:].split(".", 1)[0])
 if ver is None:
     if earned is None:
-        raise SystemExit("could not parse Welvet version from ../README.md")
+        raise SystemExit("could not parse Welvet version from README.md")
     ver = "v1.0" if earned >= 100 else f"v0.{int(round(earned)):02d}"
 if earned is None:
-    raise SystemExit("could not parse Welvet scorecard points from ../README.md")
+    raise SystemExit("could not parse Welvet scorecard points from README.md")
 print(f"{ver} {earned}")
 PY
 }

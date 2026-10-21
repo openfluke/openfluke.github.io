@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.1.1</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.1.7</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -97,23 +97,28 @@
 <a href="63-validation.html">63. Validation report</a>
 <a href="64-scorecard.html">64. Scorecard → v1.0 / minors</a>
 </div>
+<div class="nav-group"><h2>X · NativeCPU (welvet.cpp)</h2>
+<a href="76-nativecpu.html">76. NativeCPU</a>
+<a href="77-native-layers.html">77. NativeCPU</a>
+<a href="78-native-trainmodes.html">78. NativeCPU</a>
+</div>
 </aside>
 <div class="main">
 <div class="topbar">
 <button class="menu-btn" id="menu-btn" type="button">Menu</button>
 <div class="meta">IX · Validate</div>
-<nav class="pager"><a href="63-validation.html">← 63. Validation report — full suite</a><a href="../toc.html">Contents →</a></nav>
+<nav class="pager"><a href="63-validation.html">← 63. Validation report — full suite</a><a href="76-nativecpu.html">76. NativeCPU — opt-in welvet.cpp C ABI →</a></nav>
 </div>
 <article class="content" id="main">
 
 <p class="chapter-kicker">Chapter 64</p>
 <h1>Scorecard → v1.0 / minors</h1>
-<p><span class="status ok">v1.1.1</span></p>
+<p><span class="status ok">v1.1.7</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
 <p>Version is earned from a weighted board, not marketing. v1.0 is 100/100 on the engine board. Minor/patch tags (v1.1.0, v1.1.1, …) pack features without a new board. Apps, stubs, and NPU sit off-board.</p>
 <h2>What it is</h2>
-<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>100/100</strong>; this book tags <strong>v1.1.1</strong>. Training credit is §9 on the board (8 pts), not an afterthought.</p>
+<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>100/100</strong>; this book tags <strong>v1.1.7</strong>. Training credit is §9 on the board (8 pts), not an afterthought.</p>
 
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
 <tr><td>1</td><td>Foundation</td><td>15</td><td>15</td></tr>
@@ -143,9 +148,12 @@ BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed p
 (<a href="70-cam-sync.html">§70</a>)</li>
 <li><strong>v1.1.0</strong> — CamSync + <code>training_modes.md</code> + Lucy Lean density + book §70
 (<a href="70-cam-sync.html">§70</a> · <a href="69-lucy-density.html">§69</a>)</li>
+<li><strong>v1.1.7</strong> — Full NativeCPU TrainMode C ABI (stack/parallel/grid/line) +
+<code>SyncWeightsFromNative</code> (<a href="76-nativecpu.html">§76</a> ·
+<a href="77-native-layers.html">§77</a> · <a href="78-native-trainmodes.html">§78</a>)</li>
 </ul>
 <div class="callout warn"><strong>Off this board</strong>
-<code>apps/octo</code>, <code>stub/*</code>, NPU/Metal/QNN (later <code>welvet.cpp</code>).
+<code>apps/octo</code>, <code>stub/*</code>, NPU/Metal/QNN (CUDA kernels still gap in <code>welvet.cpp</code>).
 FastProxy can match/beat StepBP <em>Acc</em> on sine/copy toys; Sparse wins Lucy <em>Score</em> via Avail.
 Do not write “Sparse is better backprop.” Engine v1 ≠ “beats PyTorch.”</div>
 
@@ -160,17 +168,16 @@ import "fmt"
 
 func main() {
 	earned := 100.0
-	fmt.Println("v1.1.1")
+	fmt.Println("v1.1.7")
 	fmt.Printf("scorecard %.0f/100\n", earned)
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>v1.1.1
-scorecard 100/100</code></pre>
+<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
 
 </section>
 
 
-<nav class="pager" style="margin-top:2rem"><a href="63-validation.html">← 63. Validation report — full suite</a><a href="../toc.html">Contents →</a></nav>
+<nav class="pager" style="margin-top:2rem"><a href="63-validation.html">← 63. Validation report — full suite</a><a href="76-nativecpu.html">76. NativeCPU — opt-in welvet.cpp C ABI →</a></nav>
 </article>
 </div></div>
 <script src="../assets/book.js"></script>
