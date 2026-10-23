@@ -337,9 +337,9 @@
   },
   "51-stub-accel": {
     "exit_code": 0,
-    "stdout": "",
+    "stdout": "stub/accel: reserved; use nativeqnn for Qualcomm HTP\n",
     "stderr": "",
-    "combined": ""
+    "combined": "stub/accel: reserved; use nativeqnn for Qualcomm HTP"
   },
   "52-stub-clustering": {
     "exit_code": 0,
@@ -415,9 +415,9 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v1.1.7\nscorecard 100/100\n",
+    "stdout": "v1.2.0\nscorecard 100/100\n",
     "stderr": "",
-    "combined": "v1.1.7\nscorecard 100/100"
+    "combined": "v1.2.0\nscorecard 100/100"
   },
   "76-nativecpu": {
     "exit_code": 0,
@@ -436,5 +436,23 @@
     "stdout": "stack NormalBP loss 3.9041736651040533\nstack Tween loss 3.9041736651040533\nstack TweenChain loss 3.9041736651040533\nstack TweenSplit loss 3.9041736651040533\nstack TweenAlt loss 3.5210903517464196\nstack Freeze loss 3.9041736651040533\nparallel Tween loss 0.5521819071927838\nparallel Adversarial loss 0.5521819071927838\ngrid MeshBP loss 0.3168250438054419\nline StepTween loss 0.10267065279439665\nnative-trainmodes done\n",
     "stderr": "",
     "combined": "stack NormalBP loss 3.9041736651040533\nstack Tween loss 3.9041736651040533\nstack TweenChain loss 3.9041736651040533\nstack TweenSplit loss 3.9041736651040533\nstack TweenAlt loss 3.5210903517464196\nstack Freeze loss 3.9041736651040533\nparallel Tween loss 0.5521819071927838\nparallel Adversarial loss 0.5521819071927838\ngrid MeshBP loss 0.3168250438054419\nline StepTween loss 0.10267065279439665\nnative-trainmodes done"
+  },
+  "79-qnn": {
+    "exit_code": 0,
+    "stdout": "version \navailable false\ndefault cpu-tiled\nSKIP: need windows/arm64 + libwelvet_qnn (+ QAIRT)\n",
+    "stderr": "",
+    "combined": "version \navailable false\ndefault cpu-tiled\nSKIP: need windows/arm64 + libwelvet_qnn (+ QAIRT)"
+  },
+  "80-qnn-layers": {
+    "exit_code": 0,
+    "stdout": "SKIP: need windows/arm64 + libwelvet_qnn (+ QAIRT)\n",
+    "stderr": "",
+    "combined": "SKIP: need windows/arm64 + libwelvet_qnn (+ QAIRT)"
+  },
+  "81-qnn-results": {
+    "exit_code": 0,
+    "stdout": "welvet.qnn 1.0.0 \u00b7 go_v_qnn large matrix\nhost: Windows ARM64 \u00b7 shapes: dense 32x512x512 \u2026\n\nNPU DLL wins (subset vs Go f32):\n  dense      u8    Go 3.05ms  NPU 164\u00b5s  \u2192 95%\n  dense      f32   Go 3.05ms  NPU 201\u00b5s  \u2192 93%\n  softmax    f16   Go 4.31ms  NPU 446\u00b5s  \u2192 90%\n  rmsnorm    u8    Go 9.40ms  NPU 897\u00b5s  \u2192 90%\n  layernorm  f16   Go 6.82ms  NPU 553\u00b5s  \u2192 92%\n  cnn2       i8    Go 12.56ms  NPU 763\u00b5s  \u2192 94%\n  swiglu     u16   Go 1.92ms  NPU 352\u00b5s  \u2192 82%\n  mha        f16   Go 4.51ms  NPU 372\u00b5s  \u2192 92%\n\nnote: call timer \u226b DLL exec on online layers (compose each call)\nfail: lstm f32/f16 execute code=2\nfull: w2a/suites/go_v_qnn/RESULTS.md\n",
+    "stderr": "",
+    "combined": "welvet.qnn 1.0.0 \u00b7 go_v_qnn large matrix\nhost: Windows ARM64 \u00b7 shapes: dense 32x512x512 \u2026\n\nNPU DLL wins (subset vs Go f32):\n  dense      u8    Go 3.05ms  NPU 164\u00b5s  \u2192 95%\n  dense      f32   Go 3.05ms  NPU 201\u00b5s  \u2192 93%\n  softmax    f16   Go 4.31ms  NPU 446\u00b5s  \u2192 90%\n  rmsnorm    u8    Go 9.40ms  NPU 897\u00b5s  \u2192 90%\n  layernorm  f16   Go 6.82ms  NPU 553\u00b5s  \u2192 92%\n  cnn2       i8    Go 12.56ms  NPU 763\u00b5s  \u2192 94%\n  swiglu     u16   Go 1.92ms  NPU 352\u00b5s  \u2192 82%\n  mha        f16   Go 4.51ms  NPU 372\u00b5s  \u2192 92%\n\nnote: call timer \u226b DLL exec on online layers (compose each call)\nfail: lstm f32/f16 execute code=2\nfull: w2a/suites/go_v_qnn/RESULTS.md"
   }
 }

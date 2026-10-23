@@ -183,7 +183,22 @@ func main() {
 	fmt.Println("full: w2a/suites/go_v_qnn/RESULTS.md")
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>welvet.qnn 1.0.0 · go_v_qnn large matrix
+host: Windows ARM64 · shapes: dense 32x512x512 …
+
+NPU DLL wins (subset vs Go f32):
+  dense      u8    Go 3.05ms  NPU 164µs  → 95%
+  dense      f32   Go 3.05ms  NPU 201µs  → 93%
+  softmax    f16   Go 4.31ms  NPU 446µs  → 90%
+  rmsnorm    u8    Go 9.40ms  NPU 897µs  → 90%
+  layernorm  f16   Go 6.82ms  NPU 553µs  → 92%
+  cnn2       i8    Go 12.56ms  NPU 763µs  → 94%
+  swiglu     u16   Go 1.92ms  NPU 352µs  → 82%
+  mha        f16   Go 4.51ms  NPU 372µs  → 92%
+
+note: call timer ≫ DLL exec on online layers (compose each call)
+fail: lstm f32/f16 execute code=2
+full: w2a/suites/go_v_qnn/RESULTS.md</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/81-qnn-results &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

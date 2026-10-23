@@ -61,33 +61,34 @@ func demoLN(s *nativeqnn.Session) {
 }
 
 func demoCnn2(s *nativeqnn.Session) {
-	const n, h, w, cin, cout = 1, 4, 4, 1, 1
-	W, bias := fill(cout*cin*3*3), make([]float32, cout)
+	// HTP path today is 1×1 (W = cout*cin), same as w2a go_v_qnn.
+	const n, h, w, cin, cout = 1, 4, 4, 2, 2
+	W, bias := fill(cout*cin), make([]float32, cout)
 	x, y := fill(n*h*w*cin), make([]float32, n*h*w*cout)
 	must(s.Cnn2ForwardF32(n, h, w, cin, cout, W, bias, x, y))
 	fmt.Println("cnn2", len(y))
 }
 
 func demoCnn3(s *nativeqnn.Session) {
-	const n, d, h, w, cin, cout = 1, 2, 2, 2, 1, 1
-	W, bias := fill(cout*cin*3*3*3), make([]float32, cout)
+	const n, d, h, w, cin, cout = 1, 2, 2, 2, 2, 2
+	W, bias := fill(cout*cin), make([]float32, cout)
 	x, y := fill(n*d*h*w*cin), make([]float32, n*d*h*w*cout)
 	must(s.Cnn3ForwardF32(n, d, h, w, cin, cout, W, bias, x, y))
 	fmt.Println("cnn3", len(y))
 }
 
 func demoConvT2(s *nativeqnn.Session) {
-	const n, h, w, cin, cout = 1, 2, 2, 1, 1
-	W, bias := fill(cin*cout*3*3), make([]float32, cout)
-	x, y := fill(n*h*w*cin), make([]float32, n*(2*h)*(2*w)*cout)
+	const n, h, w, cin, cout = 1, 4, 4, 2, 2
+	W, bias := fill(cout*cin), make([]float32, cout)
+	x, y := fill(n*h*w*cin), make([]float32, n*h*w*cout)
 	must(s.ConvT2ForwardF32(n, h, w, cin, cout, W, bias, x, y))
 	fmt.Println("convt2", len(y))
 }
 
 func demoConvT3(s *nativeqnn.Session) {
-	const n, d, h, w, cin, cout = 1, 2, 2, 2, 1, 1
-	W, bias := fill(cin*cout*3*3*3), make([]float32, cout)
-	x, y := fill(n*d*h*w*cin), make([]float32, n*(2*d)*(2*h)*(2*w)*cout)
+	const n, d, h, w, cin, cout = 1, 2, 2, 2, 2, 2
+	W, bias := fill(cout*cin), make([]float32, cout)
+	x, y := fill(n*d*h*w*cin), make([]float32, n*d*h*w*cout)
 	must(s.ConvT3ForwardF32(n, d, h, w, cin, cout, W, bias, x, y))
 	fmt.Println("convt3", len(y))
 }

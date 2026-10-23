@@ -570,7 +570,29 @@ func demoMeta() error {
 	return l.SyncWeightsFromNative()
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>OK   dense
+OK   rmsnorm
+OK   layernorm
+OK   swiglu
+OK   mha
+OK   softmax
+OK   embedding
+OK   cnn1
+OK   cnn2
+OK   cnn3
+OK   convt1
+OK   convt2
+OK   convt3
+OK   rnn
+OK   lstm
+OK   sequential
+OK   residual
+OK   parallel
+OK   kmeans
+OK   mamba
+OK   gdn
+OK   metacognition
+native-layers ok=22/22</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/77-native-layers &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

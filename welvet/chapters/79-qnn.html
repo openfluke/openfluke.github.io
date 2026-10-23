@@ -184,7 +184,10 @@ func must(err error) {
 	}
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>version 
+available false
+default cpu-tiled
+SKIP: need windows/arm64 + libwelvet_qnn (+ QAIRT)</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/79-qnn &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 
