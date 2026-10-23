@@ -1,6 +1,8 @@
 package main
 
-// import "github.com/openfluke/welvet/stub/accel"
-// No exported API yet — see package doc.go for intent.
+import "fmt"
 
-func main() {}
+// stub/accel has no symbols yet — HTP lives in nativeqnn (book §79–81).
+func main() {
+	fmt.Println("stub/accel: reserved; use nativeqnn for Qualcomm HTP")
+}

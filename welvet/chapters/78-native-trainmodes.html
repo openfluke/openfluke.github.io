@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.1.7</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.2.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -102,12 +102,17 @@
 <a href="77-native-layers.html">77. NativeCPU</a>
 <a href="78-native-trainmodes.html">78. NativeCPU</a>
 </div>
+<div class="nav-group"><h2>XI · Hexagon NPU (welvet.qnn)</h2>
+<a href="79-qnn.html">79. QNN</a>
+<a href="80-qnn-layers.html">80. QNN</a>
+<a href="81-qnn-results.html">81. QNN</a>
+</div>
 </aside>
 <div class="main">
 <div class="topbar">
 <button class="menu-btn" id="menu-btn" type="button">Menu</button>
 <div class="meta">X · NativeCPU (welvet.cpp)</div>
-<nav class="pager"><a href="77-native-layers.html">← 77. NativeCPU — TrainNativeMSE per layer</a><a href="../toc.html">Contents →</a></nav>
+<nav class="pager"><a href="77-native-layers.html">← 77. NativeCPU — TrainNativeMSE per layer</a><a href="79-qnn.html">79. QNN — opt-in Hexagon HTP (welvet.qnn) →</a></nav>
 </div>
 <article class="content" id="main">
 
@@ -259,22 +264,12 @@ func must(err error) {
 	}
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>stack NormalBP loss 3.9041736651040533
-stack Tween loss 3.9041736651040533
-stack TweenChain loss 3.9041736651040533
-stack TweenSplit loss 3.9041736651040533
-stack TweenAlt loss 3.5210903517464196
-stack Freeze loss 3.9041736651040533
-parallel Tween loss 0.5521819071927838
-parallel Adversarial loss 0.5521819071927838
-grid MeshBP loss 0.3168250438054419
-line StepTween loss 0.10267065279439665
-native-trainmodes done</code></pre>
+<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/78-native-trainmodes &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 
 
-<nav class="pager" style="margin-top:2rem"><a href="77-native-layers.html">← 77. NativeCPU — TrainNativeMSE per layer</a><a href="../toc.html">Contents →</a></nav>
+<nav class="pager" style="margin-top:2rem"><a href="77-native-layers.html">← 77. NativeCPU — TrainNativeMSE per layer</a><a href="79-qnn.html">79. QNN — opt-in Hexagon HTP (welvet.qnn) →</a></nav>
 </article>
 </div></div>
 <script src="../assets/book.js"></script>

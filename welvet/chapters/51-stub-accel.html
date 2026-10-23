@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.1.7</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.2.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -102,6 +102,11 @@
 <a href="77-native-layers.html">77. NativeCPU</a>
 <a href="78-native-trainmodes.html">78. NativeCPU</a>
 </div>
+<div class="nav-group"><h2>XI · Hexagon NPU (welvet.qnn)</h2>
+<a href="79-qnn.html">79. QNN</a>
+<a href="80-qnn-layers.html">80. QNN</a>
+<a href="81-qnn-results.html">81. QNN</a>
+</div>
 </aside>
 <div class="main">
 <div class="topbar">
@@ -116,9 +121,9 @@
 <p class="pill-row"><span class="pill">github.com/openfluke/welvet/stub/accel</span><span class="status missing">⬜</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
-<p>Vendor accelerators (Intel NPU, Qualcomm QNN, Apple Metal) will plug beside WebGPU — not replace it.</p>
+<p>Vendor accelerators plug beside WebGPU — not replace it. Qualcomm HTP is live via <code>nativeqnn</code> + sibling <code>welvet.qnn</code> (see book §79–81).</p>
 <h2>What it is</h2>
-<p>Package is doc.go only today (⬜). No symbols yet; reserved for plugin loader design.</p>
+<p>stub/accel remains a reserved plugin slot (⬜). Real Hexagon path: <code>github.com/openfluke/welvet/nativeqnn</code> · BackendQNN · SyncToQNN.</p>
 
 
 <section class="examples" id="examples">
@@ -127,12 +132,14 @@
 <div class="run-cmd"><span>Run:</span><code>cd welvet/examples/51-stub-accel &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
 <pre><code>package main
 
-// import "github.com/openfluke/welvet/stub/accel"
-// No exported API yet — see package doc.go for intent.
+import "fmt"
 
-func main() {}</code></pre>
+// stub/accel has no symbols yet — HTP lives in nativeqnn (book §79–81).
+func main() {
+	fmt.Println("stub/accel: reserved; use nativeqnn for Qualcomm HTP")
+}</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>(no output)</code></pre>
+<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
 
 </section>
 

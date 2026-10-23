@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>81. QNN — go_v_qnn RESULTS (large shapes) — Welvet</title>
+<link rel="stylesheet" href="../assets/book.css"/>
+</head>
+<body>
+<a class="skip" href="#main">Skip</a>
+<div class="shell">
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.2.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<div class="nav-group"><h2>I · Orientation</h2>
+<a href="01-welvet.html">1. What Welvet is</a>
+<a href="02-tree.html">2. Repository map</a>
+</div>
+<div class="nav-group"><h2>II · Foundation</h2>
+<a href="03-core.html">3. core</a>
+<a href="04-weights.html">4. weights</a>
+<a href="05-quant.html">5. quant</a>
+<a href="06-simd.html">6. simd</a>
+<a href="07-webgpu.html">7. webgpu</a>
+<a href="08-tiling.html">8. tiling</a>
+<a href="09-architecture.html">9. architecture</a>
+<a href="10-fusedgpu.html">10. fusedgpu</a>
+</div>
+<div class="nav-group"><h2>III · Layers</h2>
+<a href="11-dense.html">11. layers/dense</a>
+<a href="12-mha.html">12. layers/mha</a>
+<a href="13-swiglu.html">13. layers/swiglu</a>
+<a href="14-rmsnorm.html">14. layers/rmsnorm</a>
+<a href="15-layernorm.html">15. layers/layernorm</a>
+<a href="16-embedding.html">16. layers/embedding</a>
+<a href="17-softmax.html">17. layers/softmax</a>
+<a href="18-sequential.html">18. layers/sequential</a>
+<a href="19-residual.html">19. layers/residual</a>
+<a href="20-cnn.html">20. layers/cnn1</a>
+<a href="21-rnn-lstm.html">21. layers/rnn</a>
+<a href="22-seqmix.html">22. layers/seqmix</a>
+<a href="23-gdn.html">23. layers/gdn</a>
+<a href="24-mamba.html">24. layers/mamba</a>
+<a href="25-convt.html">25. layers/convt1</a>
+<a href="26-kmeans.html">26. layers/kmeans</a>
+<a href="27-parallel.html">27. layers/parallel</a>
+<a href="28-metacognition.html">28. layers/metacognition</a>
+</div>
+<div class="nav-group"><h2>IV · Runtime</h2>
+<a href="29-forward.html">29. runtime/forward</a>
+<a href="30-backward.html">30. runtime/backward</a>
+<a href="31-training.html">31. runtime/training</a>
+<a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
+<a href="67-train-modes.html">67. TrainMode</a>
+</div>
+<div class="nav-group"><h2>V · Systems</h2>
+<a href="33-dna.html">33. systems/dna</a>
+<a href="34-evolution.html">34. systems/evolution</a>
+<a href="35-tween.html">35. systems/tween</a>
+<a href="36-tanhi.html">36. systems/tanhi</a>
+<a href="37-telemetry.html">37. systems/telemetry</a>
+<a href="66-lucy.html">66. lucy</a>
+<a href="69-lucy-density.html">69. Lucy density</a>
+</div>
+<div class="nav-group"><h2>VI · Model IO</h2>
+<a href="38-entity.html">38. model/entity</a>
+<a href="39-hf.html">39. model/hf</a>
+<a href="40-tokenizer.html">40. model/tokenizer</a>
+<a href="41-sampling.html">41. model/sampling</a>
+<a href="42-transformer.html">42. model/transformer</a>
+</div>
+<div class="nav-group"><h2>VII · Apps</h2>
+<a href="43-apps.html">43. apps</a>
+<a href="44-octo.html">44. Octo</a>
+<a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
+<a href="70-cam-sync.html">70. CamSync</a>
+</div>
+<div class="nav-group"><h2>VIII · Stubs</h2>
+<a href="45-stub-seed.html">45. stub/seed</a>
+<a href="46-stub-serialization.html">46. stub/serialization</a>
+<a href="47-stub-memory.html">47. stub/memory</a>
+<a href="48-stub-donate.html">48. stub/donate</a>
+<a href="49-stub-fountain.html">49. stub/fountain</a>
+<a href="50-stub-hardware.html">50. stub/hardware</a>
+<a href="51-stub-accel.html">51. stub/accel</a>
+<a href="52-stub-clustering.html">52. stub/clustering</a>
+<a href="53-stub-ensemble.html">53. stub/ensemble</a>
+<a href="54-stub-evaluation.html">54. stub/evaluation</a>
+<a href="55-stub-grafting.html">55. stub/grafting</a>
+<a href="56-stub-grouping.html">56. stub/grouping</a>
+<a href="57-stub-introspection.html">57. stub/introspection</a>
+<a href="58-stub-observer.html">58. stub/observer</a>
+<a href="59-stub-pipeline.html">59. stub/pipeline</a>
+<a href="60-stub-templates.html">60. stub/templates</a>
+<a href="61-stub-universal.html">61. stub/universal</a>
+</div>
+<div class="nav-group"><h2>IX · Validate</h2>
+<a href="62-w2a.html">62. w2a</a>
+<a href="63-validation.html">63. Validation report</a>
+<a href="64-scorecard.html">64. Scorecard → v1.0 / minors</a>
+</div>
+<div class="nav-group"><h2>X · NativeCPU (welvet.cpp)</h2>
+<a href="76-nativecpu.html">76. NativeCPU</a>
+<a href="77-native-layers.html">77. NativeCPU</a>
+<a href="78-native-trainmodes.html">78. NativeCPU</a>
+</div>
+<div class="nav-group"><h2>XI · Hexagon NPU (welvet.qnn)</h2>
+<a href="79-qnn.html">79. QNN</a>
+<a href="80-qnn-layers.html">80. QNN</a>
+<a href="81-qnn-results.html">81. QNN</a>
+</div>
+</aside>
+<div class="main">
+<div class="topbar">
+<button class="menu-btn" id="menu-btn" type="button">Menu</button>
+<div class="meta">XI · Hexagon NPU (welvet.qnn)</div>
+<nav class="pager"><a href="80-qnn-layers.html">← 80. QNN — HTP layer tour (session ABI)</a><a href="../toc.html">Contents →</a></nav>
+</div>
+<article class="content" id="main">
+
+<p class="chapter-kicker">Chapter 81</p>
+<h1>QNN — go_v_qnn RESULTS (large shapes)</h1>
+<p class="pill-row"><span class="pill">github.com/openfluke/w2a/suites/go_v_qnn</span><span class="status ok">✅ matrix published</span></p>
+<hr class="rule"/>
+<h2>Why it exists</h2>
+<p>Toy shapes lie. The w2a large matrix (dense 32×512×512, softmax 64×4096, …) is the honest Snapdragon X story: NPU DLL <code>graphExecute</code> vs Go/native f32 CPU, plus Go→NPU call overhead (cgo + pack + online compose).</p>
+<h2>What it is</h2>
+<p>Published tables in <code>w2a/suites/go_v_qnn/RESULTS.md</code>. Dense prepare-once wins ~93–98% vs Go/native. Softmax/norms/CNN/SwiGLU/MHA win on DLL exec; online layers pay compose cost on the call timer. LSTM large FAIL. Host compares f32 only — dtype matrix is NPU-side.</p>
+
+<h3>How to read the timers</h3>
+<ul>
+<li><strong>NPU DLL exec</strong> — mono inside welvet.qnn around <code>graphExecute</code> only.</li>
+<li><strong>Go→NPU call</strong> — full C ABI from Go (cgo + pack/unpack + online create/finalize).</li>
+<li><strong>Dense</strong> = prepare-once + warmed execute; other layers = online compose today.</li>
+<li><strong>%</strong> = <code>(slower−faster)/slower×100</code> vs that host column.</li>
+</ul>
+<h3>Headline NPU wins (DLL exec vs Go f32)</h3>
+<table><thead><tr><th>Layer</th><th>dtype</th><th>Go</th><th>NPU</th><th>vs Go</th></tr></thead><tbody>
+<tr><td>dense</td><td>u8</td><td>3.05ms</td><td>164µs</td><td>NPU <strong>95%</strong></td></tr>
+<tr><td>dense</td><td>f32</td><td>3.05ms</td><td>201µs</td><td>NPU <strong>93%</strong></td></tr>
+<tr><td>softmax</td><td>f16</td><td>4.31ms</td><td>446µs</td><td>NPU <strong>90%</strong></td></tr>
+<tr><td>rmsnorm</td><td>u8</td><td>9.40ms</td><td>897µs</td><td>NPU <strong>90%</strong></td></tr>
+<tr><td>layernorm</td><td>f16</td><td>6.82ms</td><td>553µs</td><td>NPU <strong>92%</strong></td></tr>
+<tr><td>cnn2</td><td>i8</td><td>12.56ms</td><td>763µs</td><td>NPU <strong>94%</strong></td></tr>
+<tr><td>swiglu</td><td>u16</td><td>1.92ms</td><td>352µs</td><td>NPU <strong>82%</strong></td></tr>
+<tr><td>mha</td><td>f16</td><td>4.51ms</td><td>372µs</td><td>NPU <strong>92%</strong></td></tr>
+</tbody></table>
+<p>Full status / call overhead / NPU-wins-only tables:
+<a href="https://github.com/openfluke/w2a/blob/main/suites/go_v_qnn/RESULTS.md">RESULTS.md</a>.
+Re-run: <code>cd w2a && go test ./tests/go_v_qnn -v -count=1 -run TestGoVQNNMatrix -timeout 180m</code>.</p>
+<p>Failures today: <strong>lstm</strong> float32/float16 — <code>code=2 execute</code> on large shapes.</p>
+
+
+<section class="examples" id="examples">
+<h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/81-qnn-results/main.go">examples/81-qnn-results/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/81-qnn-results &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
+<pre><code>package main
+
+import "fmt"
+
+// Snapshot of w2a/suites/go_v_qnn/RESULTS.md (2026-10-23, Snapdragon X).
+// This example is host-only — no DLL required.
+func main() {
+	fmt.Println("welvet.qnn 1.0.0 · go_v_qnn large matrix")
+	fmt.Println("host: Windows ARM64 · shapes: dense 32x512x512 …")
+	fmt.Println()
+	fmt.Println("NPU DLL wins (subset vs Go f32):")
+	rows := []struct{ layer, dt, goT, npu, pct string }{
+		{"dense", "u8", "3.05ms", "164µs", "95%"},
+		{"dense", "f32", "3.05ms", "201µs", "93%"},
+		{"softmax", "f16", "4.31ms", "446µs", "90%"},
+		{"rmsnorm", "u8", "9.40ms", "897µs", "90%"},
+		{"layernorm", "f16", "6.82ms", "553µs", "92%"},
+		{"cnn2", "i8", "12.56ms", "763µs", "94%"},
+		{"swiglu", "u16", "1.92ms", "352µs", "82%"},
+		{"mha", "f16", "4.51ms", "372µs", "92%"},
+	}
+	for _, r := range rows {
+		fmt.Printf("  %-10s %-4s  Go %s  NPU %s  → %s\n", r.layer, r.dt, r.goT, r.npu, r.pct)
+	}
+	fmt.Println()
+	fmt.Println("note: call timer ≫ DLL exec on online layers (compose each call)")
+	fmt.Println("fail: lstm f32/f16 execute code=2")
+	fmt.Println("full: w2a/suites/go_v_qnn/RESULTS.md")
+}</code></pre>
+<h3>Output</h3>
+<p class="example-meta">Run <code>python3 _gen_welvet_book.py --run</code> to capture output.</p>
+<h3>Validate (harness)</h3><pre><code>cd welvet/examples/81-qnn-results &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
+</section>
+
+
+<nav class="pager" style="margin-top:2rem"><a href="80-qnn-layers.html">← 80. QNN — HTP layer tour (session ABI)</a><a href="../toc.html">Contents →</a></nav>
+</article>
+</div></div>
+<script src="../assets/book.js"></script>
+</body></html>

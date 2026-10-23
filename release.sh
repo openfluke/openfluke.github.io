@@ -148,6 +148,11 @@ create_or_update_release() {
 
 Scorecard: **${earned}/100** → version **${tag}** (from \`welvet/README.md\`).
 
+### What's new in v1.2.0
+- **Hexagon HTP** via \`nativeqnn\` + sibling **welvet.qnn 1.0.0** (Windows ARM64) — opt-in \`BackendQNN\`, \`SyncToQNN\`, caps-checked mounts.
+- Book **§79–81**: QNN opt-in, full session layer tour, and showcase of \`w2a/suites/go_v_qnn/RESULTS.md\` (large shapes; Dense ~93–98% vs Go/native on DLL exec).
+- welvet.cpp **0.67** NativeCPU board parity; engine scorecard stays **100/100** (vendor NPU off-board).
+
 ### What's new in v1.0
 - Engine board is full (**100/100**). Apps, stubs, and NPU sit off-board.
 - **w2a [0] Run ALL** — **246,032** matrix cells, FAIL 0, RESULT PASS. GAP = declared skip, not fail.

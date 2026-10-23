@@ -2185,15 +2185,19 @@ func main() {
 }
 """),
         ("50-stub-accel", "50", "stub/accel — NPU/Metal/QNN", "github.com/openfluke/welvet/stub/accel",
-         "Vendor accelerators (Intel NPU, Qualcomm QNN, Apple Metal) will plug beside WebGPU — not replace it.",
-         "Package is doc.go only today (⬜). No symbols yet; reserved for plugin loader design.",
+         "Vendor accelerators plug beside WebGPU — not replace it. Qualcomm HTP is live via "
+         "<code>nativeqnn</code> + sibling <code>welvet.qnn</code> (see book §79–81).",
+         "stub/accel remains a reserved plugin slot (⬜). Real Hexagon path: "
+         "<code>github.com/openfluke/welvet/nativeqnn</code> · BackendQNN · SyncToQNN.",
          """
 package main
 
-// import "github.com/openfluke/welvet/stub/accel"
-// No exported API yet — see package doc.go for intent.
+import "fmt"
 
-func main() {}
+// stub/accel has no symbols yet — HTP lives in nativeqnn (book §79–81).
+func main() {
+	fmt.Println("stub/accel: reserved; use nativeqnn for Qualcomm HTP")
+}
 """),
         ("51-stub-clustering", "51", "stub/clustering", "github.com/openfluke/welvet/stub/clustering",
          "Offline clustering helpers on tensors without inventing a second math stack.",
@@ -2499,9 +2503,13 @@ BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed p
 <li><strong>v1.1.7</strong> — Full NativeCPU TrainMode C ABI (stack/parallel/grid/line) +
 <code>SyncWeightsFromNative</code> (<a href="76-nativecpu.html">§76</a> ·
 <a href="77-native-layers.html">§77</a> · <a href="78-native-trainmodes.html">§78</a>)</li>
+<li><strong>v1.2.0</strong> — Qualcomm Hexagon HTP via <code>nativeqnn</code> + welvet.qnn <strong>1.0.0</strong>
+(opt-in <code>BackendQNN</code>, layer SyncToQNN, large-shape matrix in w2a)
+(<a href="79-qnn.html">§79</a> · <a href="80-qnn-layers.html">§80</a> · <a href="81-qnn-results.html">§81</a>)</li>
 </ul>
 <div class="callout warn"><strong>Off this board</strong>
-<code>apps/octo</code>, <code>stub/*</code>, NPU/Metal/QNN (CUDA kernels still gap in <code>welvet.cpp</code>).
+<code>apps/octo</code>, <code>stub/*</code>, and vendor NPU scorecard credit (HTP ships as sibling
+<code>welvet.qnn</code> — see <a href="79-qnn.html">§79</a>). CUDA kernels still gap in <code>welvet.cpp</code>.
 FastProxy can match/beat StepBP <em>Acc</em> on sine/copy toys; Sparse wins Lucy <em>Score</em> via Avail.
 Do not write “Sparse is better backprop.” Engine v1 ≠ “beats PyTorch.”</div>
 """,
@@ -3203,6 +3211,308 @@ func must(err error) {
         run="cd welvet/examples/78-native-trainmodes && source ../env.sh && go run .",
     ))
 
+    out.append(C(
+        "79-qnn", "79", "QNN — opt-in Hexagon HTP (welvet.qnn)", "XI · Hexagon NPU (welvet.qnn)",
+        "github.com/openfluke/welvet/nativeqnn", "ok", "✅ windows/arm64 + cgo",
+        why="Qualcomm Hexagon HTP is a sibling engine (<code>welvet.qnn</code> 1.0.0), not a silent "
+            "fallback inside Go. Opt-in <code>BackendQNN</code> + explicit <code>SyncToQNN</code> keep "
+            "CPU/SIMD/WebGPU as defaults. Caps reject unsupported layer/dtype mounts.",
+        what="<code>nativeqnn.Available()</code>, <code>Version()</code>, <code>SupportedLayers()</code>, "
+             "Dense <code>SyncToQNN</code> → <code>PrepareQNN</code> → <code>Forward</code> with "
+             "<code>BackendQNN</code>. FormatNone host weights; HTP may run f16/i8/… inside the DLL.",
+        body_extra="""
+<p>Needs <strong>Windows ARM64</strong>, cgo, and shipped <code>libwelvet_qnn.dll</code> (plus Qualcomm
+QAIRT runtime on PATH). Other OS/arch → <code>Available()==false</code> and examples print SKIP.</p>
+<p>Layer tour: <a href="80-qnn-layers.html">§80</a>. Large-shape matrix + % wins:
+<a href="81-qnn-results.html">§81</a>. NativeCPU twin: <a href="76-nativecpu.html">§76</a>.</p>
+""" + ascii_fig("""
+Go host (FormatNone f32)     SyncToQNN / mirror      welvet.qnn DLL
+  Dense / Softmax / …  ──►  caps-check + Capture  ──►  HTP graphExecute
+  BackendQNN Forward   ◄──  unpack y to Tensor   ◄──  dtype inside NPU
+""", "Opt-in path — never Prefer as default."),
+        example=r"""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/nativeqnn"
+	"github.com/openfluke/welvet/quant"
+)
+
+func main() {
+	fmt.Println("version", nativeqnn.Version())
+	fmt.Println("available", nativeqnn.Available())
+	fmt.Println("default", core.DefaultBackend())
+	if !nativeqnn.Available() {
+		fmt.Println("SKIP: need windows/arm64 + libwelvet_qnn (+ QAIRT)")
+		return
+	}
+	fmt.Println("layers", nativeqnn.SupportedLayers())
+
+	init := make([]float32, 4*4)
+	for i := range init {
+		init[i] = float32(i+1) * 0.05
+	}
+	l, err := dense.NewConfigured(4, 4, core.ActivationLinear, core.DTypeFloat32, quant.FormatNone, init)
+	must(err)
+	must(l.SyncToQNN())
+	must(l.PrepareQNN(2))
+	l.Exec.Backend = core.BackendQNN
+
+	x := core.NewTensor[float32](2, 4)
+	for i := range x.Data {
+		x.Data[i] = float32(i+1) * 0.1
+	}
+	_, post, err := dense.Forward(l, x)
+	must(err)
+	fmt.Println("fwd", len(post.Data), "backend", l.Exec.Backend)
+	fmt.Println("qnn done")
+}
+
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+""",
+        run="cd welvet/examples/79-qnn && source ../env.sh && go run .",
+    ))
+
+    out.append(C(
+        "80-qnn-layers", "80", "QNN — HTP layer tour (session ABI)", "XI · Hexagon NPU (welvet.qnn)",
+        "github.com/openfluke/welvet/nativeqnn", "ok", "✅ 12 layer forwards",
+        why="w2a <code>go_v_qnn</code> exercises every shipped HTP forward. Book examples use the same "
+            "session ABI with tiny shapes so a Snapdragon box can smoke-test without the full matrix.",
+        what="Open HTP session once, then Dense (prepare+exec), Softmax, RMSNorm, LayerNorm, CNN2/3, "
+             "ConvT2/3, Embedding, Residual, SwiGLU, MHA. LSTM is listed in caps but large shapes FAIL "
+             "execute today — see §81. Layer packages with SyncToQNN: dense, softmax, rmsnorm, layernorm, sequential.",
+        body_extra="""
+<p>Opt-in / Sync: <a href="79-qnn.html">§79</a>. Timing honesty (DLL exec vs Go→NPU call):
+<a href="81-qnn-results.html">§81</a>. Full matrix lives in <code>w2a/suites/go_v_qnn</code>.</p>
+""",
+        example=r"""
+package main
+
+import (
+	"fmt"
+
+	"github.com/openfluke/welvet/nativeqnn"
+)
+
+func main() {
+	if !nativeqnn.Available() {
+		fmt.Println("SKIP: need windows/arm64 + libwelvet_qnn (+ QAIRT)")
+		return
+	}
+	sess, err := nativeqnn.DefaultSession()
+	must(err)
+
+	demoDense(sess)
+	demoSoftmax(sess)
+	demoRms(sess)
+	demoLN(sess)
+	demoCnn2(sess)
+	demoCnn3(sess)
+	demoConvT2(sess)
+	demoConvT3(sess)
+	demoEmbed(sess)
+	demoResidual(sess)
+	demoSwiGlu(sess)
+	demoMha(sess)
+	fmt.Println("qnn-layers done")
+}
+
+func demoDense(s *nativeqnn.Session) {
+	const batch, in, out = 2, 4, 4
+	W := fill(in * out)
+	x, y := fill(batch*in), make([]float32, batch*out)
+	must(s.DensePrepareF32(batch, in, out, W, nil))
+	must(s.DenseExecuteF32(x, y))
+	fmt.Println("dense", len(y))
+}
+
+func demoSoftmax(s *nativeqnn.Session) {
+	const rows, cols = 2, 8
+	x, y := fill(rows*cols), make([]float32, rows*cols)
+	must(s.SoftmaxForwardF32(rows, cols, x, y))
+	fmt.Println("softmax", len(y))
+}
+
+func demoRms(s *nativeqnn.Session) {
+	const b, seq, dim = 1, 2, 4
+	g, x, y := ones(dim), fill(b*seq*dim), make([]float32, b*seq*dim)
+	must(s.RmsNormForwardF32(b, seq, dim, 1e-5, g, x, y))
+	fmt.Println("rmsnorm", len(y))
+}
+
+func demoLN(s *nativeqnn.Session) {
+	const b, seq, dim = 1, 2, 4
+	g, beta := ones(dim), make([]float32, dim)
+	x, y := fill(b*seq*dim), make([]float32, b*seq*dim)
+	must(s.LayerNormForwardF32(b, seq, dim, 1e-5, g, beta, x, y))
+	fmt.Println("layernorm", len(y))
+}
+
+func demoCnn2(s *nativeqnn.Session) {
+	// HTP path today is 1×1 (W = cout*cin), same as w2a go_v_qnn.
+	const n, h, w, cin, cout = 1, 4, 4, 2, 2
+	W, bias := fill(cout*cin), make([]float32, cout)
+	x, y := fill(n*h*w*cin), make([]float32, n*h*w*cout)
+	must(s.Cnn2ForwardF32(n, h, w, cin, cout, W, bias, x, y))
+	fmt.Println("cnn2", len(y))
+}
+
+func demoCnn3(s *nativeqnn.Session) {
+	const n, d, h, w, cin, cout = 1, 2, 2, 2, 2, 2
+	W, bias := fill(cout*cin), make([]float32, cout)
+	x, y := fill(n*d*h*w*cin), make([]float32, n*d*h*w*cout)
+	must(s.Cnn3ForwardF32(n, d, h, w, cin, cout, W, bias, x, y))
+	fmt.Println("cnn3", len(y))
+}
+
+func demoConvT2(s *nativeqnn.Session) {
+	const n, h, w, cin, cout = 1, 4, 4, 2, 2
+	W, bias := fill(cout*cin), make([]float32, cout)
+	x, y := fill(n*h*w*cin), make([]float32, n*h*w*cout)
+	must(s.ConvT2ForwardF32(n, h, w, cin, cout, W, bias, x, y))
+	fmt.Println("convt2", len(y))
+}
+
+func demoConvT3(s *nativeqnn.Session) {
+	const n, d, h, w, cin, cout = 1, 2, 2, 2, 2, 2
+	W, bias := fill(cout*cin), make([]float32, cout)
+	x, y := fill(n*d*h*w*cin), make([]float32, n*d*h*w*cout)
+	must(s.ConvT3ForwardF32(n, d, h, w, cin, cout, W, bias, x, y))
+	fmt.Println("convt3", len(y))
+}
+
+func demoEmbed(s *nativeqnn.Session) {
+	const vocab, dim, n = 16, 4, 4
+	table := fill(vocab * dim)
+	ids := []int32{0, 1, 2, 3}
+	y := make([]float32, n*dim)
+	must(s.EmbeddingForwardF32(vocab, dim, n, table, ids, y))
+	fmt.Println("embedding", len(y))
+}
+
+func demoResidual(s *nativeqnn.Session) {
+	const n = 16
+	a, b, y := fill(n), fill(n), make([]float32, n)
+	must(s.ResidualForwardF32(n, a, b, y))
+	fmt.Println("residual", len(y))
+}
+
+func demoSwiGlu(s *nativeqnn.Session) {
+	const batch, in, hidden = 1, 4, 8
+	wG, wU, wD := fill(hidden*in), fill(hidden*in), fill(in*hidden)
+	x, y := fill(batch*in), make([]float32, batch*in)
+	must(s.SwiGluForwardF32(batch, in, hidden, wG, wU, wD, x, y))
+	fmt.Println("swiglu", len(y))
+}
+
+func demoMha(s *nativeqnn.Session) {
+	const batch, seq, dim, heads = 1, 2, 8, 2
+	w := fill(dim * dim)
+	x, y := fill(batch*seq*dim), make([]float32, batch*seq*dim)
+	must(s.MhaForwardF32(batch, seq, dim, heads, w, w, w, w, x, y))
+	fmt.Println("mha", len(y))
+}
+
+func fill(n int) []float32 {
+	out := make([]float32, n)
+	for i := range out {
+		out[i] = 0.01 * float32(i+1)
+	}
+	return out
+}
+
+func ones(n int) []float32 {
+	out := make([]float32, n)
+	for i := range out {
+		out[i] = 1
+	}
+	return out
+}
+
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+""",
+        run="cd welvet/examples/80-qnn-layers && source ../env.sh && go run .",
+    ))
+
+    out.append(C(
+        "81-qnn-results", "81", "QNN — go_v_qnn RESULTS (large shapes)", "XI · Hexagon NPU (welvet.qnn)",
+        "github.com/openfluke/w2a/suites/go_v_qnn", "ok", "✅ matrix published",
+        why="Toy shapes lie. The w2a large matrix (dense 32×512×512, softmax 64×4096, …) is the "
+            "honest Snapdragon X story: NPU DLL <code>graphExecute</code> vs Go/native f32 CPU, plus "
+            "Go→NPU call overhead (cgo + pack + online compose).",
+        what="Published tables in <code>w2a/suites/go_v_qnn/RESULTS.md</code>. Dense prepare-once wins "
+             "~93–98% vs Go/native. Softmax/norms/CNN/SwiGLU/MHA win on DLL exec; online layers pay "
+             "compose cost on the call timer. LSTM large FAIL. Host compares f32 only — dtype matrix is NPU-side.",
+        body_extra="""
+<h3>How to read the timers</h3>
+<ul>
+<li><strong>NPU DLL exec</strong> — mono inside welvet.qnn around <code>graphExecute</code> only.</li>
+<li><strong>Go→NPU call</strong> — full C ABI from Go (cgo + pack/unpack + online create/finalize).</li>
+<li><strong>Dense</strong> = prepare-once + warmed execute; other layers = online compose today.</li>
+<li><strong>%</strong> = <code>(slower−faster)/slower×100</code> vs that host column.</li>
+</ul>
+<h3>Headline NPU wins (DLL exec vs Go f32)</h3>
+<table><thead><tr><th>Layer</th><th>dtype</th><th>Go</th><th>NPU</th><th>vs Go</th></tr></thead><tbody>
+<tr><td>dense</td><td>u8</td><td>3.05ms</td><td>164µs</td><td>NPU <strong>95%</strong></td></tr>
+<tr><td>dense</td><td>f32</td><td>3.05ms</td><td>201µs</td><td>NPU <strong>93%</strong></td></tr>
+<tr><td>softmax</td><td>f16</td><td>4.31ms</td><td>446µs</td><td>NPU <strong>90%</strong></td></tr>
+<tr><td>rmsnorm</td><td>u8</td><td>9.40ms</td><td>897µs</td><td>NPU <strong>90%</strong></td></tr>
+<tr><td>layernorm</td><td>f16</td><td>6.82ms</td><td>553µs</td><td>NPU <strong>92%</strong></td></tr>
+<tr><td>cnn2</td><td>i8</td><td>12.56ms</td><td>763µs</td><td>NPU <strong>94%</strong></td></tr>
+<tr><td>swiglu</td><td>u16</td><td>1.92ms</td><td>352µs</td><td>NPU <strong>82%</strong></td></tr>
+<tr><td>mha</td><td>f16</td><td>4.51ms</td><td>372µs</td><td>NPU <strong>92%</strong></td></tr>
+</tbody></table>
+<p>Full status / call overhead / NPU-wins-only tables:
+<a href="https://github.com/openfluke/w2a/blob/main/suites/go_v_qnn/RESULTS.md">RESULTS.md</a>.
+Re-run: <code>cd w2a && go test ./tests/go_v_qnn -v -count=1 -run TestGoVQNNMatrix -timeout 180m</code>.</p>
+<p>Failures today: <strong>lstm</strong> float32/float16 — <code>code=2 execute</code> on large shapes.</p>
+""",
+        example=r"""
+package main
+
+import "fmt"
+
+// Snapshot of w2a/suites/go_v_qnn/RESULTS.md (2026-10-23, Snapdragon X).
+// This example is host-only — no DLL required.
+func main() {
+	fmt.Println("welvet.qnn 1.0.0 · go_v_qnn large matrix")
+	fmt.Println("host: Windows ARM64 · shapes: dense 32x512x512 …")
+	fmt.Println()
+	fmt.Println("NPU DLL wins (subset vs Go f32):")
+	rows := []struct{ layer, dt, goT, npu, pct string }{
+		{"dense", "u8", "3.05ms", "164µs", "95%"},
+		{"dense", "f32", "3.05ms", "201µs", "93%"},
+		{"softmax", "f16", "4.31ms", "446µs", "90%"},
+		{"rmsnorm", "u8", "9.40ms", "897µs", "90%"},
+		{"layernorm", "f16", "6.82ms", "553µs", "92%"},
+		{"cnn2", "i8", "12.56ms", "763µs", "94%"},
+		{"swiglu", "u16", "1.92ms", "352µs", "82%"},
+		{"mha", "f16", "4.51ms", "372µs", "92%"},
+	}
+	for _, r := range rows {
+		fmt.Printf("  %-10s %-4s  Go %s  NPU %s  → %s\n", r.layer, r.dt, r.goT, r.npu, r.pct)
+	}
+	fmt.Println()
+	fmt.Println("note: call timer ≫ DLL exec on online layers (compose each call)")
+	fmt.Println("fail: lstm f32/f16 execute code=2")
+	fmt.Println("full: w2a/suites/go_v_qnn/RESULTS.md")
+}
+""",
+        run="cd welvet/examples/81-qnn-results && source ../env.sh && go run .",
+    ))
+
     return out
 
 
@@ -3231,6 +3541,7 @@ PARTS_NAV = [
     ]),
     ("IX · Validate", ["62-w2a", "63-validation", "64-scorecard"]),
     ("X · NativeCPU (welvet.cpp)", ["76-nativecpu", "77-native-layers", "78-native-trainmodes"]),
+    ("XI · Hexagon NPU (welvet.qnn)", ["79-qnn", "80-qnn-layers", "81-qnn-results"]),
 ]
 
 
