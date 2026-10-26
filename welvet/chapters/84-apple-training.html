@@ -244,35 +244,7 @@ func train(mode parallel.TrainMode, steps int) error {
 	return nil
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go
-mode=StepBP schedule=Stack Line pipeline calls=8 loss=6.795552e-06 weights=synced-to-Go
-mode=Tween schedule=Stack calls=8 loss=6.7969486e-06 weights=synced-to-Go
-mode=TweenChain schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go
-mode=StepTween schedule=Stack Line pipeline calls=8 loss=6.7968398e-06 weights=synced-to-Go
-mode=StepTweenChain schedule=Stack Line pipeline calls=8 loss=6.795552e-06 weights=synced-to-Go
-mode=MeshBP schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7954462e-06 weights=synced-to-Go
-mode=MeshTween schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7969486e-06 weights=synced-to-Go
-mode=MeshTweenChain schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7954462e-06 weights=synced-to-Go
-mode=TweenSplit schedule=Stack calls=8 loss=6.7969486e-06 weights=synced-to-Go
-mode=StepTweenSplit schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go
-mode=TweenAlt schedule=Stack calls=8 loss=6.79782e-06 weights=synced-to-Go
-mode=StepTweenAlt schedule=Stack Line pipeline calls=8 loss=6.7981444e-06 weights=synced-to-Go
-mode=TweenSplitHeadProxy schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go
-mode=TweenSplitLinear schedule=Stack calls=8 loss=6.795816e-06 weights=synced-to-Go
-mode=TweenSplitFastProxy schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go
-mode=TweenSplitLinearCache schedule=Stack calls=8 loss=6.795816e-06 weights=synced-to-Go
-mode=TweenSplitHeadProxyAsync schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go
-mode=TweenSplitSparse schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go
-mode=MeshTweenSplit schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7977081e-06 weights=synced-to-Go
-mode=MeshTweenAlt schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7984707e-06 weights=synced-to-Go
-mode=MeshTweenSplitFastProxy schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7977081e-06 weights=synced-to-Go
-mode=MeshTweenSplitSparse schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7977081e-06 weights=synced-to-Go
-mode=StepTweenSplitHeadProxy schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go
-mode=StepTweenSplitLinear schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go
-mode=StepTweenSplitFastProxy schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go
-mode=StepTweenSplitLinearCache schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go
-mode=StepTweenSplitHeadProxyAsync schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go
-mode=StepTweenSplitSparse schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/84-apple-training &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

@@ -4147,12 +4147,33 @@ def render_print_document(
 
 
 def find_chrome() -> str:
+    """Find a Chromium browser, including macOS app bundles outside PATH."""
+    override = os.environ.get("WELVET_BOOK_CHROME")
+    if override:
+        candidate = shutil.which(override) or str(Path(override).expanduser())
+        if Path(candidate).is_file() and os.access(candidate, os.X_OK):
+            return candidate
+        raise SystemExit(f"WELVET_BOOK_CHROME is not an executable browser: {override}")
     for name in ("google-chrome", "google-chrome-stable", "chromium", "chromium-browser"):
-        path = subprocess.run(["which", name], capture_output=True, text=True)
-        if path.returncode == 0 and path.stdout.strip():
-            return path.stdout.strip()
+        path = shutil.which(name)
+        if path:
+            return path
+    if sys.platform == "darwin":
+        apps = (
+            ("Google Chrome", "Google Chrome"),
+            ("Chromium", "Chromium"),
+            ("Microsoft Edge", "Microsoft Edge"),
+            ("Brave Browser", "Brave Browser"),
+        )
+        for base in (Path("/Applications"), Path.home() / "Applications"):
+            for app, binary in apps:
+                path = base / f"{app}.app" / "Contents" / "MacOS" / binary
+                if path.is_file() and os.access(path, os.X_OK):
+                    return str(path)
     raise SystemExit(
-        "PDF needs headless Chrome/Chromium. Install google-chrome or pass --pdf-html-only."
+        "PDF needs Chrome/Chromium. Install a Chromium browser or set "
+        "WELVET_BOOK_CHROME to its executable path. "
+        "For print HTML without a PDF, use --pdf-html-only with _gen_welvet_book.py."
     )
 
 

@@ -37,9 +37,9 @@
   },
   "07-webgpu": {
     "exit_code": 0,
-    "stdout": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"615.71.09\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"Intel(R) UHD Graphics 630 (CML GT2)\" vendor=\"Intel open-source Mesa driver\" arch=\"\" driver=\"Mesa 26.2.3\" backend=vulkan type=integrated-gpu | maxBuf=2147483647 maxSSBO=2147483644 maxSSBO/stage=103 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.3 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter default: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"615.71.09\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"NVIDIA GeForce GTX 1650 SUPER\" backend=vulkan maxSSBO=2147483644 maxBuf=1099511627776\n[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER\n",
+    "stdout": "webgpu probe goos=darwin goarch=arm64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback FAIL: failed to request adapter\n  adapter default: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"Apple M5\" backend=metal maxSSBO=4294967292 maxBuf=14302248960\n[1.5 2.5] <nil> Apple M5\n",
     "stderr": "",
-    "combined": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"615.71.09\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"Intel(R) UHD Graphics 630 (CML GT2)\" vendor=\"Intel open-source Mesa driver\" arch=\"\" driver=\"Mesa 26.2.3\" backend=vulkan type=integrated-gpu | maxBuf=2147483647 maxSSBO=2147483644 maxSSBO/stage=103 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.3 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter default: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"615.71.09\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"NVIDIA GeForce GTX 1650 SUPER\" backend=vulkan maxSSBO=2147483644 maxBuf=1099511627776\n[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER"
+    "combined": "webgpu probe goos=darwin goarch=arm64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback FAIL: failed to request adapter\n  adapter default: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"Apple M5\" backend=metal maxSSBO=4294967292 maxBuf=14302248960\n[1.5 2.5] <nil> Apple M5"
   },
   "08-tiling": {
     "exit_code": 0,
@@ -331,9 +331,9 @@
   },
   "50-stub-hardware": {
     "exit_code": 0,
-    "stdout": "{Model:Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz Logical:12 GOMAXPROCS:12}\nOS: linux | CPU: Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz (12) | RAM: 31.12 GB | GPU: Unknown GPU (0.0 GB)\n",
+    "stdout": "{Model:Apple M5 Logical:10 GOMAXPROCS:10}\nOS: darwin | CPU: Apple M5 (10) | RAM: 0.00 GB | GPU: Unknown GPU (Apple Metal/Universal) (0.0 GB)\n",
     "stderr": "",
-    "combined": "{Model:Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz Logical:12 GOMAXPROCS:12}\nOS: linux | CPU: Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz (12) | RAM: 31.12 GB | GPU: Unknown GPU (0.0 GB)"
+    "combined": "{Model:Apple M5 Logical:10 GOMAXPROCS:10}\nOS: darwin | CPU: Apple M5 (10) | RAM: 0.00 GB | GPU: Unknown GPU (Apple Metal/Universal) (0.0 GB)"
   },
   "51-stub-accel": {
     "exit_code": 0,
@@ -343,9 +343,9 @@
   },
   "52-stub-clustering": {
     "exit_code": 0,
-    "stdout": "2 [1 0]\n",
+    "stdout": "2 [0 1]\n",
     "stderr": "",
-    "combined": "2 [1 0]"
+    "combined": "2 [0 1]"
   },
   "53-stub-ensemble": {
     "exit_code": 0,
@@ -415,9 +415,9 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v1.2.0\nscorecard 100/100\n",
+    "stdout": "v1.3.0\nscorecard 100/100\n",
     "stderr": "",
-    "combined": "v1.2.0\nscorecard 100/100"
+    "combined": "v1.3.0\nscorecard 100/100"
   },
   "76-nativecpu": {
     "exit_code": 0,
@@ -469,15 +469,15 @@
   },
   "84-apple-training": {
     "exit_code": 0,
-    "stdout": "mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=StepBP schedule=Stack Line pipeline calls=8 loss=6.795552e-06 weights=synced-to-Go\nmode=Tween schedule=Stack calls=8 loss=6.7969486e-06 weights=synced-to-Go\nmode=TweenChain schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=StepTween schedule=Stack Line pipeline calls=8 loss=6.7968398e-06 weights=synced-to-Go\nmode=StepTweenChain schedule=Stack Line pipeline calls=8 loss=6.795552e-06 weights=synced-to-Go\nmode=MeshBP schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=MeshTween schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7969486e-06 weights=synced-to-Go\nmode=MeshTweenChain schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=TweenSplit schedule=Stack calls=8 loss=6.7969486e-06 weights=synced-to-Go\nmode=StepTweenSplit schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=TweenAlt schedule=Stack calls=8 loss=6.79782e-06 weights=synced-to-Go\nmode=StepTweenAlt schedule=Stack Line pipeline calls=8 loss=6.7981444e-06 weights=synced-to-Go\nmode=TweenSplitHeadProxy schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=TweenSplitLinear schedule=Stack calls=8 loss=6.795816e-06 weights=synced-to-Go\nmode=TweenSplitFastProxy schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=TweenSplitLinearCache schedule=Stack calls=8 loss=6.795816e-06 weights=synced-to-Go\nmode=TweenSplitHeadProxyAsync schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=TweenSplitSparse schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=MeshTweenSplit schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7977081e-06 weights=synced-to-Go\nmode=MeshTweenAlt schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7984707e-06 weights=synced-to-Go\nmode=MeshTweenSplitFastProxy schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7977081e-06 weights=synced-to-Go\nmode=MeshTweenSplitSparse schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7977081e-06 weights=synced-to-Go\nmode=StepTweenSplitHeadProxy schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=StepTweenSplitLinear schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=StepTweenSplitFastProxy schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=StepTweenSplitLinearCache schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=StepTweenSplitHeadProxyAsync schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=StepTweenSplitSparse schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\n",
+    "stdout": "mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\n",
     "stderr": "",
-    "combined": "mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=StepBP schedule=Stack Line pipeline calls=8 loss=6.795552e-06 weights=synced-to-Go\nmode=Tween schedule=Stack calls=8 loss=6.7969486e-06 weights=synced-to-Go\nmode=TweenChain schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=StepTween schedule=Stack Line pipeline calls=8 loss=6.7968398e-06 weights=synced-to-Go\nmode=StepTweenChain schedule=Stack Line pipeline calls=8 loss=6.795552e-06 weights=synced-to-Go\nmode=MeshBP schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=MeshTween schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7969486e-06 weights=synced-to-Go\nmode=MeshTweenChain schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=TweenSplit schedule=Stack calls=8 loss=6.7969486e-06 weights=synced-to-Go\nmode=StepTweenSplit schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=TweenAlt schedule=Stack calls=8 loss=6.79782e-06 weights=synced-to-Go\nmode=StepTweenAlt schedule=Stack Line pipeline calls=8 loss=6.7981444e-06 weights=synced-to-Go\nmode=TweenSplitHeadProxy schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=TweenSplitLinear schedule=Stack calls=8 loss=6.795816e-06 weights=synced-to-Go\nmode=TweenSplitFastProxy schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=TweenSplitLinearCache schedule=Stack calls=8 loss=6.795816e-06 weights=synced-to-Go\nmode=TweenSplitHeadProxyAsync schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=TweenSplitSparse schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\nmode=MeshTweenSplit schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7977081e-06 weights=synced-to-Go\nmode=MeshTweenAlt schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7984707e-06 weights=synced-to-Go\nmode=MeshTweenSplitFastProxy schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7977081e-06 weights=synced-to-Go\nmode=MeshTweenSplitSparse schedule=Grid mesh clock (4 ticks/call) calls=8 loss=6.7977081e-06 weights=synced-to-Go\nmode=StepTweenSplitHeadProxy schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=StepTweenSplitLinear schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=StepTweenSplitFastProxy schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=StepTweenSplitLinearCache schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=StepTweenSplitHeadProxyAsync schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go\nmode=StepTweenSplitSparse schedule=Stack Line pipeline calls=8 loss=6.7974911e-06 weights=synced-to-Go"
+    "combined": "mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go"
   },
   "85-apple-save-weights": {
     "exit_code": 0,
-    "stdout": "Go parameters unchanged before SyncToGo\nweights returned to Go; saved=/var/folders/ch/htvz0wcs18q4bg3hx5wsgxw80000gn/T/welvet-apple-entity-1501243474/trained.entity; reload=exact\n",
+    "stdout": "Go parameters unchanged before SyncToGo\nweights returned to Go; saved=/Users/openfluke/gs/openfluke.github.io/welvet/examples/.cache/tmp/welvet-apple-entity-3434308173/trained.entity; reload=exact\n",
     "stderr": "",
-    "combined": "Go parameters unchanged before SyncToGo\nweights returned to Go; saved=/var/folders/ch/htvz0wcs18q4bg3hx5wsgxw80000gn/T/welvet-apple-entity-1501243474/trained.entity; reload=exact"
+    "combined": "Go parameters unchanged before SyncToGo\nweights returned to Go; saved=/Users/openfluke/gs/openfluke.github.io/welvet/examples/.cache/tmp/welvet-apple-entity-3434308173/trained.entity; reload=exact"
   },
   "86-apple-json-routing": {
     "exit_code": 0,
