@@ -1,0 +1,16 @@
+{
+  "default": "go_cpu",
+  "volumes": {
+    "main": {
+      "sectors": {
+        "0,0,0,0": {
+          "layers": {
+            "0": {"backend": "go_cpu"},
+            "1": {"backend": "metal"},
+            "2": {"backend": "metal"}
+          }
+        }
+      }
+    }
+  }
+}

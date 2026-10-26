@@ -1,0 +1,500 @@
+[
+  {
+    "slug": "01-welvet",
+    "num": "1",
+    "title": "What Welvet is",
+    "has_main": true
+  },
+  {
+    "slug": "02-tree",
+    "num": "2",
+    "title": "Repository map",
+    "has_main": true
+  },
+  {
+    "slug": "03-core",
+    "num": "3",
+    "title": "core \u2014 types & backends",
+    "has_main": true
+  },
+  {
+    "slug": "04-weights",
+    "num": "4",
+    "title": "weights \u2014 FormatNone MatVec",
+    "has_main": true
+  },
+  {
+    "slug": "05-quant",
+    "num": "5",
+    "title": "quant \u2014 20 pack formats",
+    "has_main": true
+  },
+  {
+    "slug": "06-simd",
+    "num": "6",
+    "title": "simd \u2014 Plan 9 kernels",
+    "has_main": true
+  },
+  {
+    "slug": "07-webgpu",
+    "num": "7",
+    "title": "webgpu \u2014 device GEMV & shaders",
+    "has_main": true
+  },
+  {
+    "slug": "08-tiling",
+    "num": "8",
+    "title": "tiling \u2014 SC/MC & workgroups",
+    "has_main": true
+  },
+  {
+    "slug": "09-architecture",
+    "num": "9",
+    "title": "architecture \u2014 volumetric grid",
+    "has_main": true
+  },
+  {
+    "slug": "10-fusedgpu",
+    "num": "10",
+    "title": "fusedgpu \u2014 decoder on device",
+    "has_main": true
+  },
+  {
+    "slug": "11-dense",
+    "num": "11",
+    "title": "layers/dense \u2014 MatVec microkernel",
+    "has_main": true
+  },
+  {
+    "slug": "12-mha",
+    "num": "12",
+    "title": "layers/mha \u2014 attention",
+    "has_main": true
+  },
+  {
+    "slug": "13-swiglu",
+    "num": "13",
+    "title": "layers/swiglu \u2014 gated FFN",
+    "has_main": true
+  },
+  {
+    "slug": "14-rmsnorm",
+    "num": "14",
+    "title": "layers/rmsnorm",
+    "has_main": true
+  },
+  {
+    "slug": "15-layernorm",
+    "num": "15",
+    "title": "layers/layernorm",
+    "has_main": true
+  },
+  {
+    "slug": "16-embedding",
+    "num": "16",
+    "title": "layers/embedding",
+    "has_main": true
+  },
+  {
+    "slug": "17-softmax",
+    "num": "17",
+    "title": "layers/softmax",
+    "has_main": true
+  },
+  {
+    "slug": "18-sequential",
+    "num": "18",
+    "title": "layers/sequential",
+    "has_main": true
+  },
+  {
+    "slug": "19-residual",
+    "num": "19",
+    "title": "layers/residual",
+    "has_main": true
+  },
+  {
+    "slug": "20-cnn",
+    "num": "20",
+    "title": "layers/cnn1 \u00b7 cnn2 \u00b7 cnn3",
+    "has_main": true
+  },
+  {
+    "slug": "21-rnn-lstm",
+    "num": "21",
+    "title": "layers/rnn \u00b7 lstm",
+    "has_main": true
+  },
+  {
+    "slug": "22-seqmix",
+    "num": "22",
+    "title": "layers/seqmix \u2014 mixer contract",
+    "has_main": true
+  },
+  {
+    "slug": "23-gdn",
+    "num": "23",
+    "title": "layers/gdn \u2014 gated delta net",
+    "has_main": true
+  },
+  {
+    "slug": "24-mamba",
+    "num": "24",
+    "title": "layers/mamba \u2014 selective SSM",
+    "has_main": true
+  },
+  {
+    "slug": "25-convt",
+    "num": "25",
+    "title": "layers/convt1 \u00b7 convt2 \u00b7 convt3",
+    "has_main": true
+  },
+  {
+    "slug": "26-kmeans",
+    "num": "26",
+    "title": "layers/kmeans",
+    "has_main": true
+  },
+  {
+    "slug": "27-parallel",
+    "num": "27",
+    "title": "layers/parallel \u2014 MoE + cameral",
+    "has_main": true
+  },
+  {
+    "slug": "28-metacognition",
+    "num": "28",
+    "title": "layers/metacognition",
+    "has_main": true
+  },
+  {
+    "slug": "29-forward",
+    "num": "29",
+    "title": "runtime/forward",
+    "has_main": true
+  },
+  {
+    "slug": "30-backward",
+    "num": "30",
+    "title": "runtime/backward",
+    "has_main": true
+  },
+  {
+    "slug": "31-training",
+    "num": "31",
+    "title": "runtime/training",
+    "has_main": true
+  },
+  {
+    "slug": "32-step",
+    "num": "32",
+    "title": "runtime/step \u2014 step mesh",
+    "has_main": true
+  },
+  {
+    "slug": "65-cross-numeric",
+    "num": "65",
+    "title": "Cross-numeric train + down-the-dem",
+    "has_main": true
+  },
+  {
+    "slug": "67-train-modes",
+    "num": "67",
+    "title": "TrainMode \u2014 29 named updates",
+    "has_main": true
+  },
+  {
+    "slug": "33-dna",
+    "num": "33",
+    "title": "systems/dna",
+    "has_main": true
+  },
+  {
+    "slug": "34-evolution",
+    "num": "34",
+    "title": "systems/evolution",
+    "has_main": true
+  },
+  {
+    "slug": "35-tween",
+    "num": "35",
+    "title": "systems/tween",
+    "has_main": true
+  },
+  {
+    "slug": "36-tanhi",
+    "num": "36",
+    "title": "systems/tanhi \u2014 TANHI \u00b7 UDP HUD",
+    "has_main": true
+  },
+  {
+    "slug": "37-telemetry",
+    "num": "37",
+    "title": "systems/telemetry",
+    "has_main": true
+  },
+  {
+    "slug": "66-lucy",
+    "num": "66",
+    "title": "lucy \u2014 SoftAcc / Score measuring",
+    "has_main": true
+  },
+  {
+    "slug": "69-lucy-density",
+    "num": "69",
+    "title": "Lucy density \u2014 synthetic organism",
+    "has_main": true
+  },
+  {
+    "slug": "38-entity",
+    "num": "38",
+    "title": "model/entity \u2014 .entity files",
+    "has_main": true
+  },
+  {
+    "slug": "39-hf",
+    "num": "39",
+    "title": "model/hf \u2014 snapshots",
+    "has_main": true
+  },
+  {
+    "slug": "40-tokenizer",
+    "num": "40",
+    "title": "model/tokenizer",
+    "has_main": true
+  },
+  {
+    "slug": "41-sampling",
+    "num": "41",
+    "title": "model/sampling",
+    "has_main": true
+  },
+  {
+    "slug": "42-transformer",
+    "num": "42",
+    "title": "model/transformer \u2014 generate",
+    "has_main": true
+  },
+  {
+    "slug": "43-apps",
+    "num": "43",
+    "title": "apps \u2014 octo \u00b7 flux2 \u00b7 mosstts",
+    "has_main": true
+  },
+  {
+    "slug": "44-octo",
+    "num": "44",
+    "title": "Octo \u2014 model shell",
+    "has_main": true
+  },
+  {
+    "slug": "68-cameral",
+    "num": "68",
+    "title": "Cameral sandwiches + AAI Lucy",
+    "has_main": true
+  },
+  {
+    "slug": "70-cam-sync",
+    "num": "70",
+    "title": "CamSync \u2014 inter-cameral / cross-mesh weight blend",
+    "has_main": true
+  },
+  {
+    "slug": "45-stub-seed",
+    "num": "45",
+    "title": "stub/seed",
+    "has_main": true
+  },
+  {
+    "slug": "46-stub-serialization",
+    "num": "46",
+    "title": "stub/serialization",
+    "has_main": true
+  },
+  {
+    "slug": "47-stub-memory",
+    "num": "47",
+    "title": "stub/memory",
+    "has_main": true
+  },
+  {
+    "slug": "48-stub-donate",
+    "num": "48",
+    "title": "stub/donate",
+    "has_main": true
+  },
+  {
+    "slug": "49-stub-fountain",
+    "num": "49",
+    "title": "stub/fountain",
+    "has_main": true
+  },
+  {
+    "slug": "50-stub-hardware",
+    "num": "50",
+    "title": "stub/hardware",
+    "has_main": true
+  },
+  {
+    "slug": "51-stub-accel",
+    "num": "51",
+    "title": "stub/accel \u2014 NPU/Metal/QNN",
+    "has_main": true
+  },
+  {
+    "slug": "52-stub-clustering",
+    "num": "52",
+    "title": "stub/clustering",
+    "has_main": true
+  },
+  {
+    "slug": "53-stub-ensemble",
+    "num": "53",
+    "title": "stub/ensemble",
+    "has_main": true
+  },
+  {
+    "slug": "54-stub-evaluation",
+    "num": "54",
+    "title": "stub/evaluation",
+    "has_main": true
+  },
+  {
+    "slug": "55-stub-grafting",
+    "num": "55",
+    "title": "stub/grafting",
+    "has_main": true
+  },
+  {
+    "slug": "56-stub-grouping",
+    "num": "56",
+    "title": "stub/grouping",
+    "has_main": true
+  },
+  {
+    "slug": "57-stub-introspection",
+    "num": "57",
+    "title": "stub/introspection",
+    "has_main": true
+  },
+  {
+    "slug": "58-stub-observer",
+    "num": "58",
+    "title": "stub/observer",
+    "has_main": true
+  },
+  {
+    "slug": "59-stub-pipeline",
+    "num": "59",
+    "title": "stub/pipeline",
+    "has_main": true
+  },
+  {
+    "slug": "60-stub-templates",
+    "num": "60",
+    "title": "stub/templates",
+    "has_main": true
+  },
+  {
+    "slug": "61-stub-universal",
+    "num": "61",
+    "title": "stub/universal",
+    "has_main": true
+  },
+  {
+    "slug": "62-w2a",
+    "num": "62",
+    "title": "w2a \u2014 validation harness",
+    "has_main": true
+  },
+  {
+    "slug": "63-validation",
+    "num": "63",
+    "title": "Validation report \u2014 full suite",
+    "has_main": true
+  },
+  {
+    "slug": "64-scorecard",
+    "num": "64",
+    "title": "Scorecard \u2192 v1.0 / minors",
+    "has_main": true
+  },
+  {
+    "slug": "76-nativecpu",
+    "num": "76",
+    "title": "NativeCPU \u2014 opt-in welvet.cpp C ABI",
+    "has_main": true
+  },
+  {
+    "slug": "77-native-layers",
+    "num": "77",
+    "title": "NativeCPU \u2014 TrainNativeMSE per layer",
+    "has_main": true
+  },
+  {
+    "slug": "78-native-trainmodes",
+    "num": "78",
+    "title": "NativeCPU \u2014 TrainMode stack / parallel / mesh / line",
+    "has_main": true
+  },
+  {
+    "slug": "79-qnn",
+    "num": "79",
+    "title": "QNN \u2014 opt-in Hexagon HTP (welvet.qnn)",
+    "has_main": true
+  },
+  {
+    "slug": "80-qnn-layers",
+    "num": "80",
+    "title": "QNN \u2014 HTP layer tour (session ABI)",
+    "has_main": true
+  },
+  {
+    "slug": "81-qnn-results",
+    "num": "81",
+    "title": "QNN \u2014 go_v_qnn RESULTS (large shapes)",
+    "has_main": true
+  },
+  {
+    "slug": "82-apple-metal",
+    "num": "82",
+    "title": "Apple Metal \u2014 mount and forward",
+    "has_main": true
+  },
+  {
+    "slug": "83-apple-mamba-dtypes",
+    "num": "83",
+    "title": "Apple Metal \u2014 Mamba parameter dtypes",
+    "has_main": true
+  },
+  {
+    "slug": "84-apple-training",
+    "num": "84",
+    "title": "Apple Metal \u2014 training modes",
+    "has_main": true
+  },
+  {
+    "slug": "85-apple-save-weights",
+    "num": "85",
+    "title": "Apple Metal \u2014 weight return and ENTITY save",
+    "has_main": true
+  },
+  {
+    "slug": "86-apple-json-routing",
+    "num": "86",
+    "title": "Apple Metal \u2014 JSON backend placement",
+    "has_main": true
+  },
+  {
+    "slug": "87-apple-mixed-backends",
+    "num": "87",
+    "title": "Apple Metal \u2014 mixed Go/C++/Metal",
+    "has_main": true
+  },
+  {
+    "slug": "88-apple-mamba-results",
+    "num": "88",
+    "title": "Apple Metal \u2014 Mamba results and stress runner",
+    "has_main": true
+  }
+]

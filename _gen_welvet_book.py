@@ -130,8 +130,8 @@ def chapters(version: str = "v1.0", earned: float = 100.0) -> list[Chapter]:
             "(QAT morph, silent fallbacks, god-layer). Welvet is the rewrite: one feature "
             "per folder, storage-truth dtypes/quants, Dense as the shared MatVec microkernel, "
             "tests only in <code>w2a</code>, apps only in <code>apps/</code>.",
-        what="An AI engine in Go: layers, 34 dtypes, 20 quant formats, and three backends "
-             f"(CPU tiled · Plan 9 SIMD · WebGPU). Version tracks a 100-point scorecard "
+        what="An AI engine in Go: layers, 34 dtypes, 20 quant formats, and Go execution paths "
+             f"(CPU tiled · Plan 9 SIMD · WebGPU), plus optional C++, QNN and Apple Metal libraries. Version tracks a 100-point scorecard "
              f"(today <strong>{esc(version)}</strong> · {earned_i}/100).",
         body_extra=ascii_fig("""
 Rules
@@ -2503,6 +2503,7 @@ BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed p
 <li><strong>v1.1.7</strong> — Full NativeCPU TrainMode C ABI (stack/parallel/grid/line) +
 <code>SyncWeightsFromNative</code> (<a href="76-nativecpu.html">§76</a> ·
 <a href="77-native-layers.html">§77</a> · <a href="78-native-trainmodes.html">§78</a>)</li>
+<li><strong>v1.3.0</strong> — Apple GPU via <code>nativemetal</code> + independent welvet.metal <strong>0.68</strong> (ABI 1). Explicit mount/train/SyncToGo and JSON Go/C++/Metal routing. <a href="82-apple-metal.html">§82–88</a>; Go engine remains 100/100, native siblings retain independent versions.</li>
 <li><strong>v1.2.0</strong> — Qualcomm Hexagon HTP via <code>nativeqnn</code> + welvet.qnn <strong>1.0.0</strong>
 (opt-in <code>BackendQNN</code>, layer SyncToQNN, large-shape matrix in w2a)
 (<a href="79-qnn.html">§79</a> · <a href="80-qnn-layers.html">§80</a> · <a href="81-qnn-results.html">§81</a>)</li>
@@ -3513,6 +3514,9 @@ func main() {
         run="cd welvet/examples/81-qnn-results && source ../env.sh && go run .",
     ))
 
+    for item in json.loads((ROOT / "_apple_examples" / "chapters.json").read_text(encoding="utf-8")):
+        folder = ROOT / "_apple_examples" / item["slug"]
+        out.append(C(**item, example=(folder / "main.go").read_text(encoding="utf-8")))
     return out
 
 
@@ -3542,6 +3546,7 @@ PARTS_NAV = [
     ("IX · Validate", ["62-w2a", "63-validation", "64-scorecard"]),
     ("X · NativeCPU (welvet.cpp)", ["76-nativecpu", "77-native-layers", "78-native-trainmodes"]),
     ("XI · Hexagon NPU (welvet.qnn)", ["79-qnn", "80-qnn-layers", "81-qnn-results"]),
+    ("XII · Apple acceleration (welvet.metal)", ['82-apple-metal', '83-apple-mamba-dtypes', '84-apple-training', '85-apple-save-weights', '86-apple-json-routing', '87-apple-mixed-backends', '88-apple-mamba-results']),
 ]
 
 
@@ -3704,9 +3709,9 @@ def write_examples_go_mod() -> None:
 
 go 1.22.5
 
-require github.com/openfluke/welvet v0.0.0
+require github.com/openfluke/welvet {read_welvet_version()[0]}
 
-require github.com/openfluke/webgpu v1.0.5 // indirect
+require github.com/openfluke/webgpu v1.0.6 // indirect
 
 {replace_block}
 """
@@ -3733,6 +3738,15 @@ def write_example_files(chs: list[Chapter]) -> None:
         d = EXAMPLES / c.slug
         d.mkdir(parents=True, exist_ok=True)
         (d / "main.go").write_text(c.example.strip() + "\n", encoding="utf-8")
+        source = ROOT / "_apple_examples" / c.slug
+        if source.is_dir():
+            for support in source.iterdir():
+                if support.name != "main.go" and support.is_file():
+                    shutil.copy2(support, d / support.name)
+    (EXAMPLES / "_chapters.json").write_text(json.dumps([dict(slug=c.slug, num=c.num, title=c.title, has_main=c.runnable and bool(c.example.strip())) for c in chs], indent=2) + "\n", encoding="utf-8")
+    apple = ROOT / "_apple_examples"
+    shutil.copytree(apple / "apple_stress_test", EXAMPLES / "apple_stress_test", dirs_exist_ok=True)
+    shutil.copy2(apple / "run_apple.sh", EXAMPLES / "run_apple.sh")
 
 
 def run_all_examples(chs: list[Chapter], timeout: float = 90.0) -> dict[str, dict]:
@@ -3848,7 +3862,7 @@ def title_page(version: str, pdf_name: str, chs: list[Chapter]) -> str:
         (str(len(chs)), "Chapters"),
         ("34", "Dtypes"),
         ("20", "Quant formats"),
-        ("3", "Backends"),
+        ("3 + 3", "Go paths + native engines"),
     ]
     stats_html = "".join(
         f'<div class="stat"><div class="stat-num">{esc(n)}</div>'
@@ -3938,7 +3952,7 @@ def toc_page(chs: list[Chapter], version: str) -> str:
         parts.append(f'<div class="nav-group"><h2>{esc(part)}</h2>')
         for s in slugs:
             c = by[s]
-            short = c.title.split("—")[0].strip()
+            short = (c.title.partition("—")[2] if c.part.startswith("XII ·") else c.title.split("—")[0]).strip()
             if len(short) > 28:
                 short = short[:27] + "…"
             parts.append(f'<a href="chapters/{c.slug}.html">{esc(c.num)}. {esc(short)}</a>')
@@ -4204,7 +4218,8 @@ def main() -> None:
 
     (EXAMPLES / "README.md").write_text(
         "# Welvet book examples\n\n"
-        f"One `main.go` per chapter ({len(chs)} total).\n\n"
+        f"One `main.go` per runnable chapter ({len(chs)} chapters total).\n\n"
+        "Apple GPU: chapters 82–88; run `./run_apple.sh` on Apple silicon macOS with both native libraries installed. See `82-apple-metal/README.md` for setup and `apple_stress_test/README.md` for benchmarks.\n\n"
         "```bash\n"
         "cd welvet/examples/01-welvet\n"
         "source ../env.sh   # shared GOCACHE — required for webgpu/CGO examples\n"
@@ -4266,7 +4281,7 @@ def main() -> None:
         "./release-book.sh                          # release helper\n"
         "cd welvet/examples/01-welvet && source ../env.sh && go run .\n"
         "```\n\n"
-        f"PDF is **not** committed — version **{version}** from `welvet/README.md`, "
+        f"PDF is **not** committed — version **{version}** from sibling `../welvet/README.md`, "
         f"upload `dist/{pdf_name}` to [GitHub Releases]({RELEASES_URL}).\n",
         encoding="utf-8",
     )

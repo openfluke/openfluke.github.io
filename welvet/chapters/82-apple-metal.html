@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>82. Apple Metal — mount and forward — Welvet</title>
+<link rel="stylesheet" href="../assets/book.css"/>
+</head>
+<body>
+<a class="skip" href="#main">Skip</a>
+<div class="shell">
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.3.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<div class="nav-group"><h2>I · Orientation</h2>
+<a href="01-welvet.html">1. What Welvet is</a>
+<a href="02-tree.html">2. Repository map</a>
+</div>
+<div class="nav-group"><h2>II · Foundation</h2>
+<a href="03-core.html">3. core</a>
+<a href="04-weights.html">4. weights</a>
+<a href="05-quant.html">5. quant</a>
+<a href="06-simd.html">6. simd</a>
+<a href="07-webgpu.html">7. webgpu</a>
+<a href="08-tiling.html">8. tiling</a>
+<a href="09-architecture.html">9. architecture</a>
+<a href="10-fusedgpu.html">10. fusedgpu</a>
+</div>
+<div class="nav-group"><h2>III · Layers</h2>
+<a href="11-dense.html">11. layers/dense</a>
+<a href="12-mha.html">12. layers/mha</a>
+<a href="13-swiglu.html">13. layers/swiglu</a>
+<a href="14-rmsnorm.html">14. layers/rmsnorm</a>
+<a href="15-layernorm.html">15. layers/layernorm</a>
+<a href="16-embedding.html">16. layers/embedding</a>
+<a href="17-softmax.html">17. layers/softmax</a>
+<a href="18-sequential.html">18. layers/sequential</a>
+<a href="19-residual.html">19. layers/residual</a>
+<a href="20-cnn.html">20. layers/cnn1</a>
+<a href="21-rnn-lstm.html">21. layers/rnn</a>
+<a href="22-seqmix.html">22. layers/seqmix</a>
+<a href="23-gdn.html">23. layers/gdn</a>
+<a href="24-mamba.html">24. layers/mamba</a>
+<a href="25-convt.html">25. layers/convt1</a>
+<a href="26-kmeans.html">26. layers/kmeans</a>
+<a href="27-parallel.html">27. layers/parallel</a>
+<a href="28-metacognition.html">28. layers/metacognition</a>
+</div>
+<div class="nav-group"><h2>IV · Runtime</h2>
+<a href="29-forward.html">29. runtime/forward</a>
+<a href="30-backward.html">30. runtime/backward</a>
+<a href="31-training.html">31. runtime/training</a>
+<a href="32-step.html">32. runtime/step</a>
+<a href="65-cross-numeric.html">65. Cross-numeric train + down-…</a>
+<a href="67-train-modes.html">67. TrainMode</a>
+</div>
+<div class="nav-group"><h2>V · Systems</h2>
+<a href="33-dna.html">33. systems/dna</a>
+<a href="34-evolution.html">34. systems/evolution</a>
+<a href="35-tween.html">35. systems/tween</a>
+<a href="36-tanhi.html">36. systems/tanhi</a>
+<a href="37-telemetry.html">37. systems/telemetry</a>
+<a href="66-lucy.html">66. lucy</a>
+<a href="69-lucy-density.html">69. Lucy density</a>
+</div>
+<div class="nav-group"><h2>VI · Model IO</h2>
+<a href="38-entity.html">38. model/entity</a>
+<a href="39-hf.html">39. model/hf</a>
+<a href="40-tokenizer.html">40. model/tokenizer</a>
+<a href="41-sampling.html">41. model/sampling</a>
+<a href="42-transformer.html">42. model/transformer</a>
+</div>
+<div class="nav-group"><h2>VII · Apps</h2>
+<a href="43-apps.html">43. apps</a>
+<a href="44-octo.html">44. Octo</a>
+<a href="68-cameral.html">68. Cameral sandwiches + AAI Lu…</a>
+<a href="70-cam-sync.html">70. CamSync</a>
+</div>
+<div class="nav-group"><h2>VIII · Stubs</h2>
+<a href="45-stub-seed.html">45. stub/seed</a>
+<a href="46-stub-serialization.html">46. stub/serialization</a>
+<a href="47-stub-memory.html">47. stub/memory</a>
+<a href="48-stub-donate.html">48. stub/donate</a>
+<a href="49-stub-fountain.html">49. stub/fountain</a>
+<a href="50-stub-hardware.html">50. stub/hardware</a>
+<a href="51-stub-accel.html">51. stub/accel</a>
+<a href="52-stub-clustering.html">52. stub/clustering</a>
+<a href="53-stub-ensemble.html">53. stub/ensemble</a>
+<a href="54-stub-evaluation.html">54. stub/evaluation</a>
+<a href="55-stub-grafting.html">55. stub/grafting</a>
+<a href="56-stub-grouping.html">56. stub/grouping</a>
+<a href="57-stub-introspection.html">57. stub/introspection</a>
+<a href="58-stub-observer.html">58. stub/observer</a>
+<a href="59-stub-pipeline.html">59. stub/pipeline</a>
+<a href="60-stub-templates.html">60. stub/templates</a>
+<a href="61-stub-universal.html">61. stub/universal</a>
+</div>
+<div class="nav-group"><h2>IX · Validate</h2>
+<a href="62-w2a.html">62. w2a</a>
+<a href="63-validation.html">63. Validation report</a>
+<a href="64-scorecard.html">64. Scorecard → v1.0 / minors</a>
+</div>
+<div class="nav-group"><h2>X · NativeCPU (welvet.cpp)</h2>
+<a href="76-nativecpu.html">76. NativeCPU</a>
+<a href="77-native-layers.html">77. NativeCPU</a>
+<a href="78-native-trainmodes.html">78. NativeCPU</a>
+</div>
+<div class="nav-group"><h2>XI · Hexagon NPU (welvet.qnn)</h2>
+<a href="79-qnn.html">79. QNN</a>
+<a href="80-qnn-layers.html">80. QNN</a>
+<a href="81-qnn-results.html">81. QNN</a>
+</div>
+<div class="nav-group"><h2>XII · Apple acceleration (welvet.metal)</h2>
+<a href="82-apple-metal.html">82. Apple Metal</a>
+<a href="83-apple-mamba-dtypes.html">83. Apple Metal</a>
+<a href="84-apple-training.html">84. Apple Metal</a>
+<a href="85-apple-save-weights.html">85. Apple Metal</a>
+<a href="86-apple-json-routing.html">86. Apple Metal</a>
+<a href="87-apple-mixed-backends.html">87. Apple Metal</a>
+<a href="88-apple-mamba-results.html">88. Apple Metal</a>
+</div>
+</aside>
+<div class="main">
+<div class="topbar">
+<button class="menu-btn" id="menu-btn" type="button">Menu</button>
+<div class="meta">XII · Apple acceleration (welvet.metal)</div>
+<nav class="pager"><a href="81-qnn-results.html">← 81. QNN — go_v_qnn RESULTS (large shapes)</a><a href="83-apple-mamba-dtypes.html">83. Apple Metal — Mamba parameter dtypes →</a></nav>
+</div>
+<article class="content" id="main">
+
+<p class="chapter-kicker">Chapter 82</p>
+<h1>Apple Metal — mount and forward</h1>
+<p class="pill-row"><span class="pill">github.com/openfluke/welvet/nativemetal</span><span class="status ok">verified Apple M5</span></p>
+<hr class="rule"/>
+<h2>Why it exists</h2>
+<p>Run a Go layer on Apple GPU with an explicit lifetime.</p>
+<h2>What it is</h2>
+<p>Mount an identity Dense layer, inspect the Metal version and device, and forward a Float32 tensor.</p>
+<h2>Session ownership</h2><p>Create a session with <code>nativemetal.Mount</code>, call <code>Forward</code> repeatedly and close it when finished. Mount accepts supported layers, Stack, Parallel and Grid layouts. The library is independent of welvet.cpp.</p><h2>Requirements and backend boundaries</h2>
+<p>Go Welvet <strong>v1.3.0</strong> uses the independent <strong>welvet.metal 0.68</strong> library (mounted model ABI 1, segment extension 1). Install the library from its checkout:</p>
+<pre><code>cd ../welvet.metal
+./scripts/macos_install_go.sh</code></pre>
+<p>Execution requires Apple silicon macOS and Go with cgo. Set <code>WELVET_METAL_LIBRARY</code> to override library discovery. Ordinary Go CPU use on Linux or Windows does not require Apple hardware. Unsupported hosts print SKIP in these examples; missing libraries on supported hosts report an error.</p>
+<p>Go schedules work and manages memory; numerical Metal forward, backward and weight updates execute custom Apple GPU kernels. This is GPU acceleration through Metal, not Apple Neural Engine execution. Activations are Float32; FormatNone parameter storage supports 34 dtypes, with GDN restricted to Float32. Small examples demonstrate APIs; GPU launch costs can outweigh useful work at small shapes.</p>
+<p><code>cpu-tiled</code> means Go CPU; <code>native_cpu</code> means the separate welvet.cpp library; <code>metal</code> means the separate Apple GPU library. Neither native engine depends on the other. Examples 82–86 can use <code>go run -tags welvet_metal .</code> to exclude C++ linkage. Chapter 87 requires the normal cgo build for both native engines.</p>
+
+<section class="examples" id="examples">
+<h2>Go example</h2>
+<p><a class="go-file-link" href="../examples/82-apple-metal/main.go">examples/82-apple-metal/main.go</a></p>
+<div class="run-cmd"><span>Run:</span><code>cd welvet/examples/82-apple-metal &amp;&amp; source ../env.sh &amp;&amp; go run .</code></div>
+<pre><code>// Mount one layer, execute its forward pass on Apple Metal, and release it.
+package main
+
+import (
+	"flag"
+	"fmt"
+	"github.com/openfluke/welvet/core"
+	"github.com/openfluke/welvet/layers/dense"
+	"github.com/openfluke/welvet/nativemetal"
+	"github.com/openfluke/welvet/quant"
+	"log"
+	"runtime"
+)
+
+func main() {
+	if e := run(); e != nil {
+		log.Fatal(e)
+	}
+}
+func run() error {
+	library := flag.String("library", "", "optional libwelvet_metal.dylib path")
+	flag.Parse()
+	if runtime.GOOS != "darwin" || runtime.GOARCH != "arm64" {
+		fmt.Println("SKIP: Apple Metal needs Apple silicon macOS and cgo")
+		return nil
+	}
+	l, e := dense.NewConfigured(2, 2, core.ActivationLinear, core.DTypeFloat32, quant.FormatNone, []float32{1, 0, 0, 1})
+	if e != nil {
+		return e
+	}
+	session, e := nativemetal.Mount(l, nativemetal.Options{LibraryPath: *library})
+	if e != nil {
+		return e
+	}
+	defer session.Close()
+	x := &amp;core.Tensor[float32]{Shape: []int{1, 2}, Data: []float32{.5, -.25}}
+	post, e := session.Forward(x)
+	if e != nil {
+		return e
+	}
+	fmt.Printf("backend=metal version=%s\ndevice=%s\ninput=%v output=%v shape=%v\n", session.Version(), session.Identity(), x.Data, post.Data, post.Shape)
+	return nil
+}</code></pre>
+<h3>Output</h3>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>backend=metal version=0.68
+device=metal:Apple M5:reg=4294968322:ws=19069665280
+input=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]</code></pre>
+<h3>Validate (harness)</h3><pre><code>cd welvet/examples/82-apple-metal &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
+</section>
+
+
+<nav class="pager" style="margin-top:2rem"><a href="81-qnn-results.html">← 81. QNN — go_v_qnn RESULTS (large shapes)</a><a href="83-apple-mamba-dtypes.html">83. Apple Metal — Mamba parameter dtypes →</a></nav>
+</article>
+</div></div>
+<script src="../assets/book.js"></script>
+</body></html>

@@ -2,7 +2,7 @@
 # Auto-release openfluke.github.io for the current Welvet scorecard version.
 #
 # What it does:
-#   1. Read version from ../README.md (welvet scorecard)
+#   1. Read version from ../welvet/README.md (welvet scorecard)
 #   2. Build HTML book + PDF  (python3 _gen_welvet_book.py --run --pdf)
 #   3. Commit site source if dirty
 #   4. Push main → origin (GitHub Pages)
@@ -147,6 +147,12 @@ create_or_update_release() {
 ## Welvet feature book ${tag}
 
 Scorecard: **${earned}/100** → version **${tag}** (from \`welvet/README.md\`).
+
+### What's new in v1.3.0
+- **Apple Metal chapters 82–88**: explicit mounts, Mamba parameter dtypes, all 29 training modes, SyncToGo and ENTITY saving, JSON placement, mixed Go/C++/Metal, and captured performance results.
+- Independent **welvet.metal 0.68** (mounted model ABI 1); optional Apple GPU execution through Go's nativemetal package. Linux and Windows Go CPU users do not need Apple hardware.
+- Bundled Mamba stress runner: **34 parameter dtypes × 29 training modes**, plus forward comparisons, using the actual Go bindings to both native engines.
+- Go **v1.3.0**, C++ **0.67**, QNN **1.0.0**; independent native versions, Go engine board **100/100**.
 
 ### What's new in v1.2.0
 - **Hexagon HTP** via \`nativeqnn\` + sibling **welvet.qnn 1.0.0** (Windows ARM64) — opt-in \`BackendQNN\`, \`SyncToQNN\`, caps-checked mounts.

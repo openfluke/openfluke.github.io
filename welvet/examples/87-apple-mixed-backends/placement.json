@@ -1,0 +1,22 @@
+{
+  "default": "go_cpu",
+  "volumes": {
+    "main": {
+      "sectors": {
+        "0,0,0,0": {
+          "layers": {
+            "4": {"backend": "native_cpu"},
+            "5": {"backend": "native_cpu"},
+            "6": {"backend": "native_cpu"},
+            "7": {"backend": "native_cpu"},
+            "8": {"backend": "native_cpu"},
+            "9": {"backend": "metal"},
+            "10": {"backend": "metal"},
+            "11": {"backend": "metal"},
+            "12": {"backend": "metal"}
+          }
+        }
+      }
+    }
+  }
+}
