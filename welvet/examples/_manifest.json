@@ -37,9 +37,9 @@
   },
   "07-webgpu": {
     "exit_code": 0,
-    "stdout": "webgpu probe goos=darwin goarch=arm64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback FAIL: failed to request adapter\n  adapter default: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"Apple M5\" backend=metal maxSSBO=4294967292 maxBuf=14302248960\n[1.5 2.5] <nil> Apple M5\n",
-    "stderr": "",
-    "combined": "webgpu probe goos=darwin goarch=arm64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback FAIL: failed to request adapter\n  adapter default: name=\"Apple M5\" vendor=\"\" arch=\"\" driver=\"\" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"Apple M5\" backend=metal maxSSBO=4294967292 maxBuf=14302248960\n[1.5 2.5] <nil> Apple M5"
+    "stdout": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter default: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  skip inflated (adapter maxSSBO=134217728 maxBuf=2147483647 < 1GiB/2GiB)\n  try RequestDevice advertised: maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=advertised adapter=\"llvmpipe (LLVM 22.1.8, 256 bits)\" backend=vulkan maxSSBO=134217728 maxBuf=2147483647\n[1.5 2.5] <nil> llvmpipe (LLVM 22.1.8, 256 bits)\n",
+    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
+    "combined": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n\u2026\nRESULT: OK via=advertised adapter=\"llvmpipe (LLVM 22.1.8, 256 bits)\" backend=vulkan maxSSBO=134217728 maxBuf=2147483647\n[1.5 2.5] <nil> llvmpipe (LLVM 22.1.8, 256 bits)\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
   },
   "08-tiling": {
     "exit_code": 0,
@@ -331,9 +331,9 @@
   },
   "50-stub-hardware": {
     "exit_code": 0,
-    "stdout": "{Model:Apple M5 Logical:10 GOMAXPROCS:10}\nOS: darwin | CPU: Apple M5 (10) | RAM: 0.00 GB | GPU: Unknown GPU (Apple Metal/Universal) (0.0 GB)\n",
+    "stdout": "{Model:Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz Logical:12 GOMAXPROCS:12}\nOS: linux | CPU: Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz (12) | RAM: 31.12 GB | GPU: Unknown GPU (0.0 GB)\n",
     "stderr": "",
-    "combined": "{Model:Apple M5 Logical:10 GOMAXPROCS:10}\nOS: darwin | CPU: Apple M5 (10) | RAM: 0.00 GB | GPU: Unknown GPU (Apple Metal/Universal) (0.0 GB)"
+    "combined": "{Model:Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz Logical:12 GOMAXPROCS:12}\nOS: linux | CPU: Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz (12) | RAM: 31.12 GB | GPU: Unknown GPU (0.0 GB)"
   },
   "51-stub-accel": {
     "exit_code": 0,
@@ -415,9 +415,9 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v1.3.0\nscorecard 100/100\n",
+    "stdout": "v1.4.0\nscorecard 100/100\n",
     "stderr": "",
-    "combined": "v1.3.0\nscorecard 100/100"
+    "combined": "v1.4.0\nscorecard 100/100"
   },
   "76-nativecpu": {
     "exit_code": 0,
@@ -457,44 +457,86 @@
   },
   "82-apple-metal": {
     "exit_code": 0,
-    "stdout": "backend=metal version=0.68\ndevice=metal:Apple M5:reg=4294968322:ws=19069665280\ninput=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]\n",
+    "stdout": "SKIP: Apple Metal needs Apple silicon macOS and cgo\n",
     "stderr": "",
-    "combined": "backend=metal version=0.68\ndevice=metal:Apple M5:reg=4294968322:ws=19069665280\ninput=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]"
+    "combined": "SKIP: Apple Metal needs Apple silicon macOS and cgo"
   },
   "83-apple-mamba-dtypes": {
     "exit_code": 0,
-    "stdout": "float64    shape=[1 3 8] checksum=-0.016678239\nfloat32    shape=[1 3 8] checksum=-0.016678239\nfloat16    shape=[1 3 8] checksum=-0.016669162\nbfloat16   shape=[1 3 8] checksum=-0.016553075\nfp8e4m3    shape=[1 3 8] checksum=-0.017004712\nfp8e5m2    shape=[1 3 8] checksum=-0.016270325\nint64      shape=[1 3 8] checksum=-0.016678241\nint32      shape=[1 3 8] checksum=-0.016678239\nint16      shape=[1 3 8] checksum=-0.016677922\nint8       shape=[1 3 8] checksum=-0.016622871\nuint64     shape=[1 3 8] checksum=-0.016678238\nuint32     shape=[1 3 8] checksum=-0.01667824\nuint16     shape=[1 3 8] checksum=-0.01667843\nuint8      shape=[1 3 8] checksum=-0.016727349\nint4       shape=[1 3 8] checksum=-0.01510581\nuint4      shape=[1 3 8] checksum=-0.017548652\nfp4        shape=[1 3 8] checksum=0\nint2       shape=[1 3 8] checksum=-0.032299955\nuint2      shape=[1 3 8] checksum=-0.015402747\nternary    shape=[1 3 8] checksum=-0.02989793\nbinary     shape=[1 3 8] checksum=-0.0070436111\nint        shape=[1 3 8] checksum=-0.016678241\nuint       shape=[1 3 8] checksum=-0.016678238\nuintptr    shape=[1 3 8] checksum=-0.016678238\ncomplex64  shape=[1 3 8] checksum=-0.016678239\ncomplex128 shape=[1 3 8] checksum=-0.016678239\nnf4        shape=[1 3 8] checksum=-0.016108489\nfp6        shape=[1 3 8] checksum=-0.01633804\nint6       shape=[1 3 8] checksum=-0.01633804\nuint6      shape=[1 3 8] checksum=-0.016878628\nint5       shape=[1 3 8] checksum=-0.016140702\nuint5      shape=[1 3 8] checksum=-0.017025853\nint3       shape=[1 3 8] checksum=-0.018383351\nuint3      shape=[1 3 8] checksum=-0.017474993\nMamba dtypes=34; activations=float32; parameters=FormatNone native dtype\n",
+    "stdout": "SKIP: Apple Metal needs Apple silicon macOS and cgo\n",
     "stderr": "",
-    "combined": "float64    shape=[1 3 8] checksum=-0.016678239\nfloat32    shape=[1 3 8] checksum=-0.016678239\nfloat16    shape=[1 3 8] checksum=-0.016669162\nbfloat16   shape=[1 3 8] checksum=-0.016553075\nfp8e4m3    shape=[1 3 8] checksum=-0.017004712\nfp8e5m2    shape=[1 3 8] checksum=-0.016270325\nint64      shape=[1 3 8] checksum=-0.016678241\nint32      shape=[1 3 8] checksum=-0.016678239\nint16      shape=[1 3 8] checksum=-0.016677922\nint8       shape=[1 3 8] checksum=-0.016622871\nuint64     shape=[1 3 8] checksum=-0.016678238\nuint32     shape=[1 3 8] checksum=-0.01667824\nuint16     shape=[1 3 8] checksum=-0.01667843\nuint8      shape=[1 3 8] checksum=-0.016727349\nint4       shape=[1 3 8] checksum=-0.01510581\nuint4      shape=[1 3 8] checksum=-0.017548652\nfp4        shape=[1 3 8] checksum=0\nint2       shape=[1 3 8] checksum=-0.032299955\nuint2      shape=[1 3 8] checksum=-0.015402747\nternary    shape=[1 3 8] checksum=-0.02989793\nbinary     shape=[1 3 8] checksum=-0.0070436111\nint        shape=[1 3 8] checksum=-0.016678241\nuint       shape=[1 3 8] checksum=-0.016678238\nuintptr    shape=[1 3 8] checksum=-0.016678238\ncomplex64  shape=[1 3 8] checksum=-0.016678239\ncomplex128 shape=[1 3 8] checksum=-0.016678239\nnf4        shape=[1 3 8] checksum=-0.016108489\nfp6        shape=[1 3 8] checksum=-0.01633804\nint6       shape=[1 3 8] checksum=-0.01633804\nuint6      shape=[1 3 8] checksum=-0.016878628\nint5       shape=[1 3 8] checksum=-0.016140702\nuint5      shape=[1 3 8] checksum=-0.017025853\nint3       shape=[1 3 8] checksum=-0.018383351\nuint3      shape=[1 3 8] checksum=-0.017474993\nMamba dtypes=34; activations=float32; parameters=FormatNone native dtype"
+    "combined": "SKIP: Apple Metal needs Apple silicon macOS and cgo"
   },
   "84-apple-training": {
     "exit_code": 0,
-    "stdout": "mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\n",
+    "stdout": "SKIP: Apple Metal needs Apple silicon macOS and cgo\n",
     "stderr": "",
-    "combined": "mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go"
+    "combined": "SKIP: Apple Metal needs Apple silicon macOS and cgo"
   },
   "85-apple-save-weights": {
     "exit_code": 0,
-    "stdout": "Go parameters unchanged before SyncToGo\nweights returned to Go; saved=/Users/openfluke/gs/openfluke.github.io/welvet/examples/.cache/tmp/welvet-apple-entity-3434308173/trained.entity; reload=exact\n",
+    "stdout": "SKIP: Apple Metal needs Apple silicon macOS and cgo\n",
     "stderr": "",
-    "combined": "Go parameters unchanged before SyncToGo\nweights returned to Go; saved=/Users/openfluke/gs/openfluke.github.io/welvet/examples/.cache/tmp/welvet-apple-entity-3434308173/trained.entity; reload=exact"
+    "combined": "SKIP: Apple Metal needs Apple silicon macOS and cgo"
   },
   "86-apple-json-routing": {
     "exit_code": 0,
-    "stdout": "layer=0 backend=cpu-tiled\nlayer=1 backend=metal\nlayer=2 backend=metal\nloss=0.055711714 metal routing={Mounts:2 Forwards:4 Backwards:2 Updates:2 TrainingSteps:0}\nRouted updates are already in Go stores; Close releases cached mounts.\n",
+    "stdout": "SKIP: Apple Metal needs Apple silicon macOS and cgo\n",
     "stderr": "",
-    "combined": "layer=0 backend=cpu-tiled\nlayer=1 backend=metal\nlayer=2 backend=metal\nloss=0.055711714 metal routing={Mounts:2 Forwards:4 Backwards:2 Updates:2 TrainingSteps:0}\nRouted updates are already in Go stores; Close releases cached mounts."
+    "combined": "SKIP: Apple Metal needs Apple silicon macOS and cgo"
   },
   "87-apple-mixed-backends": {
     "exit_code": 0,
-    "stdout": "Go layers 0-3 -> C++ layers 4-8 -> Metal layers 9-12\nloss=0.0043765833 cpp calls=75 metal routing={Mounts:4 Forwards:40 Backwards:20 Updates:20 TrainingSteps:0}\nFloat32 activations travel forward; gradients travel back; routed Metal weights return automatically to Go.\n",
+    "stdout": "SKIP: mixed Apple routing needs Apple silicon macOS and cgo\n",
     "stderr": "",
-    "combined": "Go layers 0-3 -> C++ layers 4-8 -> Metal layers 9-12\nloss=0.0043765833 cpp calls=75 metal routing={Mounts:4 Forwards:40 Backwards:20 Updates:20 TrainingSteps:0}\nFloat32 activations travel forward; gradients travel back; routed Metal weights return automatically to Go."
+    "combined": "SKIP: mixed Apple routing needs Apple silicon macOS and cgo"
   },
   "88-apple-mamba-results": {
     "exit_code": 0,
     "stdout": "Captured Mamba forward excerpt, supplied 2026-10-27 (not a live benchmark)\ndtype             Go ms       C++ ms     Metal ms    Metal/Go x    Metal/C++ x\nfloat64         89.3145     236.2417      28.9586         3.084          8.158\nfloat32         69.0185     225.8129      29.0104         2.379          7.784\nfloat16        190.5450    1155.9022      28.9468         6.583         39.932\nbfloat16       149.3513    1049.1798      29.0033         5.149         36.174\nfp8e4m3        265.8816    1519.8743      29.1590         9.118         52.124\nGo/Metal exact bits and within-tolerance agreement: 100%/100% across all 12 supplied forward rows.\nFull excerpt and metric definitions: ../apple_stress_test/README.md\nRun your own 34-dtype / 29-mode matrix: cd ../apple_stress_test && ./run.sh\nSmall verification: ./run.sh -profile smoke -samples 1 -iters 1 -steps 8\n",
     "stderr": "",
     "combined": "Captured Mamba forward excerpt, supplied 2026-10-27 (not a live benchmark)\ndtype             Go ms       C++ ms     Metal ms    Metal/Go x    Metal/C++ x\nfloat64         89.3145     236.2417      28.9586         3.084          8.158\nfloat32         69.0185     225.8129      29.0104         2.379          7.784\nfloat16        190.5450    1155.9022      28.9468         6.583         39.932\nbfloat16       149.3513    1049.1798      29.0033         5.149         36.174\nfp8e4m3        265.8816    1519.8743      29.1590         9.118         52.124\nGo/Metal exact bits and within-tolerance agreement: 100%/100% across all 12 supplied forward rows.\nFull excerpt and metric definitions: ../apple_stress_test/README.md\nRun your own 34-dtype / 29-mode matrix: cd ../apple_stress_test && ./run.sh\nSmall verification: ./run.sh -profile smoke -samples 1 -iters 1 -steps 8"
+  },
+  "89-nvidia-cuda": {
+    "exit_code": 0,
+    "stdout": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
+    "stderr": "",
+    "combined": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
+  },
+  "90-nvidia-mamba-dtypes": {
+    "exit_code": 0,
+    "stdout": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
+    "stderr": "",
+    "combined": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
+  },
+  "91-nvidia-training": {
+    "exit_code": 0,
+    "stdout": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
+    "stderr": "",
+    "combined": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
+  },
+  "92-nvidia-save-weights": {
+    "exit_code": 0,
+    "stdout": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
+    "stderr": "",
+    "combined": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
+  },
+  "93-nvidia-json-routing": {
+    "exit_code": 0,
+    "stdout": "layer=0 backend=cpu-tiled\nlayer=1 backend=cuda\nlayer=2 backend=cuda\nSKIP: CUDA train unavailable (stack fwd child 1: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
+    "stderr": "",
+    "combined": "layer=0 backend=cpu-tiled\nlayer=1 backend=cuda\nlayer=2 backend=cuda\nSKIP: CUDA train unavailable (stack fwd child 1: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
+  },
+  "94-nvidia-mixed-backends": {
+    "exit_code": 0,
+    "stdout": "SKIP: mixed train unavailable (stack fwd child 9: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
+    "stderr": "",
+    "combined": "SKIP: mixed train unavailable (stack fwd child 9: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
+  },
+  "95-nvidia-cuda-results": {
+    "exit_code": 0,
+    "stdout": "NVIDIA CUDA results pointers (not a live benchmark)\n\nEngine pin: welvet.cuda 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativecuda (Welvet v1.4.0)\nUsage tour: 89 mount \u00b7 90 Mamba dtypes \u00b7 91 train modes \u00b7 92 SyncToGo/ENTITY \u00b7 93 JSON \u00b7 94 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_cuda -count=1 -timeout 180m\n  cd ../../welvet.cuda/examples/cuda_smoke && go run .\n\nInstall shared library into Go:\n  cd ../../welvet.cuda && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_nvidia.sh\n",
+    "stderr": "",
+    "combined": "NVIDIA CUDA results pointers (not a live benchmark)\n\nEngine pin: welvet.cuda 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativecuda (Welvet v1.4.0)\nUsage tour: 89 mount \u00b7 90 Mamba dtypes \u00b7 91 train modes \u00b7 92 SyncToGo/ENTITY \u00b7 93 JSON \u00b7 94 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_cuda -count=1 -timeout 180m\n  cd ../../welvet.cuda/examples/cuda_smoke && go run .\n\nInstall shared library into Go:\n  cd ../../welvet.cuda && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_nvidia.sh"
   }
 }

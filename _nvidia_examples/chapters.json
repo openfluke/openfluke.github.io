@@ -1,0 +1,93 @@
+[
+  {
+    "slug": "89-nvidia-cuda",
+    "num": "89",
+    "title": "NVIDIA CUDA — mount and forward",
+    "part": "XIII · NVIDIA acceleration (welvet.cuda)",
+    "pkg": "github.com/openfluke/welvet/nativecuda",
+    "status": "ok",
+    "status_label": "linux/windows amd64",
+    "why": "Run a Go layer on NVIDIA GPU with an explicit lifetime.",
+    "what": "Mount an identity Dense layer, inspect the CUDA version and device identity, and forward a Float32 tensor.",
+    "body_extra": "<h2>Session ownership</h2><p>Create a session with <code>nativecuda.Mount</code>, call <code>Forward</code> repeatedly and close it when finished. Mount accepts supported layers, Stack, Parallel and Grid layouts. The library is independent of welvet.cpp and welvet.metal.</p><h2>Requirements and backend boundaries</h2>\n<p>Go Welvet <strong>v1.4.0</strong> uses the independent <strong>welvet.cuda 0.79</strong> library (mounted model ABI 1). Install from its checkout:</p>\n<pre><code>cd ../welvet.cuda\n./scripts/linux_install_go.sh\n# Windows amd64 (MSVC + CUDA Toolkit):\n./scripts/windows_install_go.ps1</code></pre>\n<p>Execution requires <strong>Linux x86_64 or Windows amd64</strong>, Go with cgo, and an NVIDIA driver/runtime. Set <code>WELVET_CUDA_LIBRARY</code> to override library discovery. On Windows, ensure the CUDA runtime (<code>cudart</code>) resolves via <code>PATH</code>. Ordinary Go CPU use does not require an NVIDIA GPU. Unsupported hosts print SKIP; missing libraries or no GPU on a supported host also soft-SKIP in these book examples.</p>\n<p>Go schedules work and manages memory; numerical CUDA forward, backward and weight updates execute device kernels. Activations are Float32; FormatNone parameter storage follows the CUDA dtype matrix. Small examples demonstrate APIs; GPU launch costs can outweigh useful work at small shapes.</p>\n<p><code>cpu-tiled</code> / <code>go_cpu</code> means Go CPU; <code>native_cpu</code> means welvet.cpp; <code>cuda</code> means the independent NVIDIA GPU library. Examples 89–93 can use <code>go run -tags welvet_cuda .</code> to exclude C++ linkage. Chapter 94 requires the normal cgo build for both native engines. JSON routing (<a href=\"93-nvidia-json-routing.html\">§93</a>–<a href=\"94-nvidia-mixed-backends.html\">§94</a>) is <strong>Linux amd64</strong> today; explicit Mount works on Windows amd64 as well.</p>",
+    "run": "cd welvet/examples/89-nvidia-cuda && source ../env.sh && go run ."
+  },
+  {
+    "slug": "90-nvidia-mamba-dtypes",
+    "num": "90",
+    "title": "NVIDIA CUDA — Mamba parameter dtypes",
+    "part": "XIII · NVIDIA acceleration (welvet.cuda)",
+    "pkg": "github.com/openfluke/welvet/nativecuda",
+    "status": "ok",
+    "status_label": "linux/windows amd64",
+    "why": "Exercise native storage formats without changing the activation interface.",
+    "what": "Run a seeded Mamba forward pass across all 34 native parameter dtypes, or select one with -dtype.",
+    "body_extra": "<h2>Storage versus arithmetic</h2><p><code>-dtype all</code> sweeps native parameter representations. The CUDA execution interface uses Float32 activations. Quantized FormatNone dtype storage and packed quantization formats are different coverage claims.</p><pre><code>go run . -dtype all\ngo run . -dtype float16</code></pre><p>Requirements and library installation (Linux + Windows): <a href=\"89-nvidia-cuda.html\">chapter 89</a>.</p>",
+    "run": "cd welvet/examples/90-nvidia-mamba-dtypes && source ../env.sh && go run ."
+  },
+  {
+    "slug": "91-nvidia-training",
+    "num": "91",
+    "title": "NVIDIA CUDA — training modes",
+    "part": "XIII · NVIDIA acceleration (welvet.cuda)",
+    "pkg": "github.com/openfluke/welvet/nativecuda",
+    "status": "ok",
+    "status_label": "linux/windows amd64",
+    "why": "Keep repeated training updates in the mounted CUDA session.",
+    "what": "Train two Dense layers using one of the 29 numbered modes, with persistent Step Line state and real Grid layouts for Mesh modes.",
+    "body_extra": "<h2>Training families</h2><p><code>-mode all</code> exercises all 29 modes. Step modes retain their Line session across calls. Mesh modes use a three-cell Grid with disabled ingress and two active layers, advancing four ticks per call. Bundled <strong>welvet.cuda 0.79</strong> covers train modes through StepTweenSplitSparse. These small demonstrations validate usage; they are not performance measurements.</p><pre><code>go run . -mode NormalBP -steps 8\ngo run . -mode all -steps 8</code></pre><p>Explicit mounted sessions keep updated weights native until <code>SyncToGo()</code>. Close discards any updates not returned to Go. See chapter 92 before saving.</p><p>Requirements: <a href=\"89-nvidia-cuda.html\">chapter 89</a>.</p>",
+    "run": "cd welvet/examples/91-nvidia-training && source ../env.sh && go run ."
+  },
+  {
+    "slug": "92-nvidia-save-weights",
+    "num": "92",
+    "title": "NVIDIA CUDA — weight return and ENTITY save",
+    "part": "XIII · NVIDIA acceleration (welvet.cuda)",
+    "pkg": "github.com/openfluke/welvet/nativecuda",
+    "status": "ok",
+    "status_label": "linux/windows amd64",
+    "why": "Return trained weights to Go before executing or saving the Go model.",
+    "what": "Train natively, explicitly SyncToGo, save an ENTITY, reload it and compare the native parameter snapshots.",
+    "body_extra": "<h2>Weight handoff</h2><pre><code>session, err := nativecuda.Mount(layer)\n// Check err; defer session.Close().\n// Repeat session.TrainMSE(...) as needed.\nerr = session.SyncToGo()\n// Check err, then save through Go ENTITY IO.</code></pre><p>Mount copies model state into a native session. The original Go parameters stay unchanged while that explicit session trains. <code>SyncToGo()</code> returns parameter bytes, scales and Float64 biases for Go saving. This saves model parameters, not a portable checkpoint of live Line, proxy, KV or rule state.</p><p>Use <code>-out /path/model.entity</code> to choose the output location. The default uses a temporary directory and prints it.</p><p>Requirements: <a href=\"89-nvidia-cuda.html\">chapter 89</a>.</p>",
+    "run": "cd welvet/examples/92-nvidia-save-weights && source ../env.sh && go run ."
+  },
+  {
+    "slug": "93-nvidia-json-routing",
+    "num": "93",
+    "title": "NVIDIA CUDA — JSON backend placement",
+    "part": "XIII · NVIDIA acceleration (welvet.cuda)",
+    "pkg": "github.com/openfluke/welvet/nativecuda",
+    "status": "ok",
+    "status_label": "linux amd64 routing",
+    "why": "Choose which layers run on NVIDIA GPU while retaining ordinary Go training entry points.",
+    "what": "Enable the CUDA router and apply JSON placement to a Stack: layer 0 on Go CPU, layers 1–2 on CUDA.",
+    "body_extra": "<h2>Explicit placement</h2><p>The example embeds <a href=\"../examples/93-nvidia-json-routing/placement.json\">placement.json</a>; use <code>-config</code> to load another file. <code>nativecuda.EnableRouting()</code> installs the router for its owner lifetime (<strong>Linux amd64</strong>). <code>placement.Stack</code> applies immediate-child numeric layer keys.</p><p>Routed execution maintains native sessions and returns updated parameters to Go automatically. Changing source weights remounts a session and resets transient native state. Automatic hardware/performance planning remains separate from explicit placement.</p><p>Windows amd64 supports explicit <code>Mount</code> (chapters 89–92); automatic JSON routing is Linux-only in this release.</p><p>Requirements: <a href=\"89-nvidia-cuda.html\">chapter 89</a>.</p>",
+    "run": "cd welvet/examples/93-nvidia-json-routing && source ../env.sh && go run ."
+  },
+  {
+    "slug": "94-nvidia-mixed-backends",
+    "num": "94",
+    "title": "NVIDIA CUDA — mixed Go/C++/CUDA",
+    "part": "XIII · NVIDIA acceleration (welvet.cuda)",
+    "pkg": "github.com/openfluke/welvet/nativecuda",
+    "status": "ok",
+    "status_label": "linux amd64 routing",
+    "why": "Split a single model between the independent native engines and Go.",
+    "what": "Run a 13-layer Dense Stack: Go layers 0–3, C++ layers 4–8 and CUDA layers 9–12; verify actual native calls during training.",
+    "body_extra": "<h2>Three engines in one Go model</h2><pre><code>Go CPU [0–3] → welvet.cpp [4–8] → welvet.cuda [9–12] → Go result</code></pre><p>The embedded <a href=\"../examples/94-nvidia-mixed-backends/placement.json\">placement.json</a> uses <code>go_cpu</code>, <code>native_cpu</code> and <code>cuda</code>. Install both native libraries and use the normal cgo build (do <strong>not</strong> pass <code>-tags welvet_cuda</code>). The example reports successful C++ C ABI calls and CUDA routing counters after five NormalBP updates.</p><p>Activations and parameters cross backend boundaries. Live backend-specific Line, proxy, KV or rule state is not migrated between engines.</p><p>Requirements: Linux amd64 + <a href=\"89-nvidia-cuda.html\">chapter 89</a>.</p>",
+    "run": "cd welvet/examples/94-nvidia-mixed-backends && source ../env.sh && go run ."
+  },
+  {
+    "slug": "95-nvidia-cuda-results",
+    "num": "95",
+    "title": "NVIDIA CUDA — results and suite pointers",
+    "part": "XIII · NVIDIA acceleration (welvet.cuda)",
+    "pkg": "",
+    "status": "ok",
+    "status_label": "host-only pointers",
+    "why": "Find live CUDA parity/timing matrices after the small usage chapters.",
+    "what": "Print Go v1.4.0 / welvet.cuda 0.79 pins and commands for w2a go_v_cuda and cuda_smoke. No GPU required.",
+    "body_extra": "<h2>Where live results live</h2><p>This chapter is host-only. It does not claim timings from loading the page. Run the sibling matrices on a machine with an NVIDIA GPU:</p><pre><code>cd ../../w2a && go test ./tests/go_v_cuda -count=1 -timeout 180m\ncd ../../welvet.cuda/examples/cuda_smoke && go run .\ncd welvet/examples && ./run_nvidia.sh</code></pre><p>Engine pin: <strong>welvet.cuda 0.79</strong>, model ABI <strong>1</strong>, Go binding <code>nativecuda</code> (Welvet <strong>v1.4.0</strong>). Platforms: Linux x86_64 + Windows amd64 for Mount; Linux amd64 for EnableRouting.</p><p>Requirements overview: <a href=\"89-nvidia-cuda.html\">chapter 89</a>.</p>",
+    "run": "cd welvet/examples/95-nvidia-cuda-results && source ../env.sh && go run ."
+  }
+]

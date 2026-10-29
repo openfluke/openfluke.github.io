@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.3.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.4.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -116,6 +116,15 @@
 <a href="87-apple-mixed-backends.html">87. Apple Metal</a>
 <a href="88-apple-mamba-results.html">88. Apple Metal</a>
 </div>
+<div class="nav-group"><h2>XIII · NVIDIA acceleration (welvet.cuda)</h2>
+<a href="89-nvidia-cuda.html">89. NVIDIA CUDA</a>
+<a href="90-nvidia-mamba-dtypes.html">90. NVIDIA CUDA</a>
+<a href="91-nvidia-training.html">91. NVIDIA CUDA</a>
+<a href="92-nvidia-save-weights.html">92. NVIDIA CUDA</a>
+<a href="93-nvidia-json-routing.html">93. NVIDIA CUDA</a>
+<a href="94-nvidia-mixed-backends.html">94. NVIDIA CUDA</a>
+<a href="95-nvidia-cuda-results.html">95. NVIDIA CUDA</a>
+</div>
 </aside>
 <div class="main">
 <div class="topbar">
@@ -127,12 +136,12 @@
 
 <p class="chapter-kicker">Chapter 64</p>
 <h1>Scorecard → v1.0 / minors</h1>
-<p><span class="status ok">v1.3.0</span></p>
+<p><span class="status ok">v1.4.0</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
 <p>Version is earned from a weighted board, not marketing. v1.0 is 100/100 on the engine board. Minor/patch tags (v1.1.0, v1.1.1, …) pack features without a new board. Apps, stubs, and NPU sit off-board.</p>
 <h2>What it is</h2>
-<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>100/100</strong>; this book tags <strong>v1.3.0</strong>. Training credit is §9 on the board (8 pts), not an afterthought.</p>
+<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>100/100</strong>; this book tags <strong>v1.4.0</strong>. Training credit is §9 on the board (8 pts), not an afterthought.</p>
 
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
 <tr><td>1</td><td>Foundation</td><td>15</td><td>15</td></tr>
@@ -165,15 +174,16 @@ BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed p
 <li><strong>v1.1.7</strong> — Full NativeCPU TrainMode C ABI (stack/parallel/grid/line) +
 <code>SyncWeightsFromNative</code> (<a href="76-nativecpu.html">§76</a> ·
 <a href="77-native-layers.html">§77</a> · <a href="78-native-trainmodes.html">§78</a>)</li>
-<li><strong>v1.3.0</strong> — Apple GPU via <code>nativemetal</code> + independent welvet.metal <strong>0.68</strong> (ABI 1). Explicit mount/train/SyncToGo and JSON Go/C++/Metal routing. <a href="82-apple-metal.html">§82–88</a>; Go engine remains 100/100, native siblings retain independent versions.</li>
+<li><strong>v1.4.0</strong> — NVIDIA GPU via <code>nativecuda</code> + independent welvet.cuda <strong>0.79</strong> (ABI 1). Explicit mount/train/SyncToGo on <strong>Linux x86_64 + Windows amd64</strong>; JSON Go/C++/CUDA routing on Linux amd64. <a href="89-nvidia-cuda.html">§89–95</a>; Go engine remains 100/100.</li>
+<li><strong>v1.3.0</strong> — Apple GPU via <code>nativemetal</code> + independent welvet.metal (ABI 1). Explicit mount/train/SyncToGo and JSON Go/C++/Metal routing. <a href="82-apple-metal.html">§82–88</a>.</li>
 <li><strong>v1.2.0</strong> — Qualcomm Hexagon HTP via <code>nativeqnn</code> + welvet.qnn <strong>1.0.0</strong>
 (opt-in <code>BackendQNN</code>, layer SyncToQNN, large-shape matrix in w2a)
 (<a href="79-qnn.html">§79</a> · <a href="80-qnn-layers.html">§80</a> · <a href="81-qnn-results.html">§81</a>)</li>
 </ul>
 <div class="callout warn"><strong>Off this board</strong>
-<code>apps/octo</code>, <code>stub/*</code>, and vendor NPU scorecard credit (HTP ships as sibling
-<code>welvet.qnn</code> — see <a href="79-qnn.html">§79</a>). CUDA kernels still gap in <code>welvet.cpp</code>.
-FastProxy can match/beat StepBP <em>Acc</em> on sine/copy toys; Sparse wins Lucy <em>Score</em> via Avail.
+<code>apps/octo</code>, <code>stub/*</code>, and vendor NPU/GPU scorecard credit (HTP ships as sibling
+<code>welvet.qnn</code> — see <a href="79-qnn.html">§79</a>; CUDA as <code>welvet.cuda</code> — see
+<a href="89-nvidia-cuda.html">§89</a>). FastProxy can match/beat StepBP <em>Acc</em> on sine/copy toys; Sparse wins Lucy <em>Score</em> via Avail.
 Do not write “Sparse is better backprop.” Engine v1 ≠ “beats PyTorch.”</div>
 
 
@@ -187,11 +197,11 @@ import "fmt"
 
 func main() {
 	earned := 100.0
-	fmt.Println("v1.3.0")
+	fmt.Println("v1.4.0")
 	fmt.Printf("scorecard %.0f/100\n", earned)
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>v1.3.0
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>v1.4.0
 scorecard 100/100</code></pre>
 
 </section>

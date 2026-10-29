@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.3.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.4.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -116,6 +116,15 @@
 <a href="87-apple-mixed-backends.html">87. Apple Metal</a>
 <a href="88-apple-mamba-results.html">88. Apple Metal</a>
 </div>
+<div class="nav-group"><h2>XIII · NVIDIA acceleration (welvet.cuda)</h2>
+<a href="89-nvidia-cuda.html">89. NVIDIA CUDA</a>
+<a href="90-nvidia-mamba-dtypes.html">90. NVIDIA CUDA</a>
+<a href="91-nvidia-training.html">91. NVIDIA CUDA</a>
+<a href="92-nvidia-save-weights.html">92. NVIDIA CUDA</a>
+<a href="93-nvidia-json-routing.html">93. NVIDIA CUDA</a>
+<a href="94-nvidia-mixed-backends.html">94. NVIDIA CUDA</a>
+<a href="95-nvidia-cuda-results.html">95. NVIDIA CUDA</a>
+</div>
 </aside>
 <div class="main">
 <div class="topbar">
@@ -217,41 +226,7 @@ func forward(dt core.DType) error {
 	return nil
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>float64    shape=[1 3 8] checksum=-0.016678239
-float32    shape=[1 3 8] checksum=-0.016678239
-float16    shape=[1 3 8] checksum=-0.016669162
-bfloat16   shape=[1 3 8] checksum=-0.016553075
-fp8e4m3    shape=[1 3 8] checksum=-0.017004712
-fp8e5m2    shape=[1 3 8] checksum=-0.016270325
-int64      shape=[1 3 8] checksum=-0.016678241
-int32      shape=[1 3 8] checksum=-0.016678239
-int16      shape=[1 3 8] checksum=-0.016677922
-int8       shape=[1 3 8] checksum=-0.016622871
-uint64     shape=[1 3 8] checksum=-0.016678238
-uint32     shape=[1 3 8] checksum=-0.01667824
-uint16     shape=[1 3 8] checksum=-0.01667843
-uint8      shape=[1 3 8] checksum=-0.016727349
-int4       shape=[1 3 8] checksum=-0.01510581
-uint4      shape=[1 3 8] checksum=-0.017548652
-fp4        shape=[1 3 8] checksum=0
-int2       shape=[1 3 8] checksum=-0.032299955
-uint2      shape=[1 3 8] checksum=-0.015402747
-ternary    shape=[1 3 8] checksum=-0.02989793
-binary     shape=[1 3 8] checksum=-0.0070436111
-int        shape=[1 3 8] checksum=-0.016678241
-uint       shape=[1 3 8] checksum=-0.016678238
-uintptr    shape=[1 3 8] checksum=-0.016678238
-complex64  shape=[1 3 8] checksum=-0.016678239
-complex128 shape=[1 3 8] checksum=-0.016678239
-nf4        shape=[1 3 8] checksum=-0.016108489
-fp6        shape=[1 3 8] checksum=-0.01633804
-int6       shape=[1 3 8] checksum=-0.01633804
-uint6      shape=[1 3 8] checksum=-0.016878628
-int5       shape=[1 3 8] checksum=-0.016140702
-uint5      shape=[1 3 8] checksum=-0.017025853
-int3       shape=[1 3 8] checksum=-0.018383351
-uint3      shape=[1 3 8] checksum=-0.017474993
-Mamba dtypes=34; activations=float32; parameters=FormatNone native dtype</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: Apple Metal needs Apple silicon macOS and cgo</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/83-apple-mamba-dtypes &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

@@ -496,5 +496,47 @@
     "num": "88",
     "title": "Apple Metal \u2014 Mamba results and stress runner",
     "has_main": true
+  },
+  {
+    "slug": "89-nvidia-cuda",
+    "num": "89",
+    "title": "NVIDIA CUDA \u2014 mount and forward",
+    "has_main": true
+  },
+  {
+    "slug": "90-nvidia-mamba-dtypes",
+    "num": "90",
+    "title": "NVIDIA CUDA \u2014 Mamba parameter dtypes",
+    "has_main": true
+  },
+  {
+    "slug": "91-nvidia-training",
+    "num": "91",
+    "title": "NVIDIA CUDA \u2014 training modes",
+    "has_main": true
+  },
+  {
+    "slug": "92-nvidia-save-weights",
+    "num": "92",
+    "title": "NVIDIA CUDA \u2014 weight return and ENTITY save",
+    "has_main": true
+  },
+  {
+    "slug": "93-nvidia-json-routing",
+    "num": "93",
+    "title": "NVIDIA CUDA \u2014 JSON backend placement",
+    "has_main": true
+  },
+  {
+    "slug": "94-nvidia-mixed-backends",
+    "num": "94",
+    "title": "NVIDIA CUDA \u2014 mixed Go/C++/CUDA",
+    "has_main": true
+  },
+  {
+    "slug": "95-nvidia-cuda-results",
+    "num": "95",
+    "title": "NVIDIA CUDA \u2014 results and suite pointers",
+    "has_main": true
   }
 ]

@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.3.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.4.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -116,6 +116,15 @@
 <a href="87-apple-mixed-backends.html">87. Apple Metal</a>
 <a href="88-apple-mamba-results.html">88. Apple Metal</a>
 </div>
+<div class="nav-group"><h2>XIII · NVIDIA acceleration (welvet.cuda)</h2>
+<a href="89-nvidia-cuda.html">89. NVIDIA CUDA</a>
+<a href="90-nvidia-mamba-dtypes.html">90. NVIDIA CUDA</a>
+<a href="91-nvidia-training.html">91. NVIDIA CUDA</a>
+<a href="92-nvidia-save-weights.html">92. NVIDIA CUDA</a>
+<a href="93-nvidia-json-routing.html">93. NVIDIA CUDA</a>
+<a href="94-nvidia-mixed-backends.html">94. NVIDIA CUDA</a>
+<a href="95-nvidia-cuda-results.html">95. NVIDIA CUDA</a>
+</div>
 </aside>
 <div class="main">
 <div class="topbar">
@@ -189,9 +198,7 @@ func run() error {
 	return nil
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>backend=metal version=0.68
-device=metal:Apple M5:reg=4294968322:ws=19069665280
-input=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: Apple Metal needs Apple silicon macOS and cgo</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/82-apple-metal &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.3.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.4.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -116,6 +116,15 @@
 <a href="87-apple-mixed-backends.html">87. Apple Metal</a>
 <a href="88-apple-mamba-results.html">88. Apple Metal</a>
 </div>
+<div class="nav-group"><h2>XIII · NVIDIA acceleration (welvet.cuda)</h2>
+<a href="89-nvidia-cuda.html">89. NVIDIA CUDA</a>
+<a href="90-nvidia-mamba-dtypes.html">90. NVIDIA CUDA</a>
+<a href="91-nvidia-training.html">91. NVIDIA CUDA</a>
+<a href="92-nvidia-save-weights.html">92. NVIDIA CUDA</a>
+<a href="93-nvidia-json-routing.html">93. NVIDIA CUDA</a>
+<a href="94-nvidia-mixed-backends.html">94. NVIDIA CUDA</a>
+<a href="95-nvidia-cuda-results.html">95. NVIDIA CUDA</a>
+</div>
 </aside>
 <div class="main">
 <div class="topbar">
@@ -153,8 +162,8 @@ func main() {
 	fmt.Println(hardware.Description())
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>{Model:Apple M5 Logical:10 GOMAXPROCS:10}
-OS: darwin | CPU: Apple M5 (10) | RAM: 0.00 GB | GPU: Unknown GPU (Apple Metal/Universal) (0.0 GB)</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>{Model:Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz Logical:12 GOMAXPROCS:12}
+OS: linux | CPU: Intel(R) Core(TM) i5-10400 CPU @ 2.90GHz (12) | RAM: 31.12 GB | GPU: Unknown GPU (0.0 GB)</code></pre>
 
 </section>
 

@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.3.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.4.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -116,6 +116,15 @@
 <a href="87-apple-mixed-backends.html">87. Apple Metal</a>
 <a href="88-apple-mamba-results.html">88. Apple Metal</a>
 </div>
+<div class="nav-group"><h2>XIII · NVIDIA acceleration (welvet.cuda)</h2>
+<a href="89-nvidia-cuda.html">89. NVIDIA CUDA</a>
+<a href="90-nvidia-mamba-dtypes.html">90. NVIDIA CUDA</a>
+<a href="91-nvidia-training.html">91. NVIDIA CUDA</a>
+<a href="92-nvidia-save-weights.html">92. NVIDIA CUDA</a>
+<a href="93-nvidia-json-routing.html">93. NVIDIA CUDA</a>
+<a href="94-nvidia-mixed-backends.html">94. NVIDIA CUDA</a>
+<a href="95-nvidia-cuda-results.html">95. NVIDIA CUDA</a>
+</div>
 </aside>
 <div class="main">
 <div class="topbar">
@@ -161,15 +170,46 @@ func main() {
 	fmt.Println(y, err, webgpu.AdapterName())
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>webgpu probe goos=darwin goarch=arm64 WELVET_WGPU_BACKEND=""
-  adapter high-perf: name="Apple M5" vendor="" arch="" driver="" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=""
+  adapter high-perf: name="llvmpipe (LLVM 22.1.8, 256 bits)" vendor="llvmpipe" arch="" driver="Mesa 26.2.5 (LLVM 22.1.8)" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
   → selected high-perf
-  adapter low-power: name="Apple M5" vendor="" arch="" driver="" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-  adapter force-fallback FAIL: failed to request adapter
-  adapter default: name="Apple M5" vendor="" arch="" driver="" backend=metal type=integrated-gpu | maxBuf=14302248960 maxSSBO=4294967292 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=31 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-RESULT: OK via=inflated adapter="Apple M5" backend=metal maxSSBO=4294967292 maxBuf=14302248960
-[1.5 2.5] &lt;nil&gt; Apple M5</code></pre>
+  adapter low-power: name="llvmpipe (LLVM 22.1.8, 256 bits)" vendor="llvmpipe" arch="" driver="Mesa 26.2.5 (LLVM 22.1.8)" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
+  adapter force-fallback: name="llvmpipe (LLVM 22.1.8, 256 bits)" vendor="llvmpipe" arch="" driver="Mesa 26.2.5 (LLVM 22.1.8)" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
+…
+RESULT: OK via=advertised adapter="llvmpipe (LLVM 22.1.8, 256 bits)" backend=vulkan maxSSBO=134217728 maxBuf=2147483647
+[1.5 2.5] &lt;nil&gt; llvmpipe (LLVM 22.1.8, 256 bits)
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified</code></pre>
 
 </section>
 
