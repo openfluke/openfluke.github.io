@@ -268,7 +268,7 @@ func cudaPlatformOK() bool {
 	return runtime.GOARCH == "amd64" &amp;&amp; (runtime.GOOS == "linux" || runtime.GOOS == "windows")
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/91-nvidia-training &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

@@ -207,7 +207,9 @@ func cudaPlatformOK() bool {
 	return runtime.GOARCH == "amd64" &amp;&amp; (runtime.GOOS == "linux" || runtime.GOOS == "windows")
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>backend=cuda version=0.79
+device=cuda:NVIDIA GeForce GTX 1650 SUPER:idx=0:sm=7.5:mem=3902799872
+input=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/89-nvidia-cuda &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

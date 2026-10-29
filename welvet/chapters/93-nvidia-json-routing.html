@@ -238,7 +238,8 @@ func run() error {
 <p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>layer=0 backend=cpu-tiled
 layer=1 backend=cuda
 layer=2 backend=cuda
-SKIP: CUDA train unavailable (stack fwd child 1: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)</code></pre>
+loss=0.055711714 cuda routing={Mounts:2 Forwards:4 Backwards:2 Updates:2 TrainingSteps:0}
+Routed updates are already in Go stores; Close releases cached mounts.</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/93-nvidia-json-routing &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

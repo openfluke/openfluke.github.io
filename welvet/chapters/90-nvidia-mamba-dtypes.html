@@ -237,7 +237,41 @@ func cudaPlatformOK() bool {
 	return runtime.GOARCH == "amd64" &amp;&amp; (runtime.GOOS == "linux" || runtime.GOOS == "windows")
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>float64    shape=[1 3 8] checksum=-0.016678239
+float32    shape=[1 3 8] checksum=-0.016678239
+float16    shape=[1 3 8] checksum=-0.016669162
+bfloat16   shape=[1 3 8] checksum=-0.016553075
+fp8e4m3    shape=[1 3 8] checksum=-0.017004712
+fp8e5m2    shape=[1 3 8] checksum=-0.016270325
+int64      shape=[1 3 8] checksum=-0.016678241
+int32      shape=[1 3 8] checksum=-0.0036489123
+int16      shape=[1 3 8] checksum=-0.016677922
+int8       shape=[1 3 8] checksum=-0.016622871
+uint64     shape=[1 3 8] checksum=-0.016678239
+uint32     shape=[1 3 8] checksum=-0.016678241
+uint16     shape=[1 3 8] checksum=-0.016678429
+uint8      shape=[1 3 8] checksum=-0.016727349
+int4       shape=[1 3 8] checksum=-0.01510581
+uint4      shape=[1 3 8] checksum=-0.017548651
+fp4        shape=[1 3 8] checksum=0
+int2       shape=[1 3 8] checksum=-0.032299955
+uint2      shape=[1 3 8] checksum=-0.015402747
+ternary    shape=[1 3 8] checksum=-0.02989793
+binary     shape=[1 3 8] checksum=-0.0070436111
+int        shape=[1 3 8] checksum=-0.016678241
+uint       shape=[1 3 8] checksum=-0.016678239
+uintptr    shape=[1 3 8] checksum=-0.016678239
+complex64  shape=[1 3 8] checksum=-0.016678239
+complex128 shape=[1 3 8] checksum=-0.016678239
+nf4        shape=[1 3 8] checksum=-0.016108489
+fp6        shape=[1 3 8] checksum=-0.01633804
+int6       shape=[1 3 8] checksum=-0.01633804
+uint6      shape=[1 3 8] checksum=-0.016878628
+int5       shape=[1 3 8] checksum=-0.016140702
+uint5      shape=[1 3 8] checksum=-0.017025854
+int3       shape=[1 3 8] checksum=-0.018383351
+uint3      shape=[1 3 8] checksum=-0.017474991
+Mamba dtypes=34; activations=float32; parameters=FormatNone native dtype</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/90-nvidia-mamba-dtypes &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

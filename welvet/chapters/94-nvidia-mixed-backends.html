@@ -231,7 +231,9 @@ func run() error {
 	return nil
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: mixed train unavailable (stack fwd child 9: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>Go layers 0-3 -&gt; C++ layers 4-8 -&gt; CUDA layers 9-12
+loss=0.0043765833 cpp calls=75 cuda routing={Mounts:4 Forwards:40 Backwards:20 Updates:20 TrainingSteps:0}
+Float32 activations travel forward; gradients travel back; routed CUDA weights return automatically to Go.</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/94-nvidia-mixed-backends &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 
