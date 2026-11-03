@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.5.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.6.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -133,6 +133,15 @@
 <a href="100-amd-json-routing.html">100. AMD ROCm</a>
 <a href="101-amd-mixed-backends.html">101. AMD ROCm</a>
 <a href="102-amd-rocm-results.html">102. AMD ROCm</a>
+</div>
+<div class="nav-group"><h2>XV · Vulkan acceleration (welvet.vulkan)</h2>
+<a href="103-vulkan-mount.html">103. Vulkan</a>
+<a href="104-vulkan-mamba-dtypes.html">104. Vulkan</a>
+<a href="105-vulkan-training.html">105. Vulkan</a>
+<a href="106-vulkan-save-weights.html">106. Vulkan</a>
+<a href="107-vulkan-json-routing.html">107. Vulkan</a>
+<a href="108-vulkan-mixed-backends.html">108. Vulkan</a>
+<a href="109-vulkan-results.html">109. Vulkan</a>
 </div>
 </aside>
 <div class="main">
@@ -277,7 +286,7 @@ func cudaPlatformOK() bool {
 	return runtime.GOARCH == "amd64" &amp;&amp; (runtime.GOOS == "linux" || runtime.GOOS == "windows")
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/91-nvidia-training &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

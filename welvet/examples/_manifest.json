@@ -37,9 +37,9 @@
   },
   "07-webgpu": {
     "exit_code": 0,
-    "stdout": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"615.78.08\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"Intel(R) UHD Graphics 630 (CML GT2)\" vendor=\"Intel open-source Mesa driver\" arch=\"\" driver=\"Mesa 26.2.5\" backend=vulkan type=integrated-gpu | maxBuf=2147483647 maxSSBO=2147483644 maxSSBO/stage=103 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter default: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"615.78.08\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"NVIDIA GeForce GTX 1650 SUPER\" backend=vulkan maxSSBO=2147483644 maxBuf=1099511627776\n[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER\n",
-    "stderr": "",
-    "combined": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"615.78.08\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"Intel(R) UHD Graphics 630 (CML GT2)\" vendor=\"Intel open-source Mesa driver\" arch=\"\" driver=\"Mesa 26.2.5\" backend=vulkan type=integrated-gpu | maxBuf=2147483647 maxSSBO=2147483644 maxSSBO/stage=103 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter default: name=\"NVIDIA GeForce GTX 1650 SUPER\" vendor=\"NVIDIA\" arch=\"\" driver=\"615.78.08\" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=inflated adapter=\"NVIDIA GeForce GTX 1650 SUPER\" backend=vulkan maxSSBO=2147483644 maxBuf=1099511627776\n[1.5 2.5] <nil> NVIDIA GeForce GTX 1650 SUPER"
+    "stdout": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter default: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  skip inflated (adapter maxSSBO=134217728 maxBuf=2147483647 < 1GiB/2GiB)\n  try RequestDevice advertised: maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\nRESULT: OK via=advertised adapter=\"llvmpipe (LLVM 22.1.8, 256 bits)\" backend=vulkan maxSSBO=134217728 maxBuf=2147483647\n[1.5 2.5] <nil> llvmpipe (LLVM 22.1.8, 256 bits)\n",
+    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
+    "combined": "webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=\"\"\n  adapter high-perf: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  \u2192 selected high-perf\n  adapter low-power: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n  adapter force-fallback: name=\"llvmpipe (LLVM 22.1.8, 256 bits)\" vendor=\"llvmpipe\" arch=\"\" driver=\"Mesa 26.2.5 (LLVM 22.1.8)\" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024\n\u2026\nRESULT: OK via=advertised adapter=\"llvmpipe (LLVM 22.1.8, 256 bits)\" backend=vulkan maxSSBO=134217728 maxBuf=2147483647\n[1.5 2.5] <nil> llvmpipe (LLVM 22.1.8, 256 bits)\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
   },
   "08-tiling": {
     "exit_code": 0,
@@ -343,9 +343,9 @@
   },
   "52-stub-clustering": {
     "exit_code": 0,
-    "stdout": "2 [0 1]\n",
+    "stdout": "2 [1 0]\n",
     "stderr": "",
-    "combined": "2 [0 1]"
+    "combined": "2 [1 0]"
   },
   "53-stub-ensemble": {
     "exit_code": 0,
@@ -415,9 +415,9 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v1.5.0\nscorecard 100/100\n",
+    "stdout": "v1.6.0\nscorecard 100/100\n",
     "stderr": "",
-    "combined": "v1.5.0\nscorecard 100/100"
+    "combined": "v1.6.0\nscorecard 100/100"
   },
   "76-nativecpu": {
     "exit_code": 0,
@@ -499,39 +499,39 @@
   },
   "89-nvidia-cuda": {
     "exit_code": 0,
-    "stdout": "backend=cuda version=0.79\ndevice=cuda:NVIDIA GeForce GTX 1650 SUPER:idx=0:sm=7.5:mem=3902799872\ninput=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]\n",
+    "stdout": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
     "stderr": "",
-    "combined": "backend=cuda version=0.79\ndevice=cuda:NVIDIA GeForce GTX 1650 SUPER:idx=0:sm=7.5:mem=3902799872\ninput=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]"
+    "combined": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
   },
   "90-nvidia-mamba-dtypes": {
     "exit_code": 0,
-    "stdout": "float64    shape=[1 3 8] checksum=-0.016678239\nfloat32    shape=[1 3 8] checksum=-0.016678239\nfloat16    shape=[1 3 8] checksum=-0.016669162\nbfloat16   shape=[1 3 8] checksum=-0.016553075\nfp8e4m3    shape=[1 3 8] checksum=-0.017004712\nfp8e5m2    shape=[1 3 8] checksum=-0.016270325\nint64      shape=[1 3 8] checksum=-0.016678241\nint32      shape=[1 3 8] checksum=-0.0036489123\nint16      shape=[1 3 8] checksum=-0.016677922\nint8       shape=[1 3 8] checksum=-0.016622871\nuint64     shape=[1 3 8] checksum=-0.016678239\nuint32     shape=[1 3 8] checksum=-0.016678241\nuint16     shape=[1 3 8] checksum=-0.016678429\nuint8      shape=[1 3 8] checksum=-0.016727349\nint4       shape=[1 3 8] checksum=-0.01510581\nuint4      shape=[1 3 8] checksum=-0.017548651\nfp4        shape=[1 3 8] checksum=0\nint2       shape=[1 3 8] checksum=-0.032299955\nuint2      shape=[1 3 8] checksum=-0.015402747\nternary    shape=[1 3 8] checksum=-0.02989793\nbinary     shape=[1 3 8] checksum=-0.0070436111\nint        shape=[1 3 8] checksum=-0.016678241\nuint       shape=[1 3 8] checksum=-0.016678239\nuintptr    shape=[1 3 8] checksum=-0.016678239\ncomplex64  shape=[1 3 8] checksum=-0.016678239\ncomplex128 shape=[1 3 8] checksum=-0.016678239\nnf4        shape=[1 3 8] checksum=-0.016108489\nfp6        shape=[1 3 8] checksum=-0.01633804\nint6       shape=[1 3 8] checksum=-0.01633804\nuint6      shape=[1 3 8] checksum=-0.016878628\nint5       shape=[1 3 8] checksum=-0.016140702\nuint5      shape=[1 3 8] checksum=-0.017025854\nint3       shape=[1 3 8] checksum=-0.018383351\nuint3      shape=[1 3 8] checksum=-0.017474991\nMamba dtypes=34; activations=float32; parameters=FormatNone native dtype\n",
+    "stdout": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
     "stderr": "",
-    "combined": "float64    shape=[1 3 8] checksum=-0.016678239\nfloat32    shape=[1 3 8] checksum=-0.016678239\nfloat16    shape=[1 3 8] checksum=-0.016669162\nbfloat16   shape=[1 3 8] checksum=-0.016553075\nfp8e4m3    shape=[1 3 8] checksum=-0.017004712\nfp8e5m2    shape=[1 3 8] checksum=-0.016270325\nint64      shape=[1 3 8] checksum=-0.016678241\nint32      shape=[1 3 8] checksum=-0.0036489123\nint16      shape=[1 3 8] checksum=-0.016677922\nint8       shape=[1 3 8] checksum=-0.016622871\nuint64     shape=[1 3 8] checksum=-0.016678239\nuint32     shape=[1 3 8] checksum=-0.016678241\nuint16     shape=[1 3 8] checksum=-0.016678429\nuint8      shape=[1 3 8] checksum=-0.016727349\nint4       shape=[1 3 8] checksum=-0.01510581\nuint4      shape=[1 3 8] checksum=-0.017548651\nfp4        shape=[1 3 8] checksum=0\nint2       shape=[1 3 8] checksum=-0.032299955\nuint2      shape=[1 3 8] checksum=-0.015402747\nternary    shape=[1 3 8] checksum=-0.02989793\nbinary     shape=[1 3 8] checksum=-0.0070436111\nint        shape=[1 3 8] checksum=-0.016678241\nuint       shape=[1 3 8] checksum=-0.016678239\nuintptr    shape=[1 3 8] checksum=-0.016678239\ncomplex64  shape=[1 3 8] checksum=-0.016678239\ncomplex128 shape=[1 3 8] checksum=-0.016678239\nnf4        shape=[1 3 8] checksum=-0.016108489\nfp6        shape=[1 3 8] checksum=-0.01633804\nint6       shape=[1 3 8] checksum=-0.01633804\nuint6      shape=[1 3 8] checksum=-0.016878628\nint5       shape=[1 3 8] checksum=-0.016140702\nuint5      shape=[1 3 8] checksum=-0.017025854\nint3       shape=[1 3 8] checksum=-0.018383351\nuint3      shape=[1 3 8] checksum=-0.017474991\nMamba dtypes=34; activations=float32; parameters=FormatNone native dtype"
+    "combined": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
   },
   "91-nvidia-training": {
     "exit_code": 0,
-    "stdout": "mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\n",
+    "stdout": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
     "stderr": "",
-    "combined": "mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go"
+    "combined": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
   },
   "92-nvidia-save-weights": {
     "exit_code": 0,
-    "stdout": "Go parameters unchanged before SyncToGo\nweights returned to Go; saved=/srv/gs/openfluke.github.io/welvet/examples/.cache/tmp/welvet-cuda-entity-3595604884/trained.entity; reload=exact\n",
+    "stdout": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
     "stderr": "",
-    "combined": "Go parameters unchanged before SyncToGo\nweights returned to Go; saved=/srv/gs/openfluke.github.io/welvet/examples/.cache/tmp/welvet-cuda-entity-3595604884/trained.entity; reload=exact"
+    "combined": "SKIP: CUDA unavailable (nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
   },
   "93-nvidia-json-routing": {
     "exit_code": 0,
-    "stdout": "layer=0 backend=cpu-tiled\nlayer=1 backend=cuda\nlayer=2 backend=cuda\nloss=0.055711714 cuda routing={Mounts:2 Forwards:4 Backwards:2 Updates:2 TrainingSteps:0}\nRouted updates are already in Go stores; Close releases cached mounts.\n",
+    "stdout": "layer=0 backend=cpu-tiled\nlayer=1 backend=cuda\nlayer=2 backend=cuda\nSKIP: CUDA train unavailable (stack fwd child 1: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
     "stderr": "",
-    "combined": "layer=0 backend=cpu-tiled\nlayer=1 backend=cuda\nlayer=2 backend=cuda\nloss=0.055711714 cuda routing={Mounts:2 Forwards:4 Backwards:2 Updates:2 TrainingSteps:0}\nRouted updates are already in Go stores; Close releases cached mounts."
+    "combined": "layer=0 backend=cpu-tiled\nlayer=1 backend=cuda\nlayer=2 backend=cuda\nSKIP: CUDA train unavailable (stack fwd child 1: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
   },
   "94-nvidia-mixed-backends": {
     "exit_code": 0,
-    "stdout": "Go layers 0-3 -> C++ layers 4-8 -> CUDA layers 9-12\nloss=0.0043765833 cpp calls=75 cuda routing={Mounts:4 Forwards:40 Backwards:20 Updates:20 TrainingSteps:0}\nFloat32 activations travel forward; gradients travel back; routed CUDA weights return automatically to Go.\n",
+    "stdout": "SKIP: mixed train unavailable (stack fwd child 9: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)\n",
     "stderr": "",
-    "combined": "Go layers 0-3 -> C++ layers 4-8 -> CUDA layers 9-12\nloss=0.0043765833 cpp calls=75 cuda routing={Mounts:4 Forwards:40 Backwards:20 Updates:20 TrainingSteps:0}\nFloat32 activations travel forward; gradients travel back; routed CUDA weights return automatically to Go."
+    "combined": "SKIP: mixed train unavailable (stack fwd child 9: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected)"
   },
   "95-nvidia-cuda-results": {
     "exit_code": 0,
@@ -580,5 +580,47 @@
     "stdout": "AMD ROCm results pointers (not a live benchmark)\n\nEngine pin: welvet.rocm 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativerocm (Welvet v1.5.0)\nUsage tour: 96 mount \u00b7 97 Mamba dtypes \u00b7 98 train modes \u00b7 99 SyncToGo/ENTITY \u00b7 100 JSON \u00b7 101 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_rocm -count=1 -timeout 180m\n  cd ../../welvet.rocm/examples/rocm_smoke && go run .\n\nInstall shared library into Go:\n  cd ../../welvet.rocm && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_amd.sh\n",
     "stderr": "",
     "combined": "AMD ROCm results pointers (not a live benchmark)\n\nEngine pin: welvet.rocm 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativerocm (Welvet v1.5.0)\nUsage tour: 96 mount \u00b7 97 Mamba dtypes \u00b7 98 train modes \u00b7 99 SyncToGo/ENTITY \u00b7 100 JSON \u00b7 101 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_rocm -count=1 -timeout 180m\n  cd ../../welvet.rocm/examples/rocm_smoke && go run .\n\nInstall shared library into Go:\n  cd ../../welvet.rocm && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_amd.sh"
+  },
+  "103-vulkan-mount": {
+    "exit_code": 0,
+    "stdout": "backend=vulkan version=0.79\ndevice=vulkan:llvmpipe (LLVM 22.1.8, 256 bits):idx=0:api=1.4.354:type=4:mem=33412538368:f64=1\ninput=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]\n",
+    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
+    "combined": "backend=vulkan version=0.79\ndevice=vulkan:llvmpipe (LLVM 22.1.8, 256 bits):idx=0:api=1.4.354:type=4:mem=33412538368:f64=1\ninput=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
+  },
+  "104-vulkan-mamba-dtypes": {
+    "exit_code": 0,
+    "stdout": "float64    shape=[1 3 8] checksum=-0.016678239\nfloat32    shape=[1 3 8] checksum=-0.016678239\nfloat16    shape=[1 3 8] checksum=-0.016669162\nbfloat16   shape=[1 3 8] checksum=-0.016553075\nfp8e4m3    shape=[1 3 8] checksum=-0.017004712\nfp8e5m2    shape=[1 3 8] checksum=-0.016270325\nint64      shape=[1 3 8] checksum=-0.016678241\nint32      shape=[1 3 8] checksum=-0.0036489123\nint16      shape=[1 3 8] checksum=-0.016677922\nint8       shape=[1 3 8] checksum=-0.016622871\nuint64     shape=[1 3 8] checksum=-0.016678239\nuint32     shape=[1 3 8] checksum=-0.016678241\nuint16     shape=[1 3 8] checksum=-0.016678429\nuint8      shape=[1 3 8] checksum=-0.016727349\nint4       shape=[1 3 8] checksum=-0.01510581\nuint4      shape=[1 3 8] checksum=-0.017548651\nfp4        shape=[1 3 8] checksum=0\nint2       shape=[1 3 8] checksum=-0.032299955\nuint2      shape=[1 3 8] checksum=-0.015402747\nternary    shape=[1 3 8] checksum=-0.02989793\nbinary     shape=[1 3 8] checksum=-0.0070436111\nint        shape=[1 3 8] checksum=-0.016678241\nuint       shape=[1 3 8] checksum=-0.016678239\nuintptr    shape=[1 3 8] checksum=-0.016678239\ncomplex64  shape=[1 3 8] checksum=-0.016678239\ncomplex128 shape=[1 3 8] checksum=-0.016678239\nnf4        shape=[1 3 8] checksum=-0.016108489\nfp6        shape=[1 3 8] checksum=-0.01633804\nint6       shape=[1 3 8] checksum=-0.01633804\nuint6      shape=[1 3 8] checksum=-0.016878628\nint5       shape=[1 3 8] checksum=-0.016140702\nuint5      shape=[1 3 8] checksum=-0.017025854\nint3       shape=[1 3 8] checksum=-0.018383351\nuint3      shape=[1 3 8] checksum=-0.017474991\nMamba dtypes=34; activations=float32; parameters=FormatNone native dtype\n",
+    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
+    "combined": "float64    shape=[1 3 8] checksum=-0.016678239\nfloat32    shape=[1 3 8] checksum=-0.016678239\nfloat16    shape=[1 3 8] checksum=-0.016669162\nbfloat16   shape=[1 3 8] checksum=-0.016553075\nfp8e4m3    shape=[1 3 8] checksum=-0.017004712\nfp8e5m2    shape=[1 3 8] checksum=-0.016270325\nint64      shape=[1 3 8] checksum=-0.016678241\nint32      shape=[1 3 8] checksum=-0.0036489123\nint16      shape=[1 3 8] checksum=-0.016677922\nint8       shape=[1 3 8] checksum=-0.016622871\nuint64     shape=[1 3 8] checksum=-0.016678239\nuint32     shape=[1 3 8] checksum=-0.016678241\nuint16     shape=[1 3 8] checksum=-0.016678429\nuint8      shape=[1 3 8] checksum=-0.016727349\nint4       shape=[1 3 8] checksum=-0.01510581\nuint4      shape=[1 3 8] checksum=-0.017548651\nfp4        shape=[1 3 8] checksum=0\nint2       shape=[1 3 8] checksum=-0.032299955\nuint2      shape=[1 3 8] checksum=-0.015402747\nternary    shape=[1 3 8] checksum=-0.02989793\nbinary     shape=[1 3 8] checksum=-0.0070436111\nint        shape=[1 3 8] checksum=-0.016678241\nuint       shape=[1 3 8] checksum=-0.016678239\nuintptr    shape=[1 3 8] checksum=-0.016678239\ncomplex64  shape=[1 3 8] checksum=-0.016678239\ncomplex128 shape=[1 3 8] checksum=-0.016678239\nnf4        shape=[1 3 8] checksum=-0.016108489\nfp6        shape=[1 3 8] checksum=-0.01633804\nint6       shape=[1 3 8] checksum=-0.01633804\nuint6      shape=[1 3 8] checksum=-0.016878628\nint5       shape=[1 3 8] checksum=-0.016140702\nuint5      shape=[1 3 8] checksum=-0.017025854\nint3       shape=[1 3 8] checksum=-0.018383351\nuint3      shape=[1 3 8] checksum=-0.017474991\nMamba dtypes=34; activations=float32; parameters=FormatNone native dtype\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
+  },
+  "105-vulkan-training": {
+    "exit_code": 0,
+    "stdout": "mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\n",
+    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
+    "combined": "mode=NormalBP schedule=Stack calls=8 loss=6.7954462e-06 weights=synced-to-Go\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
+  },
+  "106-vulkan-save-weights": {
+    "exit_code": 0,
+    "stdout": "Go parameters unchanged before SyncToGo\nweights returned to Go; saved=/srv/gs/openfluke.github.io/welvet/examples/.cache/tmp/welvet-vulkan-entity-1828266285/trained.entity; reload=exact\n",
+    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
+    "combined": "Go parameters unchanged before SyncToGo\nweights returned to Go; saved=/srv/gs/openfluke.github.io/welvet/examples/.cache/tmp/welvet-vulkan-entity-1828266285/trained.entity; reload=exact\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
+  },
+  "107-vulkan-json-routing": {
+    "exit_code": 0,
+    "stdout": "layer=0 backend=cpu-tiled\nlayer=1 backend=vulkan\nlayer=2 backend=vulkan\nloss=0.055711714 vulkan routing={Mounts:2 Forwards:4 Backwards:2 Updates:2 TrainingSteps:0}\nRouted updates are already in Go stores; Close releases cached mounts.\n",
+    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
+    "combined": "layer=0 backend=cpu-tiled\nlayer=1 backend=vulkan\nlayer=2 backend=vulkan\nloss=0.055711714 vulkan routing={Mounts:2 Forwards:4 Backwards:2 Updates:2 TrainingSteps:0}\nRouted updates are already in Go stores; Close releases cached mounts.\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
+  },
+  "108-vulkan-mixed-backends": {
+    "exit_code": 0,
+    "stdout": "Go layers 0-3 -> C++ layers 4-8 -> Vulkan layers 9-12\nloss=0.0043765833 cpp calls=75 vulkan routing={Mounts:4 Forwards:40 Backwards:20 Updates:20 TrainingSteps:0}\nFloat32 activations travel forward; gradients travel back; routed Vulkan weights return automatically to Go.\n",
+    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
+    "combined": "Go layers 0-3 -> C++ layers 4-8 -> Vulkan layers 9-12\nloss=0.0043765833 cpp calls=75 vulkan routing={Mounts:4 Forwards:40 Backwards:20 Updates:20 TrainingSteps:0}\nFloat32 activations travel forward; gradients travel back; routed Vulkan weights return automatically to Go.\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
+  },
+  "109-vulkan-results": {
+    "exit_code": 0,
+    "stdout": "Vulkan results pointers (not a live benchmark)\n\nEngine pin: welvet.vulkan 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativevulkan (Welvet v1.6.0)\nUsage tour: 103 mount \u00b7 104 Mamba dtypes \u00b7 105 train modes \u00b7 106 SyncToGo/ENTITY \u00b7 107 JSON \u00b7 108 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_vulkan -count=1 -timeout 180m\n  cd ../../welvet.vulkan && ./scripts/build_linux.sh && ./build/example_vulkan_smoke\n\nInstall shared library into Go:\n  cd ../../welvet.vulkan && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_vulkan.sh\n",
+    "stderr": "",
+    "combined": "Vulkan results pointers (not a live benchmark)\n\nEngine pin: welvet.vulkan 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativevulkan (Welvet v1.6.0)\nUsage tour: 103 mount \u00b7 104 Mamba dtypes \u00b7 105 train modes \u00b7 106 SyncToGo/ENTITY \u00b7 107 JSON \u00b7 108 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_vulkan -count=1 -timeout 180m\n  cd ../../welvet.vulkan && ./scripts/build_linux.sh && ./build/example_vulkan_smoke\n\nInstall shared library into Go:\n  cd ../../welvet.vulkan && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_vulkan.sh"
   }
 }

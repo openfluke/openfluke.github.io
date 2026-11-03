@@ -131,7 +131,7 @@ def chapters(version: str = "v1.0", earned: float = 100.0) -> list[Chapter]:
             "per folder, storage-truth dtypes/quants, Dense as the shared MatVec microkernel, "
             "tests only in <code>w2a</code>, apps only in <code>apps/</code>.",
         what="An AI engine in Go: layers, 34 dtypes, 20 quant formats, and Go execution paths "
-             f"(CPU tiled · Plan 9 SIMD · WebGPU), plus optional C++, QNN, Apple Metal, NVIDIA CUDA and AMD ROCm libraries. Version tracks a 100-point scorecard "
+             f"(CPU tiled · Plan 9 SIMD · WebGPU), plus optional C++, QNN, Apple Metal, NVIDIA CUDA, AMD ROCm and Vulkan libraries. Version tracks a 100-point scorecard "
              f"(today <strong>{esc(version)}</strong> · {earned_i}/100).",
         body_extra=ascii_fig("""
 Rules
@@ -2503,6 +2503,7 @@ BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed p
 <li><strong>v1.1.7</strong> — Full NativeCPU TrainMode C ABI (stack/parallel/grid/line) +
 <code>SyncWeightsFromNative</code> (<a href="76-nativecpu.html">§76</a> ·
 <a href="77-native-layers.html">§77</a> · <a href="78-native-trainmodes.html">§78</a>)</li>
+<li><strong>v1.6.0</strong> — Vulkan GPU via <code>nativevulkan</code> + independent <a href="https://github.com/openfluke/welvet.vulkan">welvet.vulkan</a> <strong>0.79</strong> (ABI 1). Explicit mount/train/SyncToGo on <strong>Linux x86_64</strong>; JSON Go/C++/Vulkan routing on Linux amd64. <a href="103-vulkan-mount.html">§103–109</a>; Go engine remains 100/100. Pure-Vulkan contract: no silent host fallback labeled as Vulkan.</li>
 <li><strong>v1.5.0</strong> — AMD GPU via <code>nativerocm</code> + independent <a href="https://github.com/openfluke/welvet.rocm">welvet.rocm</a> <strong>0.79</strong> (ABI 1). Explicit mount/train/SyncToGo on <strong>Linux x86_64 + Windows amd64</strong>; JSON Go/C++/ROCm routing on Linux amd64. <a href="96-amd-rocm.html">§96–102</a>; Go engine remains 100/100. <strong>GPU compute untested</strong> until a ROCm-capable HSA device is available.</li>
 <li><strong>v1.4.0</strong> — NVIDIA GPU via <code>nativecuda</code> + independent welvet.cuda <strong>0.79</strong> (ABI 1). Explicit mount/train/SyncToGo on <strong>Linux x86_64 + Windows amd64</strong>; JSON Go/C++/CUDA routing on Linux amd64. <a href="89-nvidia-cuda.html">§89–95</a>; Go engine remains 100/100.</li>
 <li><strong>v1.3.0</strong> — Apple GPU via <code>nativemetal</code> + independent welvet.metal (ABI 1). Explicit mount/train/SyncToGo and JSON Go/C++/Metal routing. <a href="82-apple-metal.html">§82–88</a>.</li>
@@ -2514,7 +2515,8 @@ BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed p
 <code>apps/octo</code>, <code>stub/*</code>, and vendor NPU/GPU scorecard credit (HTP ships as sibling
 <code>welvet.qnn</code> — see <a href="79-qnn.html">§79</a>; CUDA as <code>welvet.cuda</code> — see
 <a href="89-nvidia-cuda.html">§89</a>; ROCm as <code>welvet.rocm</code> — see
-<a href="96-amd-rocm.html">§96</a>). FastProxy can match/beat StepBP <em>Acc</em> on sine/copy toys; Sparse wins Lucy <em>Score</em> via Avail.
+<a href="96-amd-rocm.html">§96</a>; Vulkan as <code>welvet.vulkan</code> — see
+<a href="103-vulkan-mount.html">§103</a>). FastProxy can match/beat StepBP <em>Acc</em> on sine/copy toys; Sparse wins Lucy <em>Score</em> via Avail.
 Do not write “Sparse is better backprop.” Engine v1 ≠ “beats PyTorch.”</div>
 """,
         example=f"""
@@ -3526,6 +3528,9 @@ func main() {
     for item in json.loads((ROOT / "_amd_examples" / "chapters.json").read_text(encoding="utf-8")):
         folder = ROOT / "_amd_examples" / item["slug"]
         out.append(C(**item, example=(folder / "main.go").read_text(encoding="utf-8")))
+    for item in json.loads((ROOT / "_vulkan_examples" / "chapters.json").read_text(encoding="utf-8")):
+        folder = ROOT / "_vulkan_examples" / item["slug"]
+        out.append(C(**item, example=(folder / "main.go").read_text(encoding="utf-8")))
     return out
 
 
@@ -3565,6 +3570,11 @@ PARTS_NAV = [
         "96-amd-rocm", "97-amd-mamba-dtypes", "98-amd-training",
         "99-amd-save-weights", "100-amd-json-routing", "101-amd-mixed-backends",
         "102-amd-rocm-results",
+    ]),
+    ("XV · Vulkan acceleration (welvet.vulkan)", [
+        "103-vulkan-mount", "104-vulkan-mamba-dtypes", "105-vulkan-training",
+        "106-vulkan-save-weights", "107-vulkan-json-routing", "108-vulkan-mixed-backends",
+        "109-vulkan-results",
     ]),
 ]
 
@@ -3757,7 +3767,7 @@ def write_example_files(chs: list[Chapter]) -> None:
         d = EXAMPLES / c.slug
         d.mkdir(parents=True, exist_ok=True)
         (d / "main.go").write_text(c.example.strip() + "\n", encoding="utf-8")
-        for root_name in ("_apple_examples", "_nvidia_examples", "_amd_examples"):
+        for root_name in ("_apple_examples", "_nvidia_examples", "_amd_examples", "_vulkan_examples"):
             source = ROOT / root_name / c.slug
             if source.is_dir():
                 for support in source.iterdir():
@@ -3773,6 +3783,9 @@ def write_example_files(chs: list[Chapter]) -> None:
     amd = ROOT / "_amd_examples"
     shutil.copy2(amd / "run_amd.sh", EXAMPLES / "run_amd.sh")
     (EXAMPLES / "run_amd.sh").chmod(0o755)
+    vulkan = ROOT / "_vulkan_examples"
+    shutil.copy2(vulkan / "run_vulkan.sh", EXAMPLES / "run_vulkan.sh")
+    (EXAMPLES / "run_vulkan.sh").chmod(0o755)
 
 
 def run_all_examples(chs: list[Chapter], timeout: float = 90.0) -> dict[str, dict]:
@@ -3888,7 +3901,7 @@ def title_page(version: str, pdf_name: str, chs: list[Chapter]) -> str:
         (str(len(chs)), "Chapters"),
         ("34", "Dtypes"),
         ("20", "Quant formats"),
-        ("3 + 5", "Go paths + native engines"),
+        ("3 + 6", "Go paths + native engines"),
     ]
     stats_html = "".join(
         f'<div class="stat"><div class="stat-num">{esc(n)}</div>'
@@ -4269,6 +4282,7 @@ def main() -> None:
         "Apple GPU: chapters 82–88; run `./run_apple.sh` on Apple silicon macOS with both native libraries installed. See `82-apple-metal/README.md` for setup and `apple_stress_test/README.md` for benchmarks.\n\n"
         "NVIDIA GPU: chapters 89–95; run `./run_nvidia.sh` on Linux/Windows amd64 with `libwelvet_cuda` + NVIDIA runtime. Mount works on both OSes; JSON/mixed routing is Linux amd64. Soft-SKIP without a GPU.\n\n"
         "AMD GPU: chapters 96–102; run `./run_amd.sh` on Linux/Windows amd64 with `libwelvet_rocm` + HIP runtime (sibling github.com/openfluke/welvet.rocm). Mount works on both OSes; JSON/mixed routing is Linux amd64. Soft-SKIP without a GPU; compute untested until ROCm-capable HSA.\n\n"
+        "Vulkan GPU: chapters 103–109; run `./run_vulkan.sh` on Linux amd64 with `libwelvet_vulkan` + Vulkan loader/runtime (sibling github.com/openfluke/welvet.vulkan). Soft-SKIP without a GPU. No silent host fallback labeled as Vulkan.\n\n"
         "```bash\n"
         "cd welvet/examples/01-welvet\n"
         "source ../env.sh   # shared GOCACHE — required for webgpu/CGO examples\n"
@@ -4332,8 +4346,8 @@ def main() -> None:
         "```\n\n"
         f"PDF is **not** committed — version **{version}** from sibling `../welvet/README.md`, "
         f"upload `dist/{pdf_name}` to [GitHub Releases]({RELEASES_URL}).\n\n"
-        "**v1.5.0** adds AMD ROCm chapters (§96–102) for sibling "
-        "[`welvet.rocm`](https://github.com/openfluke/welvet.rocm) (`nativerocm`).\n",
+        "**v1.6.0** adds Vulkan chapters (§103–109) for sibling "
+        "[`welvet.vulkan`](https://github.com/openfluke/welvet.vulkan) (`nativevulkan`).\n",
         encoding="utf-8",
     )
     print(f"OK: {len(chs)} chapters → {BOOK}")

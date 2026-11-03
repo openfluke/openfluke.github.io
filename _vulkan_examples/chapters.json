@@ -1,0 +1,93 @@
+[
+  {
+    "slug": "103-vulkan-mount",
+    "num": "103",
+    "title": "Vulkan — mount and forward",
+    "part": "XV · Vulkan acceleration (welvet.vulkan)",
+    "pkg": "github.com/openfluke/welvet/nativevulkan",
+    "status": "ok",
+    "status_label": "linux amd64",
+    "why": "Run a Go layer on a Vulkan GPU with an explicit lifetime via the independent welvet.vulkan library.",
+    "what": "Mount an identity Dense layer, inspect the Vulkan version and device identity, and forward a Float32 tensor.",
+    "body_extra": "<h2>Session ownership</h2><p>Create a session with <code>nativevulkan.Mount</code>, call <code>Forward</code> repeatedly and close it when finished. Mount accepts supported layers, Stack, Parallel and Grid layouts. The library is independent of welvet.cpp, welvet.metal, welvet.cuda and welvet.rocm.</p><h2>Requirements and backend boundaries</h2>\n<p>Go Welvet <strong>v1.6.0</strong> adds the independent <strong>welvet.vulkan 0.79</strong> library (mounted model ABI 1) at <a href=\"https://github.com/openfluke/welvet.vulkan\">github.com/openfluke/welvet.vulkan</a>. Install from its checkout:</p>\n<pre><code>cd ../welvet.vulkan\n./scripts/linux_install_go.sh</code></pre>\n<p>Execution requires <strong>Linux x86_64</strong>, Go with cgo, and a Vulkan 1.x-capable device + loader/runtime. Set <code>WELVET_VULKAN_LIBRARY</code> to override library discovery. Ordinary Go CPU use does not require a Vulkan GPU. Unsupported hosts print SKIP; missing libraries or no GPU on a supported host also soft-SKIP in these book examples.</p>\n<p><strong>Honest coverage:</strong> no silent host fallback labeled as Vulkan (see sibling <code>docs/VULKAN_ONLY.md</code>). LSTM/RNN/Mamba/GDN gates still use host <code>exp</code>/<code>tanh</code> after GPU MatVec — same pattern as cuda. Windows artifacts are not shipped yet.</p>\n<p>Go schedules work and manages memory; numerical Vulkan forward, backward and weight updates execute SPIR-V compute when a device is present. Activations are Float32; FormatNone parameter storage follows the Vulkan dtype matrix. Small examples demonstrate APIs; GPU launch costs can outweigh useful work at small shapes.</p>\n<p><code>cpu-tiled</code> / <code>go_cpu</code> means Go CPU; <code>native_cpu</code> means welvet.cpp; <code>vulkan</code> means the independent Vulkan GPU library. Examples 103–106 can use <code>go run -tags welvet_vulkan .</code> to exclude C++ linkage. Chapter 108 requires the normal cgo build for both native engines. JSON routing (<a href=\"107-vulkan-json-routing.html\">§107</a>–<a href=\"108-vulkan-mixed-backends.html\">§108</a>) is <strong>Linux amd64</strong>.</p>",
+    "run": "cd welvet/examples/103-vulkan-mount && source ../env.sh && go run ."
+  },
+  {
+    "slug": "104-vulkan-mamba-dtypes",
+    "num": "104",
+    "title": "Vulkan — Mamba parameter dtypes",
+    "part": "XV · Vulkan acceleration (welvet.vulkan)",
+    "pkg": "github.com/openfluke/welvet/nativevulkan",
+    "status": "ok",
+    "status_label": "linux amd64",
+    "why": "Exercise native storage formats without changing the activation interface.",
+    "what": "Run a seeded Mamba forward pass across all 34 native parameter dtypes, or select one with -dtype.",
+    "body_extra": "<h2>Storage versus arithmetic</h2><p><code>-dtype all</code> sweeps native parameter representations. The Vulkan execution interface uses Float32 activations. Quantized FormatNone dtype storage and packed quantization formats are different coverage claims.</p><pre><code>go run . -dtype all\ngo run . -dtype float16</code></pre><p>Requirements and library installation: <a href=\"103-vulkan-mount.html\">chapter 103</a>.</p>",
+    "run": "cd welvet/examples/104-vulkan-mamba-dtypes && source ../env.sh && go run ."
+  },
+  {
+    "slug": "105-vulkan-training",
+    "num": "105",
+    "title": "Vulkan — training modes",
+    "part": "XV · Vulkan acceleration (welvet.vulkan)",
+    "pkg": "github.com/openfluke/welvet/nativevulkan",
+    "status": "ok",
+    "status_label": "linux amd64",
+    "why": "Keep repeated training updates in the mounted Vulkan session.",
+    "what": "Train two Dense layers using one of the 29 numbered modes, with persistent Step Line state and real Grid layouts for Mesh modes.",
+    "body_extra": "<h2>Training families</h2><p><code>-mode all</code> exercises all 29 modes. Step modes retain their Line session across calls. Mesh modes use a three-cell Grid with disabled ingress and two active layers, advancing four ticks per call. Bundled <strong>welvet.vulkan 0.79</strong> covers train modes through StepTweenSplitSparse. These small demonstrations validate usage; they are not performance measurements.</p><pre><code>go run . -mode NormalBP -steps 8\ngo run . -mode all -steps 8</code></pre><p>Explicit mounted sessions keep updated weights native until <code>SyncToGo()</code>. Close discards any updates not returned to Go. See chapter 106 before saving.</p><p>Requirements: <a href=\"103-vulkan-mount.html\">chapter 103</a>.</p>",
+    "run": "cd welvet/examples/105-vulkan-training && source ../env.sh && go run ."
+  },
+  {
+    "slug": "106-vulkan-save-weights",
+    "num": "106",
+    "title": "Vulkan — weight return and ENTITY save",
+    "part": "XV · Vulkan acceleration (welvet.vulkan)",
+    "pkg": "github.com/openfluke/welvet/nativevulkan",
+    "status": "ok",
+    "status_label": "linux amd64",
+    "why": "Return trained weights to Go before executing or saving the Go model.",
+    "what": "Train natively, explicitly SyncToGo, save an ENTITY, reload it and compare the native parameter snapshots.",
+    "body_extra": "<h2>Weight handoff</h2><pre><code>session, err := nativevulkan.Mount(layer)\n// Check err; defer session.Close().\n// Repeat session.TrainMSE(...) as needed.\nerr = session.SyncToGo()\n// Check err, then save through Go ENTITY IO.</code></pre><p>Mount copies model state into a native session. The original Go parameters stay unchanged while that explicit session trains. <code>SyncToGo()</code> returns parameter bytes, scales and Float64 biases for Go saving. This saves model parameters, not a portable checkpoint of live Line, proxy, KV or rule state.</p><p>Use <code>-out /path/model.entity</code> to choose the output location. The default uses a temporary directory and prints it.</p><p>Requirements: <a href=\"103-vulkan-mount.html\">chapter 103</a>.</p>",
+    "run": "cd welvet/examples/106-vulkan-save-weights && source ../env.sh && go run ."
+  },
+  {
+    "slug": "107-vulkan-json-routing",
+    "num": "107",
+    "title": "Vulkan — JSON backend placement",
+    "part": "XV · Vulkan acceleration (welvet.vulkan)",
+    "pkg": "github.com/openfluke/welvet/nativevulkan",
+    "status": "ok",
+    "status_label": "linux amd64 routing",
+    "why": "Choose which layers run on Vulkan while retaining ordinary Go training entry points.",
+    "what": "Enable the Vulkan router and apply JSON placement to a Stack: layer 0 on Go CPU, layers 1–2 on Vulkan.",
+    "body_extra": "<h2>Explicit placement</h2><p>The example embeds <a href=\"../examples/107-vulkan-json-routing/placement.json\">placement.json</a>; use <code>-config</code> to load another file. <code>nativevulkan.EnableRouting()</code> installs the router for its owner lifetime (<strong>Linux amd64</strong>). <code>placement.Stack</code> applies immediate-child numeric layer keys.</p><p>Routed execution maintains native sessions and returns updated parameters to Go automatically. Changing source weights remounts a session and resets transient native state. Automatic hardware/performance planning remains separate from explicit placement.</p><p>Requirements: <a href=\"103-vulkan-mount.html\">chapter 103</a>.</p>",
+    "run": "cd welvet/examples/107-vulkan-json-routing && source ../env.sh && go run ."
+  },
+  {
+    "slug": "108-vulkan-mixed-backends",
+    "num": "108",
+    "title": "Vulkan — mixed Go/C++/Vulkan",
+    "part": "XV · Vulkan acceleration (welvet.vulkan)",
+    "pkg": "github.com/openfluke/welvet/nativevulkan",
+    "status": "ok",
+    "status_label": "linux amd64 routing",
+    "why": "Split a single model between the independent native engines and Go.",
+    "what": "Run a 13-layer Dense Stack: Go layers 0–3, C++ layers 4–8 and Vulkan layers 9–12; verify actual native calls during training.",
+    "body_extra": "<h2>Three engines in one Go model</h2><pre><code>Go CPU [0–3] → welvet.cpp [4–8] → welvet.vulkan [9–12] → Go result</code></pre><p>The embedded <a href=\"../examples/108-vulkan-mixed-backends/placement.json\">placement.json</a> uses <code>go_cpu</code>, <code>native_cpu</code> and <code>vulkan</code>. Install both native libraries and use the normal cgo build (do <strong>not</strong> pass <code>-tags welvet_vulkan</code>). The example reports successful C++ C ABI calls and Vulkan routing counters after five NormalBP updates.</p><p>Activations and parameters cross backend boundaries. Live backend-specific Line, proxy, KV or rule state is not migrated between engines.</p><p>Requirements: Linux amd64 + <a href=\"103-vulkan-mount.html\">chapter 103</a>.</p>",
+    "run": "cd welvet/examples/108-vulkan-mixed-backends && source ../env.sh && go run ."
+  },
+  {
+    "slug": "109-vulkan-results",
+    "num": "109",
+    "title": "Vulkan — results and suite pointers",
+    "part": "XV · Vulkan acceleration (welvet.vulkan)",
+    "pkg": "",
+    "status": "ok",
+    "status_label": "host-only pointers",
+    "why": "Find the Vulkan sibling repo and live go_v_vulkan matrices after the small usage chapters.",
+    "what": "Print Go v1.6.0 / welvet.vulkan 0.79 pins and commands for w2a go_v_vulkan. No GPU required.",
+    "body_extra": "<h2>Where live results live</h2><p>This chapter is host-only. It does not claim timings from loading the page. Sibling Vulkan engine: <a href=\"https://github.com/openfluke/welvet.vulkan\">github.com/openfluke/welvet.vulkan</a>. Run the matrices on a machine with a Vulkan-capable GPU:</p><pre><code>cd ../../w2a && go test ./tests/go_v_vulkan -count=1 -timeout 180m\ncd ../../welvet.vulkan && ./scripts/build_linux.sh && ./build/example_vulkan_smoke\ncd welvet/examples && ./run_vulkan.sh</code></pre><p>Engine pin: <strong>welvet.vulkan 0.79</strong>, model ABI <strong>1</strong>, Go binding <code>nativevulkan</code> (Welvet <strong>v1.6.0</strong>). Platform: Linux x86_64 for Mount and EnableRouting. Pure-Vulkan contract: no silent CPU path labeled Vulkan.</p><p>Requirements overview: <a href=\"103-vulkan-mount.html\">chapter 103</a>.</p>",
+    "run": "cd welvet/examples/109-vulkan-results && source ../env.sh && go run ."
+  }
+]

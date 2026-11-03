@@ -580,5 +580,47 @@
     "num": "102",
     "title": "AMD ROCm \u2014 results and suite pointers",
     "has_main": true
+  },
+  {
+    "slug": "103-vulkan-mount",
+    "num": "103",
+    "title": "Vulkan \u2014 mount and forward",
+    "has_main": true
+  },
+  {
+    "slug": "104-vulkan-mamba-dtypes",
+    "num": "104",
+    "title": "Vulkan \u2014 Mamba parameter dtypes",
+    "has_main": true
+  },
+  {
+    "slug": "105-vulkan-training",
+    "num": "105",
+    "title": "Vulkan \u2014 training modes",
+    "has_main": true
+  },
+  {
+    "slug": "106-vulkan-save-weights",
+    "num": "106",
+    "title": "Vulkan \u2014 weight return and ENTITY save",
+    "has_main": true
+  },
+  {
+    "slug": "107-vulkan-json-routing",
+    "num": "107",
+    "title": "Vulkan \u2014 JSON backend placement",
+    "has_main": true
+  },
+  {
+    "slug": "108-vulkan-mixed-backends",
+    "num": "108",
+    "title": "Vulkan \u2014 mixed Go/C++/Vulkan",
+    "has_main": true
+  },
+  {
+    "slug": "109-vulkan-results",
+    "num": "109",
+    "title": "Vulkan \u2014 results and suite pointers",
+    "has_main": true
   }
 ]

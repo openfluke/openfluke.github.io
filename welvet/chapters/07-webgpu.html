@@ -8,7 +8,7 @@
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.5.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.6.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -134,6 +134,15 @@
 <a href="101-amd-mixed-backends.html">101. AMD ROCm</a>
 <a href="102-amd-rocm-results.html">102. AMD ROCm</a>
 </div>
+<div class="nav-group"><h2>XV · Vulkan acceleration (welvet.vulkan)</h2>
+<a href="103-vulkan-mount.html">103. Vulkan</a>
+<a href="104-vulkan-mamba-dtypes.html">104. Vulkan</a>
+<a href="105-vulkan-training.html">105. Vulkan</a>
+<a href="106-vulkan-save-weights.html">106. Vulkan</a>
+<a href="107-vulkan-json-routing.html">107. Vulkan</a>
+<a href="108-vulkan-mixed-backends.html">108. Vulkan</a>
+<a href="109-vulkan-results.html">109. Vulkan</a>
+</div>
 </aside>
 <div class="main">
 <div class="topbar">
@@ -180,14 +189,45 @@ func main() {
 }</code></pre>
 <h3>Output</h3>
 <p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>webgpu probe goos=linux goarch=amd64 WELVET_WGPU_BACKEND=""
-  adapter high-perf: name="NVIDIA GeForce GTX 1650 SUPER" vendor="NVIDIA" arch="" driver="615.78.08" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
+  adapter high-perf: name="llvmpipe (LLVM 22.1.8, 256 bits)" vendor="llvmpipe" arch="" driver="Mesa 26.2.5 (LLVM 22.1.8)" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
   → selected high-perf
-  adapter low-power: name="Intel(R) UHD Graphics 630 (CML GT2)" vendor="Intel open-source Mesa driver" arch="" driver="Mesa 26.2.5" backend=vulkan type=integrated-gpu | maxBuf=2147483647 maxSSBO=2147483644 maxSSBO/stage=103 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
+  adapter low-power: name="llvmpipe (LLVM 22.1.8, 256 bits)" vendor="llvmpipe" arch="" driver="Mesa 26.2.5 (LLVM 22.1.8)" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
   adapter force-fallback: name="llvmpipe (LLVM 22.1.8, 256 bits)" vendor="llvmpipe" arch="" driver="Mesa 26.2.5 (LLVM 22.1.8)" backend=vulkan type=cpu | maxBuf=2147483647 maxSSBO=134217728 maxSSBO/stage=48 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-  adapter default: name="NVIDIA GeForce GTX 1650 SUPER" vendor="NVIDIA" arch="" driver="615.78.08" backend=vulkan type=discrete-gpu | maxBuf=1099511627776 maxSSBO=2147483644 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-  try RequestDevice inflated: maxBuf=2147483648 maxSSBO=1073741824 maxSSBO/stage=524288 maxBindGroups=8 maxComputeWG=65535 maxInvoc/WG=1024
-RESULT: OK via=inflated adapter="NVIDIA GeForce GTX 1650 SUPER" backend=vulkan maxSSBO=2147483644 maxBuf=1099511627776
-[1.5 2.5] &lt;nil&gt; NVIDIA GeForce GTX 1650 SUPER</code></pre>
+…
+RESULT: OK via=advertised adapter="llvmpipe (LLVM 22.1.8, 256 bits)" backend=vulkan maxSSBO=134217728 maxBuf=2147483647
+[1.5 2.5] &lt;nil&gt; llvmpipe (LLVM 22.1.8, 256 bits)
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified
+
+Authorization required, but no authorization protocol specified</code></pre>
 
 </section>
 
