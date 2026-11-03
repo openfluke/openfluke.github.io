@@ -538,5 +538,54 @@
     "stdout": "NVIDIA CUDA results pointers (not a live benchmark)\n\nEngine pin: welvet.cuda 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativecuda (Welvet v1.4.0)\nUsage tour: 89 mount \u00b7 90 Mamba dtypes \u00b7 91 train modes \u00b7 92 SyncToGo/ENTITY \u00b7 93 JSON \u00b7 94 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_cuda -count=1 -timeout 180m\n  cd ../../welvet.cuda/examples/cuda_smoke && go run .\n\nInstall shared library into Go:\n  cd ../../welvet.cuda && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_nvidia.sh\n",
     "stderr": "",
     "combined": "NVIDIA CUDA results pointers (not a live benchmark)\n\nEngine pin: welvet.cuda 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativecuda (Welvet v1.4.0)\nUsage tour: 89 mount \u00b7 90 Mamba dtypes \u00b7 91 train modes \u00b7 92 SyncToGo/ENTITY \u00b7 93 JSON \u00b7 94 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_cuda -count=1 -timeout 180m\n  cd ../../welvet.cuda/examples/cuda_smoke && go run .\n\nInstall shared library into Go:\n  cd ../../welvet.cuda && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_nvidia.sh"
+  },
+  "96-amd-rocm": {
+    "exit_code": 0,
+    "stdout": "SKIP: ROCm unavailable (nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "stderr": "",
+    "combined": "SKIP: ROCm unavailable (nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "seconds": 5.11
+  },
+  "97-amd-mamba-dtypes": {
+    "exit_code": 0,
+    "stdout": "SKIP: ROCm unavailable (nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "stderr": "",
+    "combined": "SKIP: ROCm unavailable (nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "seconds": 0.97
+  },
+  "98-amd-training": {
+    "exit_code": 0,
+    "stdout": "SKIP: ROCm unavailable (nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "stderr": "",
+    "combined": "SKIP: ROCm unavailable (nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "seconds": 0.94
+  },
+  "99-amd-save-weights": {
+    "exit_code": 0,
+    "stdout": "SKIP: ROCm unavailable (nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "stderr": "",
+    "combined": "SKIP: ROCm unavailable (nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "seconds": 1.12
+  },
+  "100-amd-json-routing": {
+    "exit_code": 0,
+    "stdout": "layer=0 backend=cpu-tiled\nlayer=1 backend=rocm\nlayer=2 backend=rocm\nSKIP: ROCm train unavailable (stack fwd child 1: nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "stderr": "",
+    "combined": "layer=0 backend=cpu-tiled\nlayer=1 backend=rocm\nlayer=2 backend=rocm\nSKIP: ROCm train unavailable (stack fwd child 1: nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "seconds": 1.5
+  },
+  "101-amd-mixed-backends": {
+    "exit_code": 0,
+    "stdout": "SKIP: mixed train unavailable (stack fwd child 9: nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "stderr": "",
+    "combined": "SKIP: mixed train unavailable (stack fwd child 9: nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)",
+    "seconds": 1.53
+  },
+  "102-amd-rocm-results": {
+    "exit_code": 0,
+    "stdout": "AMD ROCm results pointers (not a live benchmark)\n\nEngine pin: welvet.rocm 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativerocm (Welvet v1.5.0)\nUsage tour: 96 mount \u00b7 97 Mamba dtypes \u00b7 98 train modes \u00b7 99 SyncToGo/ENTITY \u00b7 100 JSON \u00b7 101 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_rocm -count=1 -timeout 180m\n  cd ../../welvet.rocm/examples/rocm_smoke && go run .\n\nInstall shared library into Go:\n  cd ../../welvet.rocm && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_amd.sh",
+    "stderr": "",
+    "combined": "AMD ROCm results pointers (not a live benchmark)\n\nEngine pin: welvet.rocm 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativerocm (Welvet v1.5.0)\nUsage tour: 96 mount \u00b7 97 Mamba dtypes \u00b7 98 train modes \u00b7 99 SyncToGo/ENTITY \u00b7 100 JSON \u00b7 101 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_rocm -count=1 -timeout 180m\n  cd ../../welvet.rocm/examples/rocm_smoke && go run .\n\nInstall shared library into Go:\n  cd ../../welvet.rocm && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_amd.sh",
+    "seconds": 0.11
   }
 }

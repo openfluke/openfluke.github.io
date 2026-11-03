@@ -538,5 +538,47 @@
     "num": "95",
     "title": "NVIDIA CUDA \u2014 results and suite pointers",
     "has_main": true
+  },
+  {
+    "slug": "96-amd-rocm",
+    "num": "96",
+    "title": "AMD ROCm \u2014 mount and forward",
+    "has_main": true
+  },
+  {
+    "slug": "97-amd-mamba-dtypes",
+    "num": "97",
+    "title": "AMD ROCm \u2014 Mamba parameter dtypes",
+    "has_main": true
+  },
+  {
+    "slug": "98-amd-training",
+    "num": "98",
+    "title": "AMD ROCm \u2014 training modes",
+    "has_main": true
+  },
+  {
+    "slug": "99-amd-save-weights",
+    "num": "99",
+    "title": "AMD ROCm \u2014 weight return and ENTITY save",
+    "has_main": true
+  },
+  {
+    "slug": "100-amd-json-routing",
+    "num": "100",
+    "title": "AMD ROCm \u2014 JSON backend placement",
+    "has_main": true
+  },
+  {
+    "slug": "101-amd-mixed-backends",
+    "num": "101",
+    "title": "AMD ROCm \u2014 mixed Go/C++/ROCm",
+    "has_main": true
+  },
+  {
+    "slug": "102-amd-rocm-results",
+    "num": "102",
+    "title": "AMD ROCm \u2014 results and suite pointers",
+    "has_main": true
   }
 ]
