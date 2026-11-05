@@ -251,7 +251,9 @@ func run() error {
 	return nil
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: mixed Apple routing needs Apple silicon macOS and cgo</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>Go layers 0-3 -&gt; C++ layers 4-8 -&gt; Metal layers 9-12
+loss=0.0043765833 cpp calls=75 metal routing={Mounts:4 Forwards:40 Backwards:20 Updates:20 TrainingSteps:0}
+Float32 activations travel forward; gradients travel back; routed Metal weights return automatically to Go.</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/87-apple-mixed-backends &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

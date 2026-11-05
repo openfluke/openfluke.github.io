@@ -259,10 +259,7 @@ func run() error {
 	return nil
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>layer=0 backend=cpu-tiled
-layer=1 backend=rocm
-layer=2 backend=rocm
-SKIP: ROCm train unavailable (stack fwd child 1: nativerocm: load: libamdhip64.so.7: cannot open shared object file: No such file or directory)</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: ROCm JSON routing needs Linux amd64 and cgo</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/100-amd-json-routing &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 
