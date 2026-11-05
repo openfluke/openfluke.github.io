@@ -622,5 +622,29 @@
     "num": "109",
     "title": "Vulkan \u2014 results and suite pointers",
     "has_main": true
+  },
+  {
+    "slug": "110-apple-mlx",
+    "num": "110",
+    "title": "Apple MLX \u2014 SyncToMLX and forward",
+    "has_main": true
+  },
+  {
+    "slug": "111-apple-mlx-caps",
+    "num": "111",
+    "title": "Apple MLX \u2014 caps and dtype rejects",
+    "has_main": true
+  },
+  {
+    "slug": "112-apple-mlx-forward",
+    "num": "112",
+    "title": "Apple MLX \u2014 Dense prepare and Sequential",
+    "has_main": true
+  },
+  {
+    "slug": "113-apple-mlx-results",
+    "num": "113",
+    "title": "Apple MLX \u2014 go_v_mlx results pointers",
+    "has_main": true
   }
 ]

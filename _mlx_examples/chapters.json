@@ -1,0 +1,54 @@
+[
+  {
+    "slug": "110-apple-mlx",
+    "num": "110",
+    "title": "Apple MLX — SyncToMLX and forward",
+    "part": "XVI · Apple MLX acceleration (welvet.mlx)",
+    "pkg": "github.com/openfluke/welvet/nativemlx",
+    "status": "ok",
+    "status_label": "darwin arm64",
+    "why": "Run a Go Dense layer on Apple MLX GPU with an explicit SyncToMLX lifetime — forward-only, no Mount/TrainMSE twin.",
+    "what": "Install welvet.mlx, SyncToMLX an identity Dense, set BackendMLX, and forward a Float32 tensor.",
+    "body_extra": "<h2>User-owned sync</h2><p>MLX does not use <code>nativemetal.Mount</code>. Weights stay in Go Stores until you call <code>SyncToMLX</code> (caps-check + capture). Then set <code>Exec.Backend = core.BackendMLX</code> (or use <code>core.PreferMLX()</code> when the dylib + Metal GPU are ready) and call the ordinary layer <code>Forward</code>.</p><pre><code>must(layer.SyncToMLX())\nlayer.Exec.Backend = core.BackendMLX\n_, post, err := dense.Forward(layer, x)</code></pre><h2>Requirements and honesty</h2>\n<p>Go Welvet <strong>v1.7.0</strong> adds the independent <strong>welvet.mlx 1.0.0</strong> library at <a href=\"https://github.com/openfluke/welvet.mlx\">github.com/openfluke/welvet.mlx</a>. Install into the Go tree:</p>\n<pre><code>cd ../welvet.mlx\n./scripts/macos_install_go.sh</code></pre>\n<p>Needs <strong>Apple silicon macOS</strong>, cgo, shipped <code>libwelvet_mlx.dylib</code>, and a Metal GPU. <code>nativemlx.Available()</code> is false without Metal — there is <strong>no CPU fallback labeled as MLX</strong> and no silent fallthrough to <code>welvet.metal</code>. Other hosts print SKIP.</p>\n<p><strong>Forward-only:</strong> no TrainMSE / NormalBP / SyncToGo train loop on MLX. <code>SyncFromMLX</code> exists for API symmetry (mirror → Go) but forward does not mutate W. Caps reject unsupported layer×dtype mounts.</p>\n<p>Sibling contract: <a href=\"https://github.com/openfluke/welvet.mlx/blob/main/docs/MLX_ONLY.md\">docs/MLX_ONLY.md</a>. Caps tour: <a href=\"111-apple-mlx-caps.html\">§111</a>. Dense + Sequential: <a href=\"112-apple-mlx-forward.html\">§112</a>. Live matrices: <a href=\"113-apple-mlx-results.html\">§113</a>. Metal train twin remains <a href=\"82-apple-metal.html\">§82–88</a>.</p>",
+    "run": "cd welvet/examples/110-apple-mlx && source ../env.sh && go run ."
+  },
+  {
+    "slug": "111-apple-mlx-caps",
+    "num": "111",
+    "title": "Apple MLX — caps and dtype rejects",
+    "part": "XVI · Apple MLX acceleration (welvet.mlx)",
+    "pkg": "github.com/openfluke/welvet/nativemlx",
+    "status": "ok",
+    "status_label": "darwin arm64",
+    "why": "Unsupported mounts must hard-fail before any GPU work — not soft-fallback to Go labeled as MLX.",
+    "what": "Print SupportedLayers, accept dense/float32, and show RequireLayer rejecting dense/float64.",
+    "body_extra": "<h2>Caps table</h2><p><code>nativemlx.LayerSupported(layer, dtype)</code> and <code>SupportedLayers()</code> mirror the welvet.mlx C ABI caps. <code>SyncToMLX</code> / <code>RequireLayer</code> refuse anything outside that table. Dense GPU compute rejects <strong>float64</strong>; host I/O stays Float32 activations with FormatNone parameter storage.</p><p>welvet.mlx <strong>1.0.0</strong> caps list the signed leaf ops (Dense, Softmax, RMSNorm, LayerNorm, CNN2/3, ConvT2/3, LSTM, Embedding, Residual, SwiGLU, MHA). <strong>Sequential</strong> is a container that mounts supported children — see <a href=\"112-apple-mlx-forward.html\">§112</a>. Full dtype matrix: <a href=\"https://github.com/openfluke/welvet.mlx/blob/main/docs/FORWARD_CHECKLIST.md\">FORWARD_CHECKLIST.md</a>.</p><p>Requirements: <a href=\"110-apple-mlx.html\">chapter 110</a>.</p>",
+    "run": "cd welvet/examples/111-apple-mlx-caps && source ../env.sh && go run ."
+  },
+  {
+    "slug": "112-apple-mlx-forward",
+    "num": "112",
+    "title": "Apple MLX — Dense prepare and Sequential",
+    "part": "XVI · Apple MLX acceleration (welvet.mlx)",
+    "pkg": "github.com/openfluke/welvet/nativemlx",
+    "status": "ok",
+    "status_label": "darwin arm64",
+    "why": "Show prepare-once Dense execute and a small Sequential tower on the same MLX session.",
+    "what": "SyncToMLX a Dense with PrepareMLX, then SyncToMLX a two-Dense Sequential and forward once.",
+    "body_extra": "<h2>Prepare vs online</h2><p>Dense can <code>PrepareMLX(batch)</code> outside the timed loop so repeated <code>Forward</code> calls stay execute-only. Sequential rebuilds a welvet.mlx Sequential from supported children (Dense / Softmax / RMSNorm / LayerNorm today) and host-ping-pongs child MLX evals.</p><p>These shapes are API demos — not performance claims. Live large-shape matrices live in w2a <code>go_v_mlx</code> (<a href=\"113-apple-mlx-results.html\">§113</a>).</p><p>Requirements: <a href=\"110-apple-mlx.html\">chapter 110</a>.</p>",
+    "run": "cd welvet/examples/112-apple-mlx-forward && source ../env.sh && go run ."
+  },
+  {
+    "slug": "113-apple-mlx-results",
+    "num": "113",
+    "title": "Apple MLX — go_v_mlx results pointers",
+    "part": "XVI · Apple MLX acceleration (welvet.mlx)",
+    "pkg": "github.com/openfluke/w2a/suites/go_v_mlx",
+    "status": "ok",
+    "status_label": "host-only pointers",
+    "why": "Find the sibling harness and live MLX parity matrices after the small usage chapters.",
+    "what": "Print Go v1.7.0 / welvet.mlx 1.0.0 pins and commands for w2a go_v_mlx. No GPU required.",
+    "body_extra": "<h2>Where live results live</h2><p>This chapter is host-only. It does not claim timings from loading the page. Sibling MLX engine: <a href=\"https://github.com/openfluke/welvet.mlx\">github.com/openfluke/welvet.mlx</a>. Suite README: <a href=\"https://github.com/openfluke/w2a/blob/main/suites/go_v_mlx/README.md\">w2a/suites/go_v_mlx</a>.</p><pre><code>cd ../../w2a &amp;&amp; go test ./tests/go_v_mlx -count=1 -timeout 60m\ncd ../../welvet.mlx &amp;&amp; ./scripts/macos_install_go.sh\ncd welvet/examples &amp;&amp; ./run_mlx.sh</code></pre><p>Engine pin: <strong>welvet.mlx 1.0.0</strong>, Go binding <code>nativemlx</code> (Welvet <strong>v1.7.0</strong>). Platform: Apple silicon macOS for SyncToMLX / BackendMLX. Pure-MLX contract: no silent CPU path labeled MLX; no TrainMSE on MLX.</p><p>Requirements overview: <a href=\"110-apple-mlx.html\">chapter 110</a>.</p>",
+    "run": "cd welvet/examples/113-apple-mlx-results && source ../env.sh && go run ."
+  }
+]

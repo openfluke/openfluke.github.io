@@ -415,9 +415,9 @@
   },
   "64-scorecard": {
     "exit_code": 0,
-    "stdout": "v1.6.0\nscorecard 100/100\n",
+    "stdout": "v1.7.0\nscorecard 100/100\n",
     "stderr": "",
-    "combined": "v1.6.0\nscorecard 100/100"
+    "combined": "v1.7.0\nscorecard 100/100"
   },
   "76-nativecpu": {
     "exit_code": 0,
@@ -622,5 +622,29 @@
     "stdout": "Vulkan results pointers (not a live benchmark)\n\nEngine pin: welvet.vulkan 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativevulkan (Welvet v1.6.0)\nUsage tour: 103 mount \u00b7 104 Mamba dtypes \u00b7 105 train modes \u00b7 106 SyncToGo/ENTITY \u00b7 107 JSON \u00b7 108 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_vulkan -count=1 -timeout 180m\n  cd ../../welvet.vulkan && ./scripts/build_linux.sh && ./build/example_vulkan_smoke\n\nInstall shared library into Go:\n  cd ../../welvet.vulkan && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_vulkan.sh\n",
     "stderr": "",
     "combined": "Vulkan results pointers (not a live benchmark)\n\nEngine pin: welvet.vulkan 0.79 \u00b7 model ABI 1 \u00b7 Go binding: nativevulkan (Welvet v1.6.0)\nUsage tour: 103 mount \u00b7 104 Mamba dtypes \u00b7 105 train modes \u00b7 106 SyncToGo/ENTITY \u00b7 107 JSON \u00b7 108 mixed\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_vulkan -count=1 -timeout 180m\n  cd ../../welvet.vulkan && ./scripts/build_linux.sh && ./build/example_vulkan_smoke\n\nInstall shared library into Go:\n  cd ../../welvet.vulkan && ./scripts/linux_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_vulkan.sh"
+  },
+  "110-apple-mlx": {
+    "exit_code": 0,
+    "stdout": "version 1.0.0\navailable true\nprefer mlx\nbackend=mlx synced=true\ninput=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]\n",
+    "stderr": "",
+    "combined": "version 1.0.0\navailable true\nprefer mlx\nbackend=mlx synced=true\ninput=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]"
+  },
+  "111-apple-mlx-caps": {
+    "exit_code": 0,
+    "stdout": "version 1.0.0\nsupported_layers dense,softmax,rmsnorm,layernorm,cnn2,cnn3,convt2,convt3,lstm,embedding,residual,swiglu,mha\ndense/float32 true\ndense/float64 false\nRequireLayer dense/float32: ok\nRequireLayer dense/float64: nativemlx: reject dense/float64 \u2014 not supported on MLX GPU (see SupportedLayers)\n",
+    "stderr": "",
+    "combined": "version 1.0.0\nsupported_layers dense,softmax,rmsnorm,layernorm,cnn2,cnn3,convt2,convt3,lstm,embedding,residual,swiglu,mha\ndense/float32 true\ndense/float64 false\nRequireLayer dense/float32: ok\nRequireLayer dense/float64: nativemlx: reject dense/float64 \u2014 not supported on MLX GPU (see SupportedLayers)"
+  },
+  "112-apple-mlx-forward": {
+    "exit_code": 0,
+    "stdout": "dense prepare+exec out=[0.15 0.35 0.5500001 0.75]\nsequential mlx out=[1 2 3] synced=true\n",
+    "stderr": "",
+    "combined": "dense prepare+exec out=[0.15 0.35 0.5500001 0.75]\nsequential mlx out=[1 2 3] synced=true"
+  },
+  "113-apple-mlx-results": {
+    "exit_code": 0,
+    "stdout": "Apple MLX results pointers (not a live benchmark)\n\nEngine pin: welvet.mlx 1.0.0 \u00b7 Go binding: nativemlx (Welvet v1.7.0)\nUsage tour: 110 SyncToMLX \u00b7 111 caps \u00b7 112 Dense/Sequential \u00b7 113 pointers\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_mlx -count=1 -timeout 60m\n  cd ../../welvet.mlx && ./scripts/macos_build_w2a.sh\n\nInstall shared library into Go:\n  cd ../../welvet.mlx && ./scripts/macos_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_mlx.sh\n",
+    "stderr": "",
+    "combined": "Apple MLX results pointers (not a live benchmark)\n\nEngine pin: welvet.mlx 1.0.0 \u00b7 Go binding: nativemlx (Welvet v1.7.0)\nUsage tour: 110 SyncToMLX \u00b7 111 caps \u00b7 112 Dense/Sequential \u00b7 113 pointers\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_mlx -count=1 -timeout 60m\n  cd ../../welvet.mlx && ./scripts/macos_build_w2a.sh\n\nInstall shared library into Go:\n  cd ../../welvet.mlx && ./scripts/macos_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_mlx.sh"
   }
 }
