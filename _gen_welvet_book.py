@@ -4041,7 +4041,27 @@ def title_page(version: str, pdf_name: str, chs: list[Chapter]) -> str:
 </div>
 </div>
 
-<!-- Architecture Video Showcase (hand content — keep in generator so release.sh doesn't wipe it) -->
+<!-- Video showcase (hand content — keep in generator so release.sh doesn't wipe it) -->
+<div class="video-showcase-section">
+<div class="vss-header">
+<span class="vss-badge">Welvet 1.7</span>
+<h2>Continuous On-Device AI Training &amp; Volumetric Architecture</h2>
+<p>Welvet the Go AI engine — on-device training, volumetric nets, and the 1.7 path.</p>
+</div>
+<div class="hero-media-container">
+<div class="hero-media-backdrop"></div>
+<div class="hero-media-frame">
+<div class="hero-media-bar">
+<div class="bar-dots"><span></span><span></span><span></span></div>
+<div class="bar-title">Welvet 1.7 · Continuous On-Device AI Training &amp; Volumetric Architecture</div>
+</div>
+<div class="video-wrap">
+<iframe src="https://www.youtube-nocookie.com/embed/f9UBcRNHj4Y" title="Welvet 1.7: Continuous On-Device AI Training &amp; Volumetric Architecture" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+</div>
+</div>
+</div>
+
 <div class="video-showcase-section">
 <div class="vss-header">
 <span class="vss-badge">Architecture Walkthrough</span>
