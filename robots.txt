@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://openfluke.github.io/sitemap.xml

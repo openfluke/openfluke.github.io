@@ -32,6 +32,44 @@ DIST = ROOT / "dist"
 CHROME_PROFILE = Path.home() / ".cache" / "welvet-book-chrome"
 RELEASES_URL = "https://github.com/openfluke/openfluke.github.io/releases"
 LOGO_NAME = "openflukelogo_notxt.png"
+SITE_ORIGIN = "https://openfluke.github.io"
+# Search / discovery phrasing — keep in sync with title page + README lead.
+SEO_TAGLINE = "Welvet is a Go AI engine"
+SEO_DESCRIPTION = (
+    "Welvet is a Go AI engine (Golang): layers, 34 dtypes, 20 quant formats, "
+    "CPU/SIMD/WebGPU paths, plus optional native GPU backends. "
+    "OpenFluke feature book with runnable Go examples."
+)
+SEO_KEYWORDS = (
+    "Welvet, Go AI engine, Golang AI engine, Go machine learning, "
+    "Golang neural network, Go deep learning, AI engine in Go, "
+    "OpenFluke, WebGPU Go, Welvet feature book"
+)
+
+
+def seo_head(
+    *,
+    title: str,
+    description: str,
+    path: str,
+    keywords: str = SEO_KEYWORDS,
+    extra: str = "",
+) -> str:
+    """Shared title/description/keywords + Open Graph for GitHub Pages."""
+    canon = f"{SITE_ORIGIN}{path}" if path.startswith("/") else f"{SITE_ORIGIN}/{path}"
+    return f"""<title>{esc(title)}</title>
+<meta name="description" content="{esc(description)}"/>
+<meta name="keywords" content="{esc(keywords)}"/>
+<link rel="canonical" href="{esc(canon)}"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="{esc(title)}"/>
+<meta property="og:description" content="{esc(description)}"/>
+<meta property="og:url" content="{esc(canon)}"/>
+<meta property="og:site_name" content="Welvet · OpenFluke"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="{esc(title)}"/>
+<meta name="twitter:description" content="{esc(description)}"/>
+{extra}""".rstrip()
 
 
 @dataclass
@@ -3687,11 +3725,20 @@ def render_chapter(
     next_a = f'<a href="../toc.html">Contents →</a>' if next_ is None else f'<a href="{next_.slug}.html">{esc(next_.num)}. {esc(next_.title[:40])} →</a>'
     body = chapter_body_html(c, run_info)
 
+    ch_title = f"{c.num}. {c.title} — Welvet"
+    if c.slug == "01-welvet":
+        ch_title = f"{c.num}. {c.title} — Welvet Go AI engine"
+        ch_desc = SEO_DESCRIPTION
+    else:
+        ch_desc = (
+            f"{c.title} in Welvet, the Go AI engine. "
+            f"{re.sub(r'<[^>]+>', '', c.what)[:160]}".strip()
+        )
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>{esc(c.num)}. {esc(c.title)} — Welvet</title>
+{seo_head(title=ch_title, description=ch_desc, path=f"/welvet/chapters/{c.slug}.html")}
 <link rel="stylesheet" href="../assets/book.css"/>
 </head>
 <body>
@@ -3920,12 +3967,45 @@ def title_page(version: str, pdf_name: str, chs: list[Chapter]) -> str:
         f'<div class="stat-label">{esc(lbl)}</div></div>'
         for n, lbl in stats
     )
+    json_ld = (
+        '<script type="application/ld+json">'
+        + json.dumps(
+            {
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                "name": "Welvet",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Cross-platform",
+                "description": SEO_DESCRIPTION,
+                "softwareVersion": version.lstrip("v"),
+                "url": f"{SITE_ORIGIN}/welvet/",
+                "codeRepository": "https://github.com/openfluke/welvet",
+                "programmingLanguage": "Go",
+                "author": {
+                    "@type": "Person",
+                    "name": "Samuel Watson",
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "OpenFluke",
+                    "url": SITE_ORIGIN,
+                },
+                "keywords": SEO_KEYWORDS,
+            },
+            ensure_ascii=True,
+        )
+        + "</script>"
+    )
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Welvet · Feature Book</title>
-<meta name="description" content="Welvet feature book: why and what for every engine package, with runnable Go examples."/>
+{seo_head(
+        title="Welvet · Go AI engine · Feature Book",
+        description=SEO_DESCRIPTION,
+        path="/welvet/",
+        extra=json_ld,
+    )}
 <link rel="stylesheet" href="assets/book.css"/>
 </head>
 <body>
@@ -3933,9 +4013,9 @@ def title_page(version: str, pdf_name: str, chs: list[Chapter]) -> str:
 <div class="title-card landing">
 <div class="tc-main">
 {title_logo_html()}
-<span class="title-badge"><span class="dot"></span>OpenFluke feature book</span>
+<span class="title-badge"><span class="dot"></span>OpenFluke · Go AI engine</span>
 <h1><span class="grad">Welvet</span></h1>
-<p class="subtitle">Why and what for every engine package, with runnable Go examples. Built from the Welvet tree, not a loom paste.</p>
+<p class="subtitle">{esc(SEO_TAGLINE)} — why and what for every package, with runnable Go examples. Built from the Welvet tree, not a loom paste.</p>
 <div class="cta-row">
 <a class="btn btn-primary" href="toc.html">Read the contents</a>
 <a class="btn btn-ghost" href="chapters/01-welvet.html">Start reading</a>
@@ -3973,10 +4053,10 @@ def title_page(version: str, pdf_name: str, chs: list[Chapter]) -> str:
 <div class="hero-media-frame">
 <div class="hero-media-bar">
 <div class="bar-dots"><span></span><span></span><span></span></div>
-<div class="bar-title">Welvet &amp; 3D Wafer Stacking Architecture · Key to the Future</div>
+<div class="bar-title">Welvet Go AI Engine &amp; 3D Wafer Stacking · Key to the Future</div>
 </div>
 <div class="video-wrap">
-<iframe src="https://www.youtube-nocookie.com/embed/A1ugDKbOgnI" title="Welvet AI Engine Overview Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe src="https://www.youtube-nocookie.com/embed/A1ugDKbOgnI" title="Welvet Go AI Engine Overview Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 </div>
 </div>
 </div>
@@ -4011,8 +4091,12 @@ def toc_page(chs: list[Chapter], version: str) -> str:
     parts.append("</aside>")
     nav = "\n".join(parts)
 
-    body = ['<p class="lede">One chapter per Welvet feature. Each page: <strong>why</strong>, <strong>what</strong>, status, and a <strong>Go example</strong>.</p>',
-            f'<div class="pill-row"><span class="pill">{len(chs)} chapters</span><span class="pill">engine · layers · runtime · systems · model · apps · stubs · w2a</span></div>']
+    body = [
+        f'<p class="lede"><strong>{esc(SEO_TAGLINE)}</strong>. '
+        'One chapter per feature: <strong>why</strong>, <strong>what</strong>, status, and a <strong>Go example</strong>.</p>',
+        f'<div class="pill-row"><span class="pill">{len(chs)} chapters</span>'
+        '<span class="pill">Go AI engine · layers · runtime · systems · model · apps · stubs · w2a</span></div>',
+    ]
     for part, slugs in PARTS_NAV:
         body.append(f'<p class="part">{esc(part)}</p><ul class="toc-list">')
         for s in slugs:
@@ -4028,7 +4112,11 @@ def toc_page(chs: list[Chapter], version: str) -> str:
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Contents — Welvet Feature Book</title>
+{seo_head(
+        title="Contents — Welvet Go AI engine · Feature Book",
+        description=f"Table of contents for the Welvet feature book. {SEO_DESCRIPTION}",
+        path="/welvet/toc.html",
+    )}
 <link rel="stylesheet" href="assets/book.css"/>
 </head>
 <body>
@@ -4168,7 +4256,8 @@ def render_print_document(
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>Welvet Feature Book {esc(version)}</title>
+<title>Welvet Go AI engine · Feature Book {esc(version)}</title>
+<meta name="description" content="{esc(SEO_DESCRIPTION)}"/>
 <link rel="stylesheet" href="assets/book.css"/>
 <link rel="stylesheet" href="assets/book-print.css"/>
 </head>
@@ -4176,9 +4265,9 @@ def render_print_document(
 <main class="print-cover title-page">
 <div class="title-card">
 {title_logo_html()}
-<p class="eyebrow">OpenFluke · github.com/openfluke/welvet</p>
+<p class="eyebrow">OpenFluke · Go AI engine · github.com/openfluke/welvet</p>
 <h1>Welvet</h1>
-<p class="subtitle">Feature book — why and what for every engine package, with runnable Go examples.</p>
+<p class="subtitle">{esc(SEO_TAGLINE)} — feature book: why and what for every package, with runnable Go examples.</p>
 <div class="title-meta">
 <div><strong>Version</strong> {esc(version)}</div>
 <div><strong>Generated</strong> from welvet/README.md scorecard</div>
@@ -4343,14 +4432,45 @@ def main() -> None:
     (BOOK / "index.html").write_text(title_page(version, pdf_name, chs), encoding="utf-8")
     (BOOK / "toc.html").write_text(toc_page(chs, version), encoding="utf-8")
     (ROOT / "index.html").write_text(
-        "<!DOCTYPE html><meta charset=utf-8><meta http-equiv=refresh content='0;url=welvet/'>"
-        "<title>OpenFluke</title><a href='welvet/'>Welvet feature book</a>\n",
+        "<!DOCTYPE html>\n"
+        '<html lang="en"><head>\n'
+        '<meta charset="utf-8"/>\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1"/>\n'
+        f'<meta http-equiv="refresh" content="0;url=welvet/"/>\n'
+        f"{seo_head(title='Welvet · Go AI engine · OpenFluke', description=SEO_DESCRIPTION, path='/')}\n"
+        "</head><body>\n"
+        f"<p><strong>{esc(SEO_TAGLINE)}</strong> — "
+        '<a href="welvet/">Welvet feature book</a> '
+        '(Go / Golang AI engine docs &amp; examples).</p>\n'
+        "</body></html>\n",
+        encoding="utf-8",
+    )
+    sitemap_urls = [
+        f"{SITE_ORIGIN}/",
+        f"{SITE_ORIGIN}/welvet/",
+        f"{SITE_ORIGIN}/welvet/toc.html",
+        *[f"{SITE_ORIGIN}/welvet/chapters/{c.slug}.html" for c in chs],
+    ]
+    (ROOT / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "".join(f"  <url><loc>{esc(u)}</loc></url>\n" for u in sitemap_urls)
+        + "</urlset>\n",
+        encoding="utf-8",
+    )
+    (ROOT / "robots.txt").write_text(
+        "User-agent: *\n"
+        "Allow: /\n"
+        f"Sitemap: {SITE_ORIGIN}/sitemap.xml\n",
         encoding="utf-8",
     )
     (ROOT / ".nojekyll").write_text("", encoding="utf-8")
     (ROOT / "README.md").write_text(
         "# openfluke.github.io\n\n"
-        "**[Welvet feature book](welvet/)** — why/what for every engine package with runnable Go examples.\n\n"
+        f"**{SEO_TAGLINE}.** "
+        "**[Feature book](welvet/)** — why/what for every package with runnable Go examples.\n\n"
+        "Keywords for discovery: Go AI engine, Golang AI, Go machine learning, "
+        "Golang neural network, OpenFluke Welvet.\n\n"
         "```bash\n"
         "python3 _gen_welvet_book.py --run          # HTML + examples + captured outputs\n"
         "python3 _gen_welvet_book.py --run --pdf    # + PDF in dist/ (upload to GitHub Release)\n"

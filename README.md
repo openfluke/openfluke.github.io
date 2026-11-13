@@ -1,6 +1,8 @@
 # openfluke.github.io
 
-**[Welvet feature book](welvet/)** — why/what for every engine package with runnable Go examples.
+**Welvet is a Go AI engine.** **[Feature book](welvet/)** — why/what for every package with runnable Go examples.
+
+Keywords for discovery: Go AI engine, Golang AI, Go machine learning, Golang neural network, OpenFluke Welvet.
 
 ```bash
 python3 _gen_welvet_book.py --run          # HTML + examples + captured outputs
