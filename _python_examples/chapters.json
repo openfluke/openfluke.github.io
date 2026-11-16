@@ -1,0 +1,54 @@
+[
+  {
+    "slug": "114-python-install",
+    "num": "114",
+    "title": "Python C-ABI — install and Dense forward",
+    "part": "XVII · Python C-ABI (welvet on PyPI)",
+    "pkg": "welvet (PyPI)",
+    "status": "ok",
+    "status_label": "linux · macos arm64",
+    "why": "Use the same Welvet engine from Python via ctypes over a prebuilt C ABI — no Go toolchain required for day-to-day scripts.",
+    "what": "Install <code>welvet==1.1.2</code>, assert the CABI contract, create a CPU grid, place a Dense layer, and run one forward.",
+    "body_extra": "<h2>Package vs engine</h2><p>Python package / CABI contract is <strong>1.1.2</strong>. The Go engine behind the shared library is Welvet <strong>v1.7.3</strong>. Wheels ship the matching <code>welvet.so</code> / <code>welvet.dylib</code> (Linux x86_64 manylinux includes CUDA/ROCm/Vulkan/cpp siblings; macOS arm64 includes Metal).</p><pre><code>pip install welvet==1.1.2</code></pre><p>Replaces the Loom-era PyPI line (<code>welvet==0.80.0</code>). Prefer <code>create_grid</code> + <code>place_*</code> over legacy Loom network helpers. Sibling docs: <a href=\"https://github.com/openfluke/w2a/blob/main/python/README.md\">w2a/python/README.md</a>. Backends: <a href=\"115-python-backends.html\">§115</a>. Train + entity: <a href=\"116-python-train-entity.html\">§116</a>. Layers: <a href=\"117-python-layers.html\">§117</a>.</p>",
+    "run": "cd welvet/examples/114-python-install && PYTHONPATH=../../../w2a/python/src python3 main.py"
+  },
+  {
+    "slug": "115-python-backends",
+    "num": "115",
+    "title": "Python C-ABI — list backends and pick one",
+    "part": "XVII · Python C-ABI (welvet on PyPI)",
+    "pkg": "welvet (PyPI)",
+    "status": "ok",
+    "status_label": "accel soft-SKIP",
+    "why": "Accelerators are opt-in at runtime. Scripts should probe what this host can run instead of hard-coding CUDA or Metal.",
+    "what": "Print <code>list_backends()</code>, then create a grid on the first available accelerator (or CPU), place Dense, and forward once.",
+    "body_extra": "<h2>Backend ids</h2><p><code>cpu_tiled</code> · <code>simd</code> · <code>webgpu</code> · <code>native_cpu</code> · <code>cuda</code> · <code>metal</code> · <code>rocm</code> · <code>vulkan</code> · <code>qnn</code> · <code>mlx</code>. Routed GPU backends enable Go <code>EnableRouting</code> inside the CABI. For <code>qnn</code> / <code>mlx</code>, call <code>prepare_grid</code> after <code>place_*</code> (SyncTo* before forward) — see <a href=\"117-python-layers.html\">§117</a>.</p><p>Missing sibling libs or no GPU print as <code>available: false</code>; create_grid with an unavailable name raises. Prefer probe → pick → place. Go twins: <a href=\"89-nvidia-cuda.html\">§89 CUDA</a> · <a href=\"82-apple-metal.html\">§82 Metal</a> · <a href=\"110-apple-mlx.html\">§110 MLX</a>.</p>",
+    "run": "cd welvet/examples/115-python-backends && PYTHONPATH=../../../w2a/python/src python3 main.py"
+  },
+  {
+    "slug": "116-python-train-entity",
+    "num": "116",
+    "title": "Python C-ABI — train SGD and .entity round-trip",
+    "part": "XVII · Python C-ABI (welvet on PyPI)",
+    "pkg": "welvet (PyPI)",
+    "status": "ok",
+    "status_label": "cpu_tiled",
+    "why": "Training and checkpoints should match the Go ENTITY path so Python scripts can hand off to Go apps (and back).",
+    "what": "Train one Dense step with <code>train_sgd</code>, serialize to .entity bytes, deserialize a second grid, and free both handles.",
+    "body_extra": "<h2>Checkpoint bytes</h2><p><code>serialize_entity</code> returns the same Welvet .entity blob the Go engine writes. <code>deserialize_entity</code> returns a new grid handle — always <code>free_grid</code> both. For cameral / named train modes see Go book <a href=\"67-train-modes.html\">§67</a> and Python <code>list_named_train_modes()</code> / <code>train_stack_mse</code>.</p><p>Requirements: <a href=\"114-python-install.html\">chapter 114</a>.</p>",
+    "run": "cd welvet/examples/116-python-train-entity && PYTHONPATH=../../../w2a/python/src python3 main.py"
+  },
+  {
+    "slug": "117-python-layers",
+    "num": "117",
+    "title": "Python C-ABI — MHA place and prepare_grid",
+    "part": "XVII · Python C-ABI (welvet on PyPI)",
+    "pkg": "welvet (PyPI)",
+    "status": "ok",
+    "status_label": "cpu · accel prepare",
+    "why": "Not every layer is Dense. Python <code>place</code> takes the same kind strings as Go; some accelerators need an explicit prepare/Sync before forward.",
+    "what": "Place an MHA layer with a shaped forward, list layer kinds, and show the <code>prepare_grid</code> call used for qnn/mlx mounts.",
+    "body_extra": "<h2>place kinds</h2><p><code>place(handle, kind, spec)</code> accepts Dense, Softmax, RMSNorm, LayerNorm, MHA, SwiGLU, CNN*, LSTM, Embedding, Residual, Sequential, and friends — see <code>list_layer_types()</code>. Shaped tensors use the <code>shape=</code> argument on <code>forward</code>.</p><p><code>prepare_grid</code> runs SyncTo* for backends that need an explicit mount (notably <code>qnn</code> / <code>mlx</code>). Routed CUDA/Metal/ROCm/Vulkan usually do not need it after <code>create_grid(backend=…)</code>. Release assets: GitHub <code>cabi-v1.1.2</code> · PyPI <code>welvet==1.1.2</code>.</p>",
+    "run": "cd welvet/examples/117-python-layers && PYTHONPATH=../../../w2a/python/src python3 main.py"
+  }
+]

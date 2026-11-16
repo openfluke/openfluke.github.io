@@ -646,5 +646,29 @@
     "num": "113",
     "title": "Apple MLX \u2014 go_v_mlx results pointers",
     "has_main": true
+  },
+  {
+    "slug": "114-python-install",
+    "num": "114",
+    "title": "Python C-ABI \u2014 install and Dense forward",
+    "has_main": true
+  },
+  {
+    "slug": "115-python-backends",
+    "num": "115",
+    "title": "Python C-ABI \u2014 list backends and pick one",
+    "has_main": true
+  },
+  {
+    "slug": "116-python-train-entity",
+    "num": "116",
+    "title": "Python C-ABI \u2014 train SGD and .entity round-trip",
+    "has_main": true
+  },
+  {
+    "slug": "117-python-layers",
+    "num": "117",
+    "title": "Python C-ABI \u2014 MHA place and prepare_grid",
+    "has_main": true
   }
 ]

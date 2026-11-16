@@ -1,6 +1,6 @@
 # Welvet book examples
 
-One `main.go` per runnable chapter (108 chapters total).
+One `main.go` per runnable chapter (112 chapters total).
 
 Apple GPU: chapters 82–88; run `./run_apple.sh` on Apple silicon macOS with both native libraries installed. See `82-apple-metal/README.md` for setup and `apple_stress_test/README.md` for benchmarks.
 
@@ -11,6 +11,8 @@ AMD GPU: chapters 96–102; run `./run_amd.sh` on Linux/Windows amd64 with `libw
 Vulkan GPU: chapters 103–109; run `./run_vulkan.sh` on Linux amd64 with `libwelvet_vulkan` + Vulkan loader/runtime (sibling github.com/openfluke/welvet.vulkan). Soft-SKIP without a GPU. No silent host fallback labeled as Vulkan.
 
 Apple MLX (v1.7): chapters 110–113; run `./run_mlx.sh` on Apple silicon macOS with `libwelvet_mlx` installed (sibling github.com/openfluke/welvet.mlx). Forward-only `nativemlx` / `BackendMLX` / `SyncToMLX`; validate with w2a `go_v_mlx`. No TrainMSE on MLX.
+
+Python C-ABI (v1.7.3 / PyPI 1.1.2): chapters 114–117; run `./run_python.sh` or `pip install welvet==1.1.2 && python3 main.py`. Soft-SKIP when an accelerator lib is present but no device.
 
 ```bash
 cd welvet/examples/01-welvet

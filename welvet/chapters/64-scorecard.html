@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>64. Scorecard → v1.0 / minors — Welvet</title>
-<meta name="description" content="Scorecard → v1.0 / minors in Welvet, the Go AI engine. version = 0.{round(earned)} until 100 → v1.0. Scorecard today 100/100; this book tags v1.7.0. Training credit is §9 on the board (8 pts), not an afterthought."/>
+<meta name="description" content="Scorecard → v1.0 / minors in Welvet, the Go AI engine. version = 0.{round(earned)} until 100 → v1.0. Scorecard today 100/100; this book tags v1.7.3. Training credit is §9 on the board (8 pts), not an afterthought."/>
 <meta name="keywords" content="Welvet, Go AI engine, Golang AI engine, Go machine learning, Golang neural network, Go deep learning, AI engine in Go, OpenFluke, WebGPU Go, Welvet feature book"/>
 <link rel="canonical" href="https://openfluke.github.io/welvet/chapters/64-scorecard.html"/>
 <meta property="og:type" content="website"/>
 <meta property="og:title" content="64. Scorecard → v1.0 / minors — Welvet"/>
-<meta property="og:description" content="Scorecard → v1.0 / minors in Welvet, the Go AI engine. version = 0.{round(earned)} until 100 → v1.0. Scorecard today 100/100; this book tags v1.7.0. Training credit is §9 on the board (8 pts), not an afterthought."/>
+<meta property="og:description" content="Scorecard → v1.0 / minors in Welvet, the Go AI engine. version = 0.{round(earned)} until 100 → v1.0. Scorecard today 100/100; this book tags v1.7.3. Training credit is §9 on the board (8 pts), not an afterthought."/>
 <meta property="og:url" content="https://openfluke.github.io/welvet/chapters/64-scorecard.html"/>
 <meta property="og:site_name" content="Welvet · OpenFluke"/>
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="64. Scorecard → v1.0 / minors — Welvet"/>
-<meta name="twitter:description" content="Scorecard → v1.0 / minors in Welvet, the Go AI engine. version = 0.{round(earned)} until 100 → v1.0. Scorecard today 100/100; this book tags v1.7.0. Training credit is §9 on the board (8 pts), not an afterthought."/>
+<meta name="twitter:description" content="Scorecard → v1.0 / minors in Welvet, the Go AI engine. version = 0.{round(earned)} until 100 → v1.0. Scorecard today 100/100; this book tags v1.7.3. Training credit is §9 on the board (8 pts), not an afterthought."/>
 <link rel="stylesheet" href="../assets/book.css"/>
 </head>
 <body>
 <a class="skip" href="#main">Skip</a>
 <div class="shell">
-<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.7.0</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
+<aside class="sidebar"><a class="brand" href="../index.html">Welvet</a><div class="brand-sub">Feature book · v1.7.3</div><div class="nav-group"><h2>Front</h2><a href="../index.html">Title</a><a href="../toc.html">Contents</a></div>
 <div class="nav-group"><h2>I · Orientation</h2>
 <a href="01-welvet.html">1. What Welvet is</a>
 <a href="02-tree.html">2. Repository map</a>
@@ -160,6 +160,12 @@
 <a href="112-apple-mlx-forward.html">112. Apple MLX</a>
 <a href="113-apple-mlx-results.html">113. Apple MLX</a>
 </div>
+<div class="nav-group"><h2>XVII · Python C-ABI (welvet on PyPI)</h2>
+<a href="114-python-install.html">114. Python C-ABI</a>
+<a href="115-python-backends.html">115. Python C-ABI</a>
+<a href="116-python-train-entity.html">116. Python C-ABI</a>
+<a href="117-python-layers.html">117. Python C-ABI</a>
+</div>
 </aside>
 <div class="main">
 <div class="topbar">
@@ -171,12 +177,12 @@
 
 <p class="chapter-kicker">Chapter 64</p>
 <h1>Scorecard → v1.0 / minors</h1>
-<p><span class="status ok">v1.7.0</span></p>
+<p><span class="status ok">v1.7.3</span></p>
 <hr class="rule"/>
 <h2>Why it exists</h2>
 <p>Version is earned from a weighted board, not marketing. v1.0 is 100/100 on the engine board. Minor/patch tags (v1.1.0, v1.1.1, …) pack features without a new board. Apps, stubs, and NPU sit off-board.</p>
 <h2>What it is</h2>
-<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>100/100</strong>; this book tags <strong>v1.7.0</strong>. Training credit is §9 on the board (8 pts), not an afterthought.</p>
+<p>version = 0.{round(earned)} until 100 → v1.0. Scorecard today <strong>100/100</strong>; this book tags <strong>v1.7.3</strong>. Training credit is §9 on the board (8 pts), not an afterthought.</p>
 
 <table><thead><tr><th>§</th><th>Area</th><th>Wt</th><th>Earned</th></tr></thead><tbody>
 <tr><td>1</td><td>Foundation</td><td>15</td><td>15</td></tr>
@@ -209,6 +215,7 @@ BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed p
 <li><strong>v1.1.7</strong> — Full NativeCPU TrainMode C ABI (stack/parallel/grid/line) +
 <code>SyncWeightsFromNative</code> (<a href="76-nativecpu.html">§76</a> ·
 <a href="77-native-layers.html">§77</a> · <a href="78-native-trainmodes.html">§78</a>)</li>
+<li><strong>v1.7.3</strong> — Python C-ABI <strong>1.1.2</strong> on PyPI (<code>pip install welvet==1.1.2</code>): <code>create_grid(backend=…)</code> + accel probe/routing for CUDA / Metal / ROCm / Vulkan / … Wheels ship matching <code>welvet.so</code> / <code>welvet.dylib</code>. Book <a href="114-python-install.html">§114–117</a>; Go engine remains 100/100.</li>
 <li><strong>v1.7.0</strong> — Apple MLX forward-only GPU via <code>nativemlx</code> + independent <a href="https://github.com/openfluke/welvet.mlx">welvet.mlx</a> <strong>1.0.0</strong>. Explicit <code>SyncToMLX</code> / <code>BackendMLX</code> / <code>PreferMLX</code> on <strong>Apple silicon macOS</strong>; no TrainMSE on MLX; caps reject unsupported mounts. <a href="110-apple-mlx.html">§110–113</a>; Go engine remains 100/100.</li>
 <li><strong>v1.6.0</strong> — Vulkan GPU via <code>nativevulkan</code> + independent <a href="https://github.com/openfluke/welvet.vulkan">welvet.vulkan</a> <strong>0.79</strong> (ABI 1). Explicit mount/train/SyncToGo on <strong>Linux x86_64</strong>; JSON Go/C++/Vulkan routing on Linux amd64. <a href="103-vulkan-mount.html">§103–109</a>; Go engine remains 100/100. Pure-Vulkan contract: no silent host fallback labeled as Vulkan.</li>
 <li><strong>v1.5.0</strong> — AMD GPU via <code>nativerocm</code> + independent <a href="https://github.com/openfluke/welvet.rocm">welvet.rocm</a> <strong>0.79</strong> (ABI 1). Explicit mount/train/SyncToGo on <strong>Linux x86_64 + Windows amd64</strong>; JSON Go/C++/ROCm routing on Linux amd64. <a href="96-amd-rocm.html">§96–102</a>; Go engine remains 100/100. <strong>GPU compute untested</strong> until a ROCm-capable HSA device is available.</li>
@@ -239,7 +246,7 @@ import "fmt"
 
 func main() {
 	earned := 100.0
-	fmt.Println("v1.7.0")
+	fmt.Println("v1.7.3")
 	fmt.Printf("scorecard %.0f/100\n", earned)
 }</code></pre>
 <h3>Output</h3>

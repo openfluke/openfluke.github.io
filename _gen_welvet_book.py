@@ -2541,6 +2541,7 @@ BF16 convert; ~4.3× geo-mean on 34-dtype deep suite vs prior Go; Dense-backed p
 <li><strong>v1.1.7</strong> — Full NativeCPU TrainMode C ABI (stack/parallel/grid/line) +
 <code>SyncWeightsFromNative</code> (<a href="76-nativecpu.html">§76</a> ·
 <a href="77-native-layers.html">§77</a> · <a href="78-native-trainmodes.html">§78</a>)</li>
+<li><strong>v1.7.3</strong> — Python C-ABI <strong>1.1.2</strong> on PyPI (<code>pip install welvet==1.1.2</code>): <code>create_grid(backend=…)</code> + accel probe/routing for CUDA / Metal / ROCm / Vulkan / … Wheels ship matching <code>welvet.so</code> / <code>welvet.dylib</code>. Book <a href="114-python-install.html">§114–117</a>; Go engine remains 100/100.</li>
 <li><strong>v1.7.0</strong> — Apple MLX forward-only GPU via <code>nativemlx</code> + independent <a href="https://github.com/openfluke/welvet.mlx">welvet.mlx</a> <strong>1.0.0</strong>. Explicit <code>SyncToMLX</code> / <code>BackendMLX</code> / <code>PreferMLX</code> on <strong>Apple silicon macOS</strong>; no TrainMSE on MLX; caps reject unsupported mounts. <a href="110-apple-mlx.html">§110–113</a>; Go engine remains 100/100.</li>
 <li><strong>v1.6.0</strong> — Vulkan GPU via <code>nativevulkan</code> + independent <a href="https://github.com/openfluke/welvet.vulkan">welvet.vulkan</a> <strong>0.79</strong> (ABI 1). Explicit mount/train/SyncToGo on <strong>Linux x86_64</strong>; JSON Go/C++/Vulkan routing on Linux amd64. <a href="103-vulkan-mount.html">§103–109</a>; Go engine remains 100/100. Pure-Vulkan contract: no silent host fallback labeled as Vulkan.</li>
 <li><strong>v1.5.0</strong> — AMD GPU via <code>nativerocm</code> + independent <a href="https://github.com/openfluke/welvet.rocm">welvet.rocm</a> <strong>0.79</strong> (ABI 1). Explicit mount/train/SyncToGo on <strong>Linux x86_64 + Windows amd64</strong>; JSON Go/C++/ROCm routing on Linux amd64. <a href="96-amd-rocm.html">§96–102</a>; Go engine remains 100/100. <strong>GPU compute untested</strong> until a ROCm-capable HSA device is available.</li>
@@ -3575,6 +3576,9 @@ func main() {
     for item in json.loads((ROOT / "_mlx_examples" / "chapters.json").read_text(encoding="utf-8")):
         folder = ROOT / "_mlx_examples" / item["slug"]
         out.append(C(**item, example=(folder / "main.go").read_text(encoding="utf-8")))
+    for item in json.loads((ROOT / "_python_examples" / "chapters.json").read_text(encoding="utf-8")):
+        folder = ROOT / "_python_examples" / item["slug"]
+        out.append(C(**item, example=(folder / "main.py").read_text(encoding="utf-8")))
     return out
 
 
@@ -3623,6 +3627,9 @@ PARTS_NAV = [
     ("XVI · Apple MLX acceleration (welvet.mlx)", [
         "110-apple-mlx", "111-apple-mlx-caps", "112-apple-mlx-forward", "113-apple-mlx-results",
     ]),
+    ("XVII · Python C-ABI (welvet on PyPI)", [
+        "114-python-install", "115-python-backends", "116-python-train-entity", "117-python-layers",
+    ]),
 ]
 
 
@@ -3660,8 +3667,18 @@ def chapter_body_html(c: Chapter, run_info: dict | None, *, for_print: bool = Fa
     validate = f"<h3>Validate (harness)</h3>{code(c.run)}" if c.run else ""
 
     example_section = ""
+    is_python = c.example.strip().startswith(('"""', "'''", "from ", "import ")) and "package main" not in c.example
     if c.example.strip() and c.runnable:
-        run_cmd = f"cd welvet/examples/{c.slug} && source ../env.sh && go run ."
+        if is_python:
+            run_cmd = f"cd welvet/examples/{c.slug} && python3 main.py"
+            run_via = "python3 main.py"
+            src_name = "main.py"
+            heading = "Python example"
+        else:
+            run_cmd = f"cd welvet/examples/{c.slug} && source ../env.sh && go run ."
+            run_via = "go run ."
+            src_name = "main.go"
+            heading = "Go example"
         output_block = ""
         if run_info:
             exit_code = run_info.get("exit_code", 1)
@@ -3669,18 +3686,18 @@ def chapter_body_html(c: Chapter, run_info: dict | None, *, for_print: bool = Fa
             combined = run_info.get("combined", "").strip() or "(no output)"
             output_block = (
                 f'<p class="example-meta">exit {exit_code} · '
-                f'last run via <code>go run .</code></p>'
+                f'last run via <code>{esc(run_via)}</code></p>'
                 f'<pre class="{out_cls}"><code>{esc(combined)}</code></pre>'
             )
         file_line = ""
         if not for_print:
-            rel_go = f"../examples/{c.slug}/main.go"
-            file_line = f'<p><a class="go-file-link" href="{rel_go}">examples/{c.slug}/main.go</a></p>'
+            rel_src = f"../examples/{c.slug}/{src_name}"
+            file_line = f'<p><a class="go-file-link" href="{rel_src}">examples/{c.slug}/{src_name}</a></p>'
         else:
-            file_line = f"<p class=\"go-file-link\">examples/{esc(c.slug)}/main.go</p>"
+            file_line = f"<p class=\"go-file-link\">examples/{esc(c.slug)}/{esc(src_name)}</p>"
         example_section = f"""
 <section class="examples" id="examples">
-<h2>Go example</h2>
+<h2>{heading}</h2>
 {file_line}
 <div class="run-cmd"><span>Run:</span><code>{esc(run_cmd)}</code></div>
 {code(c.example)}
@@ -3690,9 +3707,10 @@ def chapter_body_html(c: Chapter, run_info: dict | None, *, for_print: bool = Fa
 </section>
 """
     elif c.example.strip():
+        heading = "Python example" if is_python else "Go example"
         example_section = f"""
 <section class="examples" id="examples">
-<h2>Go example</h2>
+<h2>{heading}</h2>
 {code(c.example)}
 {validate}
 </section>
@@ -3818,16 +3836,26 @@ def write_example_files(chs: list[Chapter]) -> None:
     for c in chs:
         if not c.runnable or not c.example.strip():
             continue
-        if "package main" not in c.example:
-            continue
         d = EXAMPLES / c.slug
         d.mkdir(parents=True, exist_ok=True)
-        (d / "main.go").write_text(c.example.strip() + "\n", encoding="utf-8")
-        for root_name in ("_apple_examples", "_nvidia_examples", "_amd_examples", "_vulkan_examples", "_mlx_examples"):
+        if "package main" in c.example:
+            (d / "main.go").write_text(c.example.strip() + "\n", encoding="utf-8")
+            src_skip = "main.go"
+        else:
+            (d / "main.py").write_text(c.example.strip() + "\n", encoding="utf-8")
+            src_skip = "main.py"
+        for root_name in (
+            "_apple_examples",
+            "_nvidia_examples",
+            "_amd_examples",
+            "_vulkan_examples",
+            "_mlx_examples",
+            "_python_examples",
+        ):
             source = ROOT / root_name / c.slug
             if source.is_dir():
                 for support in source.iterdir():
-                    if support.name != "main.go" and support.is_file():
+                    if support.name != src_skip and support.is_file():
                         shutil.copy2(support, d / support.name)
     (EXAMPLES / "_chapters.json").write_text(json.dumps([dict(slug=c.slug, num=c.num, title=c.title, has_main=c.runnable and bool(c.example.strip())) for c in chs], indent=2) + "\n", encoding="utf-8")
     apple = ROOT / "_apple_examples"
@@ -3845,6 +3873,9 @@ def write_example_files(chs: list[Chapter]) -> None:
     mlx = ROOT / "_mlx_examples"
     shutil.copy2(mlx / "run_mlx.sh", EXAMPLES / "run_mlx.sh")
     (EXAMPLES / "run_mlx.sh").chmod(0o755)
+    py = ROOT / "_python_examples"
+    shutil.copy2(py / "run_python.sh", EXAMPLES / "run_python.sh")
+    (EXAMPLES / "run_python.sh").chmod(0o755)
 
 
 def run_all_examples(chs: list[Chapter], timeout: float = 90.0) -> dict[str, dict]:
@@ -3872,10 +3903,49 @@ def run_all_examples(chs: list[Chapter], timeout: float = 90.0) -> dict[str, dic
         env=env,
     )
     results: dict[str, dict] = {}
+    w2a_src = ROOT.parent / "w2a" / "python" / "src"
+    py_env = {
+        **env,
+        "PYTHONPATH": str(w2a_src) + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else ""),
+    }
     for c in chs:
-        if not c.runnable or not c.example.strip() or "package main" not in c.example:
+        if not c.runnable or not c.example.strip():
             continue
         d = EXAMPLES / c.slug
+        is_python = "package main" not in c.example
+        if is_python:
+            if not (d / "main.py").is_file():
+                continue
+            print(f"  run {c.slug} (python) …", flush=True)
+            try:
+                proc = subprocess.run(
+                    ["python3", "main.py"],
+                    cwd=d,
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout,
+                    env=py_env,
+                )
+            except subprocess.TimeoutExpired:
+                results[c.slug] = {
+                    "exit_code": 124,
+                    "stdout": "",
+                    "stderr": f"timeout after {timeout}s",
+                    "combined": f"timeout after {timeout}s",
+                }
+                continue
+            combined = proc.stdout
+            if proc.stderr:
+                combined = (combined + "\n" if combined else "") + proc.stderr
+            results[c.slug] = {
+                "exit_code": proc.returncode,
+                "stdout": proc.stdout,
+                "stderr": proc.stderr,
+                "combined": _trim_output(combined.rstrip()),
+            }
+            mark = "OK" if proc.returncode == 0 else "FAIL"
+            print(f"    {mark} ({proc.returncode})", flush=True)
+            continue
         if not (d / "main.go").is_file():
             continue
         print(f"  run {c.slug} …", flush=True)
@@ -4405,6 +4475,7 @@ def main() -> None:
         "AMD GPU: chapters 96–102; run `./run_amd.sh` on Linux/Windows amd64 with `libwelvet_rocm` + HIP runtime (sibling github.com/openfluke/welvet.rocm). Mount works on both OSes; JSON/mixed routing is Linux amd64. Soft-SKIP without a GPU; compute untested until ROCm-capable HSA.\n\n"
         "Vulkan GPU: chapters 103–109; run `./run_vulkan.sh` on Linux amd64 with `libwelvet_vulkan` + Vulkan loader/runtime (sibling github.com/openfluke/welvet.vulkan). Soft-SKIP without a GPU. No silent host fallback labeled as Vulkan.\n\n"
         "Apple MLX (v1.7): chapters 110–113; run `./run_mlx.sh` on Apple silicon macOS with `libwelvet_mlx` installed (sibling github.com/openfluke/welvet.mlx). Forward-only `nativemlx` / `BackendMLX` / `SyncToMLX`; validate with w2a `go_v_mlx`. No TrainMSE on MLX.\n\n"
+        "Python C-ABI (v1.7.3 / PyPI 1.1.2): chapters 114–117; run `./run_python.sh` or `pip install welvet==1.1.2 && python3 main.py`. Soft-SKIP when an accelerator lib is present but no device.\n\n"
         "```bash\n"
         "cd welvet/examples/01-welvet\n"
         "source ../env.sh   # shared GOCACHE — required for webgpu/CGO examples\n"

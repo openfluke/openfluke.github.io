@@ -646,5 +646,29 @@
     "stdout": "Apple MLX results pointers (not a live benchmark)\n\nEngine pin: welvet.mlx 1.0.0 \u00b7 Go binding: nativemlx (Welvet v1.7.0)\nUsage tour: 110 SyncToMLX \u00b7 111 caps \u00b7 112 Dense/Sequential \u00b7 113 pointers\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_mlx -count=1 -timeout 60m\n  cd ../../welvet.mlx && ./scripts/macos_build_w2a.sh\n\nInstall shared library into Go:\n  cd ../../welvet.mlx && ./scripts/macos_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_mlx.sh\n",
     "stderr": "",
     "combined": "Apple MLX results pointers (not a live benchmark)\n\nEngine pin: welvet.mlx 1.0.0 \u00b7 Go binding: nativemlx (Welvet v1.7.0)\nUsage tour: 110 SyncToMLX \u00b7 111 caps \u00b7 112 Dense/Sequential \u00b7 113 pointers\n\nLive matrices (sibling checkouts):\n  cd ../../w2a && go test ./tests/go_v_mlx -count=1 -timeout 60m\n  cd ../../welvet.mlx && ./scripts/macos_build_w2a.sh\n\nInstall shared library into Go:\n  cd ../../welvet.mlx && ./scripts/macos_install_go.sh\n\nSmall usage tour without the large matrix:\n  ../run_mlx.sh"
+  },
+  "114-python-install": {
+    "exit_code": 0,
+    "stdout": "python_package 1.1.2\ncabi_contract 1.1.2\ngo_engine v1.7.3\ninput [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]\noutput [0.0, 0.0, 0.0, 0.0]\n",
+    "stderr": "",
+    "combined": "python_package 1.1.2\ncabi_contract 1.1.2\ngo_engine v1.7.3\ninput [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]\noutput [0.0, 0.0, 0.0, 0.0]"
+  },
+  "115-python-backends": {
+    "exit_code": 0,
+    "stdout": "backends\n  ok cpu_tiled\n  ok simd\n  ok webgpu\n  ok native_cpu\n  ok cuda\n  -- metal\n  ok rocm\n  ok vulkan\n  -- qnn\n  -- mlx\nSKIP cuda: forward {0 0 0 0}: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected\nchosen vulkan\nforward_len 16 head [0.0, 0.0, 0.0, 0.0]\n",
+    "stderr": "Authorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified\n\n",
+    "combined": "backends\n  ok cpu_tiled\n  ok simd\n  ok webgpu\n  ok native_cpu\n  ok cuda\n  -- metal\n  ok rocm\n  ok vulkan\n  -- qnn\n  -- mlx\nSKIP cuda: forward {0 0 0 0}: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected\nchosen vulkan\nforward_len 16 head [0.0, 0.0, 0.0, 0.0]\n\nAuthorization required, but no authorization protocol specified\n\nAuthorization required, but no authorization protocol specified"
+  },
+  "116-python-train-entity": {
+    "exit_code": 0,
+    "stdout": "train {'loss': 0.25, 'status': 'ok'}\nentity_bytes 550\nreloaded_out [0.0, 0.0, 0.0, 0.0127]\n",
+    "stderr": "",
+    "combined": "train {'loss': 0.25, 'status': 'ok'}\nentity_bytes 550\nreloaded_out [0.0, 0.0, 0.0, 0.0127]"
+  },
+  "117-python-layers": {
+    "exit_code": 0,
+    "stdout": "layer_types 23 sample ['Dense', 'MultiHeadAttention', 'SwiGLU', 'RMSNorm', 'LayerNorm', 'Embedding', 'Softmax', 'Sequential']\nmha_out_len 32\nprepare_grid call after place_* when backend is qnn or mlx\n",
+    "stderr": "",
+    "combined": "layer_types 23 sample ['Dense', 'MultiHeadAttention', 'SwiGLU', 'RMSNorm', 'LayerNorm', 'Embedding', 'Softmax', 'Sequential']\nmha_out_len 32\nprepare_grid call after place_* when backend is qnn or mlx"
   }
 }
