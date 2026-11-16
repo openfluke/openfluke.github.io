@@ -249,11 +249,7 @@ func run() error {
 	return nil
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>version 1.0.0
-available true
-prefer mlx
-backend=mlx synced=true
-input=[0.5 -0.25] output=[0.5 -0.25] shape=[1 2]</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: Apple MLX needs Apple silicon macOS and cgo</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/110-apple-mlx &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

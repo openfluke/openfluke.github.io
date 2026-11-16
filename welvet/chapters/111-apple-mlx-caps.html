@@ -236,12 +236,7 @@ func run() error {
 	return nil
 }</code></pre>
 <h3>Output</h3>
-<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>version 1.0.0
-supported_layers dense,softmax,rmsnorm,layernorm,cnn2,cnn3,convt2,convt3,lstm,embedding,residual,swiglu,mha
-dense/float32 true
-dense/float64 false
-RequireLayer dense/float32: ok
-RequireLayer dense/float64: nativemlx: reject dense/float64 — not supported on MLX GPU (see SupportedLayers)</code></pre>
+<p class="example-meta">exit 0 · last run via <code>go run .</code></p><pre class="example-output"><code>SKIP: Apple MLX needs Apple silicon macOS and cgo</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/111-apple-mlx-caps &amp;&amp; source ../env.sh &amp;&amp; go run .</code></pre>
 </section>
 

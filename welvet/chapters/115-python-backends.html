@@ -249,13 +249,8 @@ if __name__ == "__main__":
   ok vulkan
   -- qnn
   -- mlx
-SKIP cuda: forward {0 0 0 0}: nativecuda: code=4: cudaGetDeviceCount: no CUDA-capable device is detected
-chosen vulkan
-forward_len 16 head [0.0, 0.0, 0.0, 0.0]
-
-Authorization required, but no authorization protocol specified
-
-Authorization required, but no authorization protocol specified</code></pre>
+chosen cuda
+forward_len 16 head [0.0, 0.0, 0.0, 0.0]</code></pre>
 <h3>Validate (harness)</h3><pre><code>cd welvet/examples/115-python-backends &amp;&amp; PYTHONPATH=../../../w2a/python/src python3 main.py</code></pre>
 </section>
 
